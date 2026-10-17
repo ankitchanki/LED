@@ -1,6 +1,27 @@
-# Glow LED v1.2.0
+# Glow LED v1.3.0
 
-**Install:** download `GlowLED-v1.2.0.apk` below, open it, then follow the in-app *Setup* list.
+**Install:** download `GlowLED-v1.3.0.apk` below, open it, then follow the in-app *Setup* tab.
+From this version on, every GitHub release is signed with the same key, so updates install over the
+previous version. (If you installed an older GitHub build, uninstall it once first.)
+
+## New compact layout
+- Everything fits on one screen: small header with the main switch, live preview, and swipeable tabs
+  (Setup, Style, Screen off, Screen on, Alerts, Battery, Log) - swipe left/right instead of scrolling
+- Switches are now a 2-column grid of tiles; sliders sit side by side
+- Test and Preview buttons are identical and sit in a fixed bottom bar, so nothing overlaps
+- Setup opens first (with a badge) until everything needed is granted
+
+## Accessibility is optional
+- "Display over other apps" alone is enough to show the screen-off light; Accessibility is now
+  clearly marked optional (it adds instant screen-off and makes the light unblockable on HyperOS etc.)
+- Clear explanation of Android 13+ "restricted settings" for APK installs
+
+## Releases
+- CI no longer publishes APKs signed with a throwaway key (the cause of "invalid package" on update)
+
+---
+
+# Glow LED v1.2.0
 
 ## Fixes
 - **Screen-off light now works on HyperOS / MIUI** (and other ROMs that block background screens such as ColorOS, OriginOS, Funtouch): with Accessibility on, the light is drawn in an accessibility overlay instead of opening an activity, so the ROM can't block it

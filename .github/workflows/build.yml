@@ -35,7 +35,7 @@ jobs:
             echo "GLOWLED_KEYSTORE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
             echo "SIGNED=release" >> "$GITHUB_ENV"
           else
-            echo "::warning::GLOWLED_KEYSTORE_BASE64 secret not set - APK will be signed with a throwaway debug key."
+            echo "::warning::Signing secrets not set - building a test APK only; no GitHub release will be published (a throwaway key would break updates)."
             echo "SIGNED=debug-key" >> "$GITHUB_ENV"
           fi
 
@@ -58,9 +58,10 @@ jobs:
           path: dist/*
 
       # Publishes v<versionName> automatically when main is pushed (or the workflow is run by hand).
+      # Only release-key-signed APKs are published, so every release installs over the previous one.
       # Re-running replaces the APK, e.g. after adding the signing secrets.
       - name: Publish GitHub release
-        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+        if: env.SIGNED == 'release' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}

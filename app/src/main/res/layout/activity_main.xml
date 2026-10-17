@@ -1,263 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Compact single screen: header, live preview, swipeable sections, thumb dock. No page scroll. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
+    <!-- Header: sits under the transparent status bar (top inset added in code). -->
+    <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:fitsSystemWindows="true"
-        app:elevation="0dp"
-        app:liftOnScroll="false">
-
-        <!-- Tall header: the hard-to-reach top half shows the live preview, controls stay low. -->
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing"
-            android:layout_width="match_parent"
-            android:layout_height="340dp"
-            android:fitsSystemWindows="true"
-            app:collapsedTitleTextAppearance="@style/GlowHeaderTitle.Collapsed"
-            app:contentScrim="@color/black"
-            app:expandedTitleMarginBottom="46dp"
-            app:expandedTitleMarginStart="24dp"
-            app:expandedTitleTextAppearance="@style/GlowHeaderTitle.Expanded"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:scrimAnimationDuration="250"
-            app:statusBarScrim="@color/black"
-            app:title="@string/app_name">
-
-            <FrameLayout
-                android:id="@+id/heroFrame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/hero_bg"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.5">
-
-                <View
-                    android:id="@+id/heroLens"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="36dp"
-                    android:background="@drawable/lens" />
-
-                <com.glowled.app.view.LedView
-                    android:id="@+id/hero"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TextView
-                    android:id="@+id/heroHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|start"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginBottom="20dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@color/text_secondary" />
-            </FrameLayout>
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:layout_collapseMode="pin" />
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="4dp">
-
-            <!-- Master switch: whole card is the touch target. -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/masterCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="@color/accent_dim">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:minHeight="84dp"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="16dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/masterLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceTitleLarge"
-                            android:textColor="@color/text_primary" />
-
-                        <TextView
-                            android:id="@+id/status"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="@color/text_secondary" />
-                    </LinearLayout>
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/master"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/GlowSectionTitle"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/setup_title" />
-
-                <TextView
-                    android:id="@+id/setupProgress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="@color/accent" />
-            </LinearLayout>
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/setupBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="12dp"
-                app:indicatorColor="@color/accent"
-                app:trackColor="@color/surface_high"
-                app:trackCornerRadius="4dp"
-                app:trackThickness="6dp" />
-
-            <LinearLayout
-                android:id="@+id/setupList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/restrictedHint"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="4dp"
-                android:text="@string/restricted_hint"
+                android:text="@string/app_name"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/text_secondary" />
-            <TextView
-                style="@style/GlowSectionTitle"
-                android:text="@string/section_animation" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/styles"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:overScrollMode="never"
-                android:paddingHorizontal="12dp" />
-
-            <TextView
-                style="@style/GlowSectionTitle"
-                android:text="@string/section_colour" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:id="@+id/swatches"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="14dp" />
-            </HorizontalScrollView>
-
-            <!-- Every setting, inline: filled in by MainActivity via SettingsUi. -->
-            <LinearLayout
-                android:id="@+id/sections"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
-    <!-- Thumb-zone dock: primary actions always within reach, fading into the nav bar. -->
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/master"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/master_on" />
+    </LinearLayout>
+
+    <!-- Live preview -->
+    <FrameLayout
+        android:id="@+id/heroFrame"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="@drawable/hero_bg">
+
+        <View
+            android:id="@+id/heroLens"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/lens" />
+
+        <com.glowled.app.view.LedView
+            android:id="@+id/hero"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/black"
+        app:tabGravity="start"
+        app:tabIndicator="@drawable/tab_indicator"
+        app:tabIndicatorColor="@color/accent"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorHeight="3dp"
+        app:tabMode="scrollable"
+        app:tabPaddingEnd="14dp"
+        app:tabPaddingStart="14dp"
+        app:tabRippleColor="@color/accent_dim"
+        app:tabSelectedTextColor="@color/accent"
+        app:tabTextAppearance="?attr/textAppearanceTitleSmall"
+        app:tabTextColor="@color/text_secondary" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Thumb dock: two identical buttons, laid out (not floating) so nothing is covered. -->
     <LinearLayout
         android:id="@+id/dock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@drawable/dock_bg"
+        android:background="@color/black"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
-        android:paddingTop="28dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="10dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTest"
-            style="@style/Widget.Material3.Button.TonalButton.Icon"
+            style="@style/GlowDockButton"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="56dp"
             android:layout_marginEnd="6dp"
             android:layout_weight="1"
-            android:text="@string/action_test"
-            app:cornerRadius="20dp"
+            android:text="@string/action_test_short"
             app:icon="@drawable/ic_bell" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPreview"
-            style="@style/Widget.Material3.Button.Icon"
+            style="@style/GlowDockButton"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="56dp"
             android:layout_marginStart="6dp"
             android:layout_weight="1"
             android:text="@string/action_preview"
-            app:cornerRadius="20dp"
             app:icon="@drawable/ic_play" />
     </LinearLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

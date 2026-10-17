@@ -4,21 +4,29 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.TimePickerDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.text.format.DateFormat
+import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -32,9 +40,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.glowled.app.BuildConfig
 import com.glowled.app.R
 import com.glowled.app.core.CutoutShape
 import com.glowled.app.core.DebugLog
@@ -43,31 +52,55 @@ import com.glowled.app.core.LedController
 import com.glowled.app.core.LedStyle
 import com.glowled.app.core.NotificationStore
 import com.glowled.app.core.PowerGuard
+import com.glowled.app.core.Prefs
 import com.glowled.app.service.LedAccessibilityService
 import com.glowled.app.service.NotifyListenerService
+import com.glowled.app.ui.SettingsUi.Range
+import com.glowled.app.ui.SettingsUi.Toggle
 import com.glowled.app.util.OemHelper
 import com.glowled.app.view.LedView
+import com.glowled.app.view.NestedScrollableHost
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
+/**
+ * Single-screen home: header with master switch, live preview, swipeable setting pages, and a
+ * thumb dock. Every setting lives here; nothing hides behind a menu.
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var master: MaterialSwitch
-    private lateinit var masterCard: MaterialCardView
-    private lateinit var masterLabel: TextView
     private lateinit var status: TextView
     private lateinit var hero: LedView
     private lateinit var heroLens: View
-    private lateinit var setupList: LinearLayout
-    private lateinit var swatches: LinearLayout
+    private lateinit var pager: ViewPager2
+    private lateinit var tabs: TabLayout
+    private lateinit var ui: SettingsUi
     private lateinit var styleAdapter: StyleAdapter
+    private lateinit var swatches: LinearLayout
+    private lateinit var setupList: LinearLayout
+    private lateinit var setupProgress: TextView
+    private lateinit var setupBar: LinearProgressIndicator
+    private var logText: TextView? = null
+    private var quietSub: TextView? = null
+    private var setupIncomplete = false
+
     private val prefs get() = LedController.prefs
-    private val storeListener: () -> Unit = { runOnUiThread { refreshLive() } }
     private val density by lazy { resources.displayMetrics.density }
+    private fun dp(v: Int) = (v * density).toInt()
+    private val storeListener: () -> Unit = { runOnUiThread { refreshLive() } }
+
+    // Any setting change re-renders the preview immediately.
+    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "style") styleAdapter.notifyItemRangeChanged(0, styleAdapter.itemCount)
+        configureHero()
+        if (key == "style" || key == Prefs.K_ENABLED) ui.refresh()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Transparent status and navigation bars; the black header and dock blend into them.
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
@@ -77,15 +110,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         master = findViewById(R.id.master)
-        masterCard = findViewById(R.id.masterCard)
-        masterLabel = findViewById(R.id.masterLabel)
         status = findViewById(R.id.status)
         hero = findViewById(R.id.hero)
         heroLens = findViewById(R.id.heroLens)
-        setupList = findViewById(R.id.setupList)
-        swatches = findViewById(R.id.swatches)
+        pager = findViewById(R.id.pager)
+        tabs = findViewById(R.id.tabs)
         hero.useScreenCoords = false
-        findViewById<TextView>(R.id.heroHint).setText(R.string.hero_hint)
+        ui = SettingsUi(this, prefs.sp)
 
         applyInsets()
 
@@ -95,30 +126,27 @@ class MainActivity : AppCompatActivity() {
             prefs.enabled = on
             refreshLive()
         }
-        masterCard.setOnClickListener { master.toggle() }
-
         findViewById<View>(R.id.btnPreview).setOnClickListener { LedController.startAod(pulse = false, preview = true) }
         findViewById<View>(R.id.btnTest).setOnClickListener { sendTest() }
-        findViewById<View>(R.id.restrictedHint).visibility =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) View.VISIBLE else View.GONE
-
-        setupStyles()
-        setupSwatches()
-        buildSections()
-        prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
         hero.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> configureHero() }
+
+        buildPages()
+        prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
+        buildSetup()
+        // First run / something missing: open on Setup so the user sees what to do.
+        if (savedInstanceState == null && setupIncomplete) pager.setCurrentItem(0, false)
+        else if (savedInstanceState == null) pager.setCurrentItem(1, false)
     }
 
     private fun applyInsets() {
+        val header = findViewById<View>(R.id.header)
         val dock = findViewById<View>(R.id.dock)
-        val scroll = findViewById<NestedScrollView>(R.id.scroll)
-        val dockPadBottom = dock.paddingBottom
-        ViewCompat.setOnApplyWindowInsetsListener(dock) { v, insets ->
+        val headerTop = header.paddingTop
+        val dockBottom = dock.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
-            v.updatePadding(left = bars.left + (16 * density).toInt(), right = bars.right + (16 * density).toInt(),
-                bottom = bars.bottom + dockPadBottom)
-            // Content can scroll fully above the dock.
-            v.post { scroll.updatePadding(bottom = v.height + (12 * density).toInt()) }
+            header.updatePadding(top = bars.top + headerTop, left = bars.left + dp(20), right = bars.right + dp(20))
+            dock.updatePadding(bottom = bars.bottom + dockBottom, left = bars.left + dp(16), right = bars.right + dp(16))
             insets
         }
     }
@@ -141,61 +169,264 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    // Live preview: any setting change re-renders the hero and carousel immediately.
-    private val prefsListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == "style") styleAdapter.notifyItemRangeChanged(0, styleAdapter.itemCount)
-        configureHero()
-        if (key == "style") settingsUi.refresh()
-    }
+    private fun previewColors(): IntArray = intArrayOf(prefs.defaultColor, 0xFF25D366.toInt(), 0xFFFF4081.toInt())
 
-    private fun previewColors(): IntArray =
-        intArrayOf(prefs.defaultColor, 0xFF25D366.toInt(), 0xFFFF4081.toInt())
-
-    /** Hero preview: ring around the stand-in lens, in view-local coordinates (never drifts on scroll). */
+    /** Hero preview in view-local coordinates, so it never drifts. */
     private fun configureHero() {
         if (hero.width == 0) return
-        val cx = heroLens.left + heroLens.width / 2f - hero.left
-        val cy = heroLens.top + heroLens.height / 2f - hero.top
+        val cx = heroLens.left + heroLens.width / 2f
+        val cy = heroLens.top + heroLens.height / 2f
         val d = heroLens.width.toFloat()
-        val g = Geometry(CutoutShape.CIRCLE, cx, cy, d, d)
-        hero.configure(prefs, g, previewColors(), gapDp = 4, thicknessDp = 4)
+        hero.configure(prefs, Geometry(CutoutShape.CIRCLE, cx, cy, d, d), previewColors(), gapDp = 4, thicknessDp = 4)
     }
 
     private fun refreshLive() {
         val on = prefs.enabled
-        masterLabel.setText(if (on) R.string.master_on else R.string.master_off)
-        masterCard.setCardBackgroundColor(getColor(if (on) R.color.accent_dim else R.color.surface))
         val count = NotificationStore.colors().size
         val block = PowerGuard.blockReason(this, prefs)
         status.text = when {
             !NotifyListenerService.isEnabled(this) -> getString(R.string.status_need_listener)
-            !on -> getString(R.string.status_off_hint)
+            !on -> getString(R.string.master_off)
             block != null -> getString(R.string.status_blocked, block)
             !NotificationStore.isEmpty() -> getString(R.string.status_active, count)
             else -> getString(R.string.status_waiting)
         }
         hero.animate().alpha(if (on) 1f else 0.25f).setDuration(200).start()
         configureHero()
-        styleAdapter.notifyItemRangeChanged(0, styleAdapter.itemCount)
+        ui.refresh()
         updateSwatchSelection()
-        settingsUi.refresh()
-        diagText?.text = DebugLog.text()
+        logText?.text = DebugLog.text()
     }
 
-    // ---- animation carousel ------------------------------------------------------------------
+    // ---- pages -------------------------------------------------------------------------------
 
-    private fun setupStyles() {
+    private fun buildPages() {
+        val pages = listOf(
+            getString(R.string.tab_setup) to pageSetup(),
+            getString(R.string.tab_style) to pageStyle(),
+            getString(R.string.tab_off) to pageScreenOff(),
+            getString(R.string.tab_on) to pageScreenOn(),
+            getString(R.string.tab_alerts) to pageAlerts(),
+            getString(R.string.tab_battery) to pageBattery(),
+            getString(R.string.tab_log) to pageLog(),
+        )
+        pager.adapter = PagesAdapter(pages.map { it.second })
+        pager.offscreenPageLimit = pages.size
+        TabLayoutMediator(tabs, pager) { tab, i -> tab.text = pages[i].first }.attach()
+        ui.refresh()
+    }
+
+    private class PagesAdapter(val pages: List<View>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        override fun getItemCount() = pages.size
+        override fun getItemViewType(position: Int) = position
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val v = pages[viewType]
+            (v.parent as? ViewGroup)?.removeView(v)
+            v.layoutParams = ViewGroup.LayoutParams(-1, -1)
+            return object : RecyclerView.ViewHolder(v) {}
+        }
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = Unit
+    }
+
+    private fun pageSetup(): View {
+        val (page, col) = ui.page()
+        val head = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(8), dp(8), dp(8), dp(6))
+        }
+        head.addView(TextView(this).apply {
+            setText(R.string.setup_intro)
+            setTextColor(getColor(R.color.text_secondary))
+            textSize = 13f
+        }, LinearLayout.LayoutParams(0, -2, 1f))
+        setupProgress = TextView(this).apply {
+            setTextColor(getColor(R.color.accent))
+            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge)
+            setPadding(dp(8), 0, 0, 0)
+        }
+        head.addView(setupProgress)
+        col.addView(head)
+        setupBar = LinearProgressIndicator(this).apply {
+            setIndicatorColor(getColor(R.color.accent))
+            trackColor = getColor(R.color.surface_high)
+            trackCornerRadius = dp(4)
+            trackThickness = dp(6)
+        }
+        col.addView(setupBar, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(8), 0, dp(8), dp(10)) })
+        setupList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(setupList)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            col.addView(TextView(this).apply {
+                setText(R.string.restricted_hint)
+                setTextColor(getColor(R.color.text_secondary))
+                textSize = 12f
+                setPadding(dp(8), dp(6), dp(8), 0)
+            })
+        }
+        return page
+    }
+
+    private fun pageStyle(): View {
+        val (page, col) = ui.page()
+        // Animation carousel with live previews.
         val names = resources.getStringArray(R.array.style_names).map { it.substringBefore(" (") }
-        val keys = resources.getStringArray(R.array.style_values)
-        val styles = keys.map { LedStyle.from(it) }
+        val styles = resources.getStringArray(R.array.style_values).map { LedStyle.from(it) }
         styleAdapter = StyleAdapter(styles, names)
-        findViewById<RecyclerView>(R.id.styles).apply {
+        val rv = RecyclerView(this).apply {
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
             adapter = styleAdapter
-            setHasFixedSize(true)
+            clipToPadding = false
+            overScrollMode = View.OVER_SCROLL_NEVER
+            setPadding(0, dp(4), 0, dp(4))
             post { scrollToPosition(styles.indexOf(prefs.style).coerceAtLeast(0)) }
         }
+        col.addView(NestedScrollableHost(this).apply { addView(rv) })
+
+        // Colour row.
+        swatches = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(dp(2), 0, dp(2), 0) }
+        buildSwatches()
+        col.addView(NestedScrollableHost(this).apply {
+            addView(HorizontalScrollView(this@MainActivity).apply {
+                isHorizontalScrollBarEnabled = false
+                overScrollMode = View.OVER_SCROLL_NEVER
+                addView(swatches)
+            })
+        })
+
+        val c = ui.card(col)
+        ui.link(c, R.drawable.ic_camera_ring, getString(R.string.action_cutout), getString(R.string.tile_cutout_sub)) {
+            startActivity(Intent(this, CutoutActivity::class.java))
+        }
+        ui.divider(c)
+        ui.chips(c, "Several notifications", "multi_mode",
+            listOf("Cycle colours", "Split ring", "Newest only"), listOf("cycle", "segments", "latest"), "cycle")
+        ui.sliders(c, Range("Speed", "speed", 1, 10, 5, ""), Range("Intensity", "led_alpha", 10, 100, 100, "%"))
+        ui.sliders(c, Range("Thickness", "thickness", 1, 16, 3, "dp"), Range("Gap", "gap", 0, 20, 2, "dp"))
+        ui.sliders(c, Range("Edge corners", "edge_radius", 0, 120, 40, "dp"), dependsOn = { prefs.style.isEdge })
+        ui.toggles(col, listOf(
+            Toggle("Soft glow", "glow", true),
+            Toggle("App's notification colour", "use_notif_color", true),
+            Toggle("App icon colour", "use_icon_color", true),
+        ))
+        return page
     }
+
+    private fun pageScreenOff(): View {
+        val (page, col) = ui.page()
+        val aodOn = { prefs.aodEnabled }
+        ui.toggles(col, listOf(
+            Toggle("Light while screen is off", "aod_enabled", true),
+            Toggle("When I turn screen off", "aod_on_screen_off", true, aodOn),
+            Toggle("When a notification arrives", "aod_on_new", true, aodOn),
+            Toggle("Pocket detection", "proximity", true, aodOn),
+            Toggle("Tap: show lock screen", "tap_dismiss", true, aodOn),
+            Toggle("Double-tap: screen off", "double_tap_off", true, aodOn),
+            Toggle("Burn-in protection", "burn_in", true, aodOn),
+        ))
+        val c = ui.card(col)
+        ui.chips(c, "Keep the light on for", "aod_timeout",
+            listOf("30 s", "1 min", "2 min", "5 min", "15 min", "1 hour", "Until cleared"),
+            listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
+        ui.chips(c, "Remind me afterwards", "pulse_interval",
+            listOf("Off", "Every 2 min", "5 min", "10 min", "30 min"), listOf("0", "2", "5", "10", "30"), "0", aodOn)
+        ui.sliders(c, Range("Brightness", "aod_brightness", 1, 100, 3, "%"),
+            Range("Reminder", "pulse_duration", 3, 60, 10, "s"), dependsOn = aodOn)
+        return page
+    }
+
+    private fun pageScreenOn(): View {
+        val (page, col) = ui.page()
+        ui.toggles(col, listOf(
+            Toggle("Light while using the phone", "overlay_enabled", true),
+            Toggle("Only on the lock screen", "overlay_lock_only", false) { prefs.overlayEnabled },
+        ))
+        col.addView(hint(getString(R.string.screen_on_hint)))
+        return page
+    }
+
+    private fun pageAlerts(): View {
+        val (page, col) = ui.page()
+        val c = ui.card(col)
+        ui.link(c, R.drawable.ic_apps, getString(R.string.action_apps), "Turn apps on/off, pick colours") {
+            startActivity(Intent(this, AppsActivity::class.java))
+        }
+        ui.divider(c)
+        ui.chips(c, "Which apps", "app_mode", listOf("All apps", "Only apps I choose"), listOf("all", "selected"), "all")
+        ui.toggles(col, listOf(
+            Toggle("Ignore silent notifications", "ignore_low", true),
+            Toggle("Respect Do Not Disturb", "respect_dnd", true),
+            Toggle("Clear after I unlock", "clear_on_unlock", false),
+        ))
+        return page
+    }
+
+    private fun pageBattery(): View {
+        val (page, col) = ui.page()
+        val c = ui.card(col)
+        ui.chips(c, "Animation frame rate", "fps_cap",
+            listOf("15 fps", "24 fps", "30 fps", "60 fps", "Max"), listOf("15", "24", "30", "60", "0"), "30")
+        ui.sliders(c, Range("Pause below battery", "min_battery", 0, 50, 10, "%"))
+        ui.toggles(col, listOf(
+            Toggle("Lowest refresh rate when off", "low_refresh", true),
+            Toggle("Quiet hours", "quiet_enabled", false),
+        ))
+        val q = ui.card(col)
+        quietSub = ui.link(q, R.drawable.ic_moon, "Quiet hours time", quietText()) { pickQuietHours() }
+        return page
+    }
+
+    private fun pageLog(): View {
+        val (page, col) = ui.page()
+        val c = ui.card(col)
+        ui.link(c, R.drawable.ic_bell, "Copy event log", "Send this to the developer if something fails") {
+            getSystemService(ClipboardManager::class.java)
+                .setPrimaryClip(ClipData.newPlainText("Glow LED log", deviceInfo() + "\n\n" + DebugLog.text()))
+            Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
+        }
+        logText = TextView(this).apply {
+            typeface = Typeface.MONOSPACE
+            textSize = 11f
+            setTextColor(getColor(R.color.text_secondary))
+            setPadding(dp(18), dp(4), dp(18), dp(12))
+            setTextIsSelectable(true)
+            text = DebugLog.text()
+        }
+        c.addView(logText)
+        col.addView(hint("Glow LED ${BuildConfig.VERSION_NAME} · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"))
+        return page
+    }
+
+    private fun hint(text: String) = TextView(this).apply {
+        this.text = text
+        setTextColor(getColor(R.color.text_secondary))
+        textSize = 12f
+        setPadding(dp(10), dp(10), dp(10), dp(4))
+    }
+
+    private fun deviceInfo() =
+        "Glow LED ${BuildConfig.VERSION_NAME}, ${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} " +
+            "(SDK ${Build.VERSION.SDK_INT}), a11y=${LedAccessibilityService.instance != null}, " +
+            "overlay=${Settings.canDrawOverlays(this)}, listener=${NotifyListenerService.isEnabled(this)}, " +
+            "miuiLock=${OemHelper.miuiLockScreenAllowed(this)}"
+
+    private fun quietText(): String {
+        fun f(m: Int) = String.format("%02d:%02d", m / 60, m % 60)
+        return "${f(prefs.quietStart)} – ${f(prefs.quietEnd)}"
+    }
+
+    private fun pickQuietHours() {
+        val is24 = DateFormat.is24HourFormat(this)
+        TimePickerDialog(this, { _, h, m ->
+            prefs.sp.edit().putInt("quiet_start", h * 60 + m).apply()
+            TimePickerDialog(this, { _, h2, m2 ->
+                prefs.sp.edit().putInt("quiet_end", h2 * 60 + m2).apply()
+                quietSub?.text = quietText()
+            }, prefs.quietEnd / 60, prefs.quietEnd % 60, is24).apply { setTitle("Quiet hours end") }.show()
+        }, prefs.quietStart / 60, prefs.quietStart % 60, is24).apply { setTitle("Quiet hours start") }.show()
+    }
+
+    // ---- animation carousel --------------------------------------------------------------------
 
     private inner class StyleHolder(v: View) : RecyclerView.ViewHolder(v) {
         val card = v as MaterialCardView
@@ -219,79 +450,63 @@ class MainActivity : AppCompatActivity() {
             val style = styles[position]
             val selected = style == prefs.style
             h.name.text = names[position]
-            h.card.strokeWidth = if (selected) (2 * density).toInt() else 0
+            h.card.strokeWidth = if (selected) dp(2) else 0
             h.card.setCardBackgroundColor(getColor(if (selected) R.color.surface_high else R.color.surface))
             h.lens.visibility = if (style.isEdge) View.INVISIBLE else View.VISIBLE
             h.led.post {
-                val cx = h.led.width / 2f
-                val cy = h.led.height / 2f
                 val d = 22 * density
-                h.led.configure(prefs, Geometry(CutoutShape.CIRCLE, cx, cy, d, d), previewColors(), style, 3, 3)
+                h.led.configure(prefs, Geometry(CutoutShape.CIRCLE, h.led.width / 2f, h.led.height / 2f, d, d),
+                    previewColors(), style, 3, 3)
             }
             h.card.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
                 prefs.sp.edit().putString("style", style.key).apply()
-                notifyItemRangeChanged(0, itemCount)
-                configureHero()
             }
         }
     }
 
-    // ---- colour row --------------------------------------------------------------------------
+    // ---- colour row ----------------------------------------------------------------------------
 
     private val presetColors = longArrayOf(
         0xFF00E5FF, 0xFF2979FF, 0xFF7C4DFF, 0xFFE040FB, 0xFFFF4081,
         0xFFFF1744, 0xFFFF9100, 0xFFFFEA00, 0xFF76FF03, 0xFF00E676, 0xFFFFFFFF,
     ).map { it.toInt() }
 
-    private fun setupSwatches() {
-        val size = (44 * density).toInt()
-        val m = (5 * density).toInt()
+    private fun buildSwatches() {
+        val size = dp(40)
+        val m = dp(5)
         presetColors.forEach { c ->
-            swatches.addView(swatchView(c, size), LinearLayout.LayoutParams(size, size).apply { setMargins(m, m, m, m) })
+            swatches.addView(FrameLayout(this).apply {
+                tag = c
+                background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(c) }
+                contentDescription = String.format("#%06X", c and 0xFFFFFF)
+                addView(View(context).apply { setBackgroundResource(R.drawable.swatch_ring); visibility = View.GONE },
+                    FrameLayout.LayoutParams(size, size))
+                setOnClickListener {
+                    it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+                    prefs.defaultColor = c
+                    updateSwatchSelection()
+                }
+            }, LinearLayout.LayoutParams(size, size).apply { setMargins(m, m, m, m) })
         }
-        // Custom colour button.
-        val custom = FrameLayout(this).apply {
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.OVAL
-                setColor(getColor(R.color.surface_high))
-            }
+        swatches.addView(FrameLayout(this).apply {
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(getColor(R.color.surface_high)) }
             contentDescription = getString(R.string.custom_colour)
             addView(ImageView(context).apply {
                 setImageResource(R.drawable.ic_add)
                 imageTintList = ColorStateList.valueOf(getColor(R.color.text_primary))
-            }, FrameLayout.LayoutParams((22 * density).toInt(), (22 * density).toInt(), android.view.Gravity.CENTER))
+            }, FrameLayout.LayoutParams(dp(20), dp(20), Gravity.CENTER))
             setOnClickListener {
                 ColorPickerDialog.show(this@MainActivity, prefs.defaultColor, allowAuto = false) { col ->
                     prefs.defaultColor = col
-                    refreshLive()
+                    updateSwatchSelection()
                 }
             }
-        }
-        swatches.addView(custom, LinearLayout.LayoutParams(size, size).apply { setMargins(m, m, m, m) })
-        updateSwatchSelection()
-    }
-
-    private fun swatchView(color: Int, size: Int) = FrameLayout(this).apply {
-        tag = color
-        background = GradientDrawable().apply {
-            shape = GradientDrawable.OVAL
-            setColor(color)
-        }
-        contentDescription = String.format("#%06X", color and 0xFFFFFF)
-        val ring = View(context).apply { setBackgroundResource(R.drawable.swatch_ring); visibility = View.GONE }
-        val inset = (-4 * density).toInt()
-        addView(ring, FrameLayout.LayoutParams(size, size))
-        clipChildren = false
-        ring.setPadding(inset, inset, inset, inset)
-        setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
-            prefs.defaultColor = color
-            refreshLive()
-        }
+        }, LinearLayout.LayoutParams(size, size).apply { setMargins(m, m, m, m) })
     }
 
     private fun updateSwatchSelection() {
+        if (!::swatches.isInitialized) return
         val current = prefs.defaultColor or 0xFF000000.toInt()
         for (i in 0 until swatches.childCount) {
             val v = swatches.getChildAt(i) as? FrameLayout ?: continue
@@ -302,190 +517,70 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ---- inline settings ----------------------------------------------------------------------
-
-    private lateinit var settingsUi: SettingsUi
-    private var diagText: TextView? = null
-    private var quietSub: TextView? = null
-
-    private fun buildSections() {
-        val root = findViewById<LinearLayout>(R.id.sections)
-        val ui = SettingsUi(this, prefs.sp)
-        settingsUi = ui
-        val aodOn = { prefs.aodEnabled }
-
-        // Look -----------------------------------------------------------------------------------
-        var c = ui.section(root, getString(R.string.section_look))
-        ui.link(c, R.drawable.ic_camera_ring, getString(R.string.action_cutout), getString(R.string.tile_cutout_sub)) {
-            startActivity(Intent(this, CutoutActivity::class.java))
-        }
-        ui.divider(c)
-        ui.chips(c, "Several notifications", "multi_mode",
-            listOf("Cycle colours", "Split ring", "Newest only"), listOf("cycle", "segments", "latest"), "cycle")
-        ui.slider(c, "Animation speed", "speed", 1, 10, 5, "")
-        ui.slider(c, "Ring thickness", "thickness", 1, 16, 3, " dp")
-        ui.slider(c, "Gap from camera", "gap", 0, 20, 2, " dp")
-        ui.slider(c, "Light intensity", "led_alpha", 10, 100, 100, "%")
-        ui.slider(c, "Edge lighting corners", "edge_radius", 0, 120, 40, " dp", dependsOn = { prefs.style.isEdge })
-        ui.switch(c, "Soft glow", "Turn off for maximum battery", "glow", true)
-        ui.switch(c, "Use the app's notification colour", null, "use_notif_color", true)
-        ui.switch(c, "Use the app icon's colour", "When the notification has no colour", "use_icon_color", true)
-
-        // Screen off -----------------------------------------------------------------------------
-        c = ui.section(root, getString(R.string.section_screen_off))
-        ui.switch(c, "Light while the screen is off", "Black screen; only the light's pixels use power", "aod_enabled", true)
-        ui.switch(c, "When I turn the screen off", "If unread notifications are waiting", "aod_on_screen_off", true, aodOn)
-        ui.switch(c, "When a new notification arrives", null, "aod_on_new", true, aodOn)
-        ui.chips(c, "Keep the light on for", "aod_timeout",
-            listOf("30 s", "1 min", "2 min", "5 min", "15 min", "1 hour", "Until cleared"),
-            listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
-        ui.chips(c, "Remind me afterwards", "pulse_interval",
-            listOf("Off", "Every 2 min", "5 min", "10 min", "30 min"), listOf("0", "2", "5", "10", "30"), "0", aodOn)
-        ui.slider(c, "Reminder length", "pulse_duration", 3, 60, 10, " s", dependsOn = { prefs.aodEnabled && prefs.pulseIntervalMin > 0 })
-        ui.slider(c, "Screen brightness", "aod_brightness", 1, 100, 3, "%", dependsOn = aodOn)
-        ui.switch(c, "Pocket detection", "Hide when covered, stop after 10 s", "proximity", true, aodOn)
-        ui.switch(c, "Tap to show the lock screen", null, "tap_dismiss", true, aodOn)
-        ui.switch(c, "Double-tap to turn the screen off", null, "double_tap_off", true, aodOn)
-        ui.switch(c, "Burn-in protection", "Shifts the light a few pixels every minute", "burn_in", true, aodOn)
-
-        // Screen on ------------------------------------------------------------------------------
-        c = ui.section(root, getString(R.string.section_screen_on))
-        ui.switch(c, "Light while using the phone", "Small ring around the camera", "overlay_enabled", true)
-        ui.switch(c, "Only on the lock screen", null, "overlay_lock_only", false) { prefs.overlayEnabled }
-
-        // Notifications --------------------------------------------------------------------------
-        c = ui.section(root, getString(R.string.section_notifications))
-        ui.link(c, R.drawable.ic_apps, getString(R.string.action_apps), "Turn apps on/off, pick colours") {
-            startActivity(Intent(this, AppsActivity::class.java))
-        }
-        ui.divider(c)
-        ui.chips(c, "Which apps", "app_mode", listOf("All apps", "Only apps I choose"), listOf("all", "selected"), "all")
-        ui.switch(c, "Ignore silent notifications", null, "ignore_low", true)
-        ui.switch(c, "Respect Do Not Disturb", null, "respect_dnd", true)
-        ui.switch(c, "Clear the light after I unlock", "Off: stays until the notification is dismissed", "clear_on_unlock", false)
-
-        // Battery --------------------------------------------------------------------------------
-        c = ui.section(root, getString(R.string.section_battery))
-        ui.chips(c, "Animation frame rate", "fps_cap",
-            listOf("15 fps", "24 fps", "30 fps", "60 fps", "Max"), listOf("15", "24", "30", "60", "0"), "30")
-        ui.switch(c, "Lowest refresh rate while off", "Big saving on 90/120 Hz screens", "low_refresh", true)
-        ui.slider(c, "Pause below battery", "min_battery", 0, 50, 10, "%")
-        ui.switch(c, "Quiet hours", "No always-on light at night", "quiet_enabled", false)
-        quietSub = ui.link(c, R.drawable.ic_moon, "Quiet hours time", quietText()) { pickQuietHours() }
-
-        // Diagnostics ----------------------------------------------------------------------------
-        c = ui.section(root, getString(R.string.section_diag))
-        diagText = TextView(this).apply {
-            typeface = android.graphics.Typeface.MONOSPACE
-            textSize = 11f
-            setTextColor(getColor(R.color.text_secondary))
-            setPadding((20 * density).toInt(), (12 * density).toInt(), (20 * density).toInt(), (4 * density).toInt())
-            maxLines = 14
-            text = DebugLog.text()
-        }
-        c.addView(diagText)
-        ui.link(c, R.drawable.ic_bell, "Copy event log", "Send this to the developer if something fails") {
-            val cm = getSystemService(android.content.ClipboardManager::class.java)
-            cm.setPrimaryClip(android.content.ClipData.newPlainText("Glow LED log", deviceInfo() + "\n\n" + DebugLog.text()))
-            Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
-        }
-
-        root.addView(TextView(this).apply {
-            text = "Glow LED ${com.glowled.app.BuildConfig.VERSION_NAME} · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"
-            setTextColor(getColor(R.color.text_secondary))
-            textSize = 12f
-            gravity = android.view.Gravity.CENTER
-            setPadding(0, (24 * density).toInt(), 0, (8 * density).toInt())
-        })
-        ui.refresh()
-    }
-
-    private fun deviceInfo() =
-        "Glow LED ${com.glowled.app.BuildConfig.VERSION_NAME}, ${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT}), " +
-            "a11y=${LedAccessibilityService.instance != null}, overlay=${Settings.canDrawOverlays(this)}, " +
-            "listener=${NotifyListenerService.isEnabled(this)}, miuiLock=${OemHelper.miuiLockScreenAllowed(this)}"
-
-    private fun quietText(): String {
-        fun f(m: Int) = String.format("%02d:%02d", m / 60, m % 60)
-        return "${f(prefs.quietStart)} – ${f(prefs.quietEnd)}"
-    }
-
-    private fun pickQuietHours() {
-        val is24 = android.text.format.DateFormat.is24HourFormat(this)
-        android.app.TimePickerDialog(this, { _, h, m ->
-            prefs.sp.edit().putInt("quiet_start", h * 60 + m).apply()
-            android.app.TimePickerDialog(this, { _, h2, m2 ->
-                prefs.sp.edit().putInt("quiet_end", h2 * 60 + m2).apply()
-                quietSub?.text = quietText()
-            }, prefs.quietEnd / 60, prefs.quietEnd % 60, is24).apply { setTitle("Quiet hours end") }.show()
-        }, prefs.quietStart / 60, prefs.quietStart % 60, is24).apply { setTitle("Quiet hours start") }.show()
-    }
-
-    // ---- setup checklist ---------------------------------------------------------------------
+    // ---- setup checklist -----------------------------------------------------------------------
 
     private data class Step(
         val title: String,
         val desc: String,
         val done: Boolean,
-        val required: Boolean,
+        val counts: Boolean = true,
         val isLink: Boolean = false,
         val action: () -> Unit,
     )
 
     private fun buildSetup() {
+        if (!::setupList.isInitialized) return
+        val a11y = LedAccessibilityService.instance != null || isA11yEnabled()
+        val overlay = Settings.canDrawOverlays(this)
         val steps = mutableListOf<Step>()
         steps += Step(getString(R.string.perm_listener), getString(R.string.perm_listener_desc),
-            NotifyListenerService.isEnabled(this), true) {
+            NotifyListenerService.isEnabled(this)) {
             open(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
         }
-        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_desc),
-            LedAccessibilityService.instance != null || isA11yEnabled(), false) {
+        // Either one is enough to show the light over the lock screen; accessibility is optional.
+        steps += Step(getString(R.string.perm_overlay), getString(R.string.perm_overlay_desc), overlay || a11y) {
+            open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+        }
+        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_desc), a11y, counts = false) {
             open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
-        steps += Step(getString(R.string.perm_overlay), getString(R.string.perm_overlay_desc),
-            Settings.canDrawOverlays(this), false) {
-            open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+        if (OemHelper.isXiaomi) {
+            val ok = OemHelper.miuiLockScreenAllowed(this)
+            steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_desc), ok == true,
+                counts = ok != null, isLink = ok == null) { OemHelper.openMiuiPermissions(this) }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
-            steps += Step(getString(R.string.perm_post), getString(R.string.perm_post_desc), granted, false) {
+            steps += Step(getString(R.string.perm_post), getString(R.string.perm_post_desc), granted) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
-            }
-        }
-        if (Build.VERSION.SDK_INT >= 34) {
-            val nm = getSystemService(NotificationManager::class.java)
-            steps += Step(getString(R.string.perm_fsi), getString(R.string.perm_fsi_desc), nm.canUseFullScreenIntent(), false) {
-                open(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:$packageName")))
             }
         }
         val pm = getSystemService(PowerManager::class.java)
         steps += Step(getString(R.string.perm_battery), getString(R.string.perm_battery_desc),
-            pm.isIgnoringBatteryOptimizations(packageName), false) { requestBatteryExemption() }
-        if (OemHelper.isXiaomi) {
-            val ok = OemHelper.miuiLockScreenAllowed(this)
-            steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_desc), ok == true, false, isLink = ok == null) {
-                OemHelper.openMiuiPermissions(this)
-            }
-        }
+            pm.isIgnoringBatteryOptimizations(packageName)) { requestBatteryExemption() }
         OemHelper.brand?.let { b ->
-            steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_desc), false, false, isLink = true) {
+            steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_desc), false, counts = false, isLink = true) {
                 OemHelper.openAutostart(this)
             }
         }
 
-        val countable = steps.filter { !it.isLink }
+        val countable = steps.filter { it.counts }
         val done = countable.count { it.done }
-        findViewById<TextView>(R.id.setupProgress).text =
-            if (done == countable.size) getString(R.string.setup_all_done) else getString(R.string.setup_progress, done, countable.size)
-        findViewById<LinearProgressIndicator>(R.id.setupBar).apply {
-            max = countable.size
-            setProgressCompat(done, true)
+        setupIncomplete = done < countable.size
+        setupProgress.text = if (!setupIncomplete) getString(R.string.setup_all_done)
+        else getString(R.string.setup_progress, done, countable.size)
+        setupBar.max = countable.size
+        setupBar.setProgressCompat(done, true)
+        tabs.getTabAt(0)?.let { tab ->
+            if (setupIncomplete) tab.orCreateBadge.apply {
+                backgroundColor = getColor(R.color.warn)
+                number = countable.size - done
+            } else tab.removeBadge()
         }
 
         setupList.removeAllViews()
         val inflater = LayoutInflater.from(this)
-        // Things still to do first; finished ones collapse to a quiet row at the bottom.
         steps.sortedBy { if (it.done && !it.isLink) 1 else 0 }.forEach { s ->
             val row = inflater.inflate(R.layout.item_setup, setupList, false) as MaterialCardView
             row.findViewById<TextView>(R.id.title).text = s.title
@@ -493,24 +588,19 @@ class MainActivity : AppCompatActivity() {
             desc.text = s.desc
             val icon = row.findViewById<ImageView>(R.id.stateIcon)
             val bg = row.findViewById<View>(R.id.stateBg)
-            val chevron = row.findViewById<View>(R.id.chevron)
-            when {
-                s.done && !s.isLink -> {
-                    icon.setImageResource(R.drawable.ic_check)
-                    icon.imageTintList = ColorStateList.valueOf(getColor(R.color.black))
-                    bg.backgroundTintList = ColorStateList.valueOf(getColor(R.color.ok))
-                    desc.visibility = View.GONE
-                    chevron.visibility = View.INVISIBLE
-                    row.alpha = 0.7f
-                    row.isClickable = false
-                }
-                else -> {
-                    icon.setImageResource(if (s.isLink) R.drawable.ic_apps else R.drawable.ic_add)
-                    val tint = if (s.required) R.color.bad else R.color.warn
-                    icon.imageTintList = ColorStateList.valueOf(getColor(R.color.black))
-                    bg.backgroundTintList = ColorStateList.valueOf(getColor(tint))
-                    row.setOnClickListener { s.action() }
-                }
+            icon.imageTintList = ColorStateList.valueOf(getColor(R.color.black))
+            if (s.done && !s.isLink) {
+                icon.setImageResource(R.drawable.ic_check)
+                bg.backgroundTintList = ColorStateList.valueOf(getColor(R.color.ok))
+                desc.visibility = View.GONE
+                row.findViewById<View>(R.id.chevron).visibility = View.INVISIBLE
+                row.alpha = 0.7f
+                row.isClickable = false
+            } else {
+                icon.setImageResource(if (s.isLink) R.drawable.ic_apps else R.drawable.ic_add)
+                val tint = if (!s.counts) R.color.accent else if (s == steps[0]) R.color.bad else R.color.warn
+                bg.backgroundTintList = ColorStateList.valueOf(getColor(tint))
+                row.setOnClickListener { s.action() }
             }
             setupList.addView(row)
         }
@@ -536,12 +626,12 @@ class MainActivity : AppCompatActivity() {
         buildSetup()
     }
 
-    // ---- test notification -------------------------------------------------------------------
+    // ---- test notification ---------------------------------------------------------------------
 
     private fun sendTest() {
         if (!NotifyListenerService.isEnabled(this)) {
             Toast.makeText(this, R.string.need_listener_first, Toast.LENGTH_SHORT).show()
-            open(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+            pager.currentItem = 0
             return
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
