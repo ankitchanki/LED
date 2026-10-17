@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- outer glow -->
+    <path android:strokeColor="#3300E5FF" android:strokeWidth="9"
+        android:pathData="M54,54m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0" />
+    <!-- faint ring -->
+    <path android:strokeColor="#5500E5FF" android:strokeWidth="3.2"
+        android:pathData="M54,54m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0" />
+    <!-- bright comet arc -->
+    <path android:strokeColor="#00E5FF" android:strokeWidth="3.6" android:strokeLineCap="round"
+        android:pathData="M35,54 A19,19 0 0,1 54,35 A19,19 0 0,1 70.5,44.5" />
+    <path android:strokeColor="#FF3B9D" android:strokeWidth="3.6" android:strokeLineCap="round"
+        android:pathData="M73,54 A19,19 0 0,1 60.5,71.9" />
+    <!-- camera lens -->
+    <path android:fillColor="#1A1A1F"
+        android:pathData="M54,54m-11,0a11,11 0,1 1,22 0a11,11 0,1 1,-22 0" />
+    <path android:fillColor="#0A0A0C"
+        android:pathData="M54,54m-7,0a7,7 0,1 1,14 0a7,7 0,1 1,-14 0" />
+    <path android:fillColor="#5500E5FF"
+        android:pathData="M51.5,51.5m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+</vector>

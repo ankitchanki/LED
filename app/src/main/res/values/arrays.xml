@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>Pulse (ring + ripple)</item>
+        <item>Breathe</item>
+        <item>Blink (lowest power)</item>
+        <item>Heartbeat</item>
+        <item>Spinner</item>
+        <item>Rainbow</item>
+        <item>Static ring</item>
+        <item>Edge lighting</item>
+        <item>Edge pulse</item>
+    </string-array>
+    <string-array name="style_values">
+        <item>pulse</item>
+        <item>breathe</item>
+        <item>blink</item>
+        <item>heartbeat</item>
+        <item>spin</item>
+        <item>rainbow</item>
+        <item>static</item>
+        <item>edge</item>
+        <item>edge_pulse</item>
+    </string-array>
+
+    <string-array name="multi_names">
+        <item>Cycle colours</item>
+        <item>Split ring into segments</item>
+        <item>Newest only</item>
+    </string-array>
+    <string-array name="multi_values">
+        <item>cycle</item>
+        <item>segments</item>
+        <item>latest</item>
+    </string-array>
+
+    <string-array name="timeout_names">
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>5 minutes</item>
+        <item>15 minutes</item>
+        <item>1 hour</item>
+        <item>Until cleared</item>
+    </string-array>
+    <string-array name="timeout_values">
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>300</item>
+        <item>900</item>
+        <item>3600</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="pulse_names">
+        <item>Off</item>
+        <item>Every 2 minutes</item>
+        <item>Every 5 minutes</item>
+        <item>Every 10 minutes</item>
+        <item>Every 30 minutes</item>
+    </string-array>
+    <string-array name="pulse_values">
+        <item>0</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="fps_names">
+        <item>15 fps (saver)</item>
+        <item>24 fps</item>
+        <item>30 fps (recommended)</item>
+        <item>60 fps</item>
+        <item>Display rate (smoothest)</item>
+    </string-array>
+    <string-array name="fps_values">
+        <item>15</item>
+        <item>24</item>
+        <item>30</item>
+        <item>60</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="app_mode_names">
+        <item>All apps (turn off the ones you don\'t want)</item>
+        <item>Only apps I choose</item>
+    </string-array>
+    <string-array name="app_mode_values">
+        <item>all</item>
+        <item>selected</item>
+    </string-array>
+</resources>

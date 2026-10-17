@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Glow LED</string>
+    <string name="accessibility_label">Glow LED indicator</string>
+    <string name="accessibility_desc">Draws the notification light around your camera on the lock screen and turns the screen back off after the always-on light times out. Glow LED does not read screen content or observe your actions.</string>
+    <string name="channel_launcher">Always-on launcher</string>
+    <string name="channel_test">Test notifications</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_apps">Apps &amp; colours</string>
+
+    <string name="master_on">Glow LED is on</string>
+    <string name="master_off">Glow LED is off</string>
+    <string name="status_waiting">Waiting for notifications</string>
+    <string name="status_active">Lighting for %d notification(s)</string>
+    <string name="status_blocked">Paused: %s</string>
+    <string name="status_need_listener">Grant notification access to start</string>
+
+    <string name="setup_title">Setup</string>
+    <string name="perm_listener">Notification access</string>
+    <string name="perm_listener_desc">Required. Lets Glow LED know when a notification arrives. Nothing leaves your phone.</string>
+    <string name="perm_a11y">Accessibility overlay</string>
+    <string name="perm_a11y_desc">Recommended. Shows the light on the lock screen, wakes the always-on screen and turns it off again.</string>
+    <string name="perm_overlay">Display over other apps</string>
+    <string name="perm_overlay_desc">Alternative to accessibility. Works while unlocked; not over the lock screen on every phone.</string>
+    <string name="perm_post">Notifications</string>
+    <string name="perm_post_desc">Needed for the test notification and the fallback launcher.</string>
+    <string name="perm_battery">Unrestricted battery</string>
+    <string name="perm_battery_desc">Stops the system from killing Glow LED. The app itself uses almost no power in the background.</string>
+    <string name="perm_fsi">Full-screen alerts</string>
+    <string name="perm_fsi_desc">Fallback way to wake the always-on screen when accessibility is off.</string>
+    <string name="perm_oem">Autostart (%s)</string>
+    <string name="perm_oem_desc">Your phone brand has an extra app killer. Allow Glow LED to autostart and run in the background.</string>
+    <string name="grant">Grant</string>
+    <string name="granted">Done</string>
+    <string name="open">Open</string>
+    <string name="restricted_hint">Android 13+: if accessibility is greyed out, open App info → ⋮ → Allow restricted settings, then try again.</string>
+
+    <string name="action_preview">Preview</string>
+    <string name="action_test">Test notification</string>
+    <string name="action_cutout">Camera position</string>
+    <string name="action_apps">Apps &amp; colours</string>
+    <string name="action_settings">Settings</string>
+    <string name="test_title">Glow LED test</string>
+    <string name="test_text">Turn the screen off to see the light. Swipe this away to clear it.</string>
+    <string name="test_sent">Test sent. Turn the screen off now.</string>
+    <string name="need_listener_first">Grant notification access first</string>
+
+    <string name="cut_auto">Auto-detect</string>
+    <string name="cut_save">Save</string>
+    <string name="cut_reset">Reset</string>
+    <string name="cut_hint">Drag on the screen to move. Use the arrows for single-pixel steps.</string>
+    <string name="cut_none">This phone reports no camera cutout. Using a classic LED dot.</string>
+    <string name="cut_detected">Detected %s cutout</string>
+    <string name="cut_saved">Camera position saved</string>
+    <string name="cut_rotate">Hold the phone upright to detect the cutout</string>
+    <string name="shape_circle">Punch-hole</string>
+    <string name="shape_pill">Pill</string>
+    <string name="shape_notch">Notch</string>
+    <string name="shape_dot">LED dot</string>
+    <string name="label_x">Horizontal</string>
+    <string name="label_y">Vertical</string>
+    <string name="label_w">Width</string>
+    <string name="label_h">Height</string>
+    <string name="label_gap">Gap from camera</string>
+    <string name="label_thickness">Ring thickness</string>
+    <string name="label_animate">Animate</string>
+
+    <string name="apps_search">Search apps</string>
+    <string name="apps_auto">Auto</string>
+    <string name="apps_loading">Loading apps…</string>
+
+    <string name="color_title">Choose colour</string>
+    <string name="color_auto">Automatic</string>
+    <string name="color_hex">Hex (#RRGGBB)</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+</resources>
