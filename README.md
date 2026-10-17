@@ -33,6 +33,7 @@ are switched off, so only the light itself uses power.
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
 | **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Log) - no menus, almost no scrolling, controls in thumb reach. |
+| **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Quick Settings tile, preview, test notification, themed (monochrome) icon. |
 
@@ -41,6 +42,7 @@ are switched off, so only the light itself uses power.
 1. Download `GlowLED-vX.Y.Z.apk` from [Releases](../../releases/latest) and open it (allow "install unknown apps" for your browser or file manager).
 2. Open **Glow LED** and work through the **Setup** tab:
    - **Notification access** (required): lets the app know a notification arrived. Nothing leaves your phone.
+   - **Have [Shizuku](https://shizuku.rikka.app/download/) or root?** Tap *One-tap setup* at the top of the Setup tab and everything below is granted for you.
    - **Display over other apps**: lets the light appear while the screen is off. This alone is enough.
    - **Accessibility** (optional): makes the light unblockable on strict ROMs (HyperOS, ColorOS...) and switches the screen off instantly when the light times out. It reads no screen content.
    - **Unrestricted battery** and, on Xiaomi/OPPO/vivo/Huawei and similar, **Autostart**.

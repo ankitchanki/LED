@@ -27,6 +27,15 @@
     <string name="perm_oem">Autostart (%s)</string>
     <string name="perm_oem_desc">Your phone brand has an extra app killer. Allow Glow LED to autostart and run in the background.</string>
     <string name="restricted_hint">Android 13+: apps installed from an APK file get \"restricted settings\" for Notification access and Accessibility. This is an Android rule, not a bug. If a switch is greyed out: App info → ⋮ (top right) → Allow restricted settings, then try again.</string>
+    <string name="shell_shizuku">One-tap setup with Shizuku</string>
+    <string name="shell_root">One-tap setup with root</string>
+    <string name="shell_desc">Grants everything below automatically: no Settings hunting, no \"restricted settings\" step.</string>
+    <string name="shell_connected">%s connected</string>
+    <string name="shell_connected_desc">Screen turns off instantly even without Accessibility. Tap to run setup again.</string>
+    <string name="shell_get">Have Shizuku? Set up in one tap</string>
+    <string name="shell_get_desc">Optional. Install and start Shizuku (works without root), then come back here.</string>
+    <string name="shell_denied">Permission was not given</string>
+    <string name="shell_running">Setting up…</string>
     <string name="setup_intro">Grant these once. Without them the light can\'t appear.</string>
     <string name="screen_on_hint">Shows a small ring around the camera while you use the phone. Hidden in landscape (except edge lighting).</string>
 

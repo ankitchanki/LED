@@ -58,6 +58,8 @@ import com.glowled.app.service.NotifyListenerService
 import com.glowled.app.ui.SettingsUi.Range
 import com.glowled.app.ui.SettingsUi.Toggle
 import com.glowled.app.util.OemHelper
+import com.glowled.app.util.Privileged
+import rikka.shizuku.Shizuku
 import com.glowled.app.view.LedView
 import com.glowled.app.view.NestedScrollableHost
 import com.google.android.material.card.MaterialCardView
@@ -132,6 +134,8 @@ class MainActivity : AppCompatActivity() {
 
         buildPages()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
+        // Shizuku's binder arrives asynchronously; refresh the setup card when it does.
+        Shizuku.addBinderReceivedListenerSticky(shizukuListener)
         buildSetup()
         // First run / something missing: open on Setup so the user sees what to do.
         if (savedInstanceState == null && setupIncomplete) pager.setCurrentItem(0, false)
@@ -166,6 +170,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         prefs.sp.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        Shizuku.removeBinderReceivedListener(shizukuListener)
         super.onDestroy()
     }
 
@@ -254,6 +259,8 @@ class MainActivity : AppCompatActivity() {
             trackThickness = dp(6)
         }
         col.addView(setupBar, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(8), 0, dp(8), dp(10)) })
+        shellBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(shellBox)
         setupList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(setupList)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -530,6 +537,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildSetup() {
         if (!::setupList.isInitialized) return
+        buildShellCard()
         val a11y = LedAccessibilityService.instance != null || isA11yEnabled()
         val overlay = Settings.canDrawOverlays(this)
         val steps = mutableListOf<Step>()
@@ -603,6 +611,56 @@ class MainActivity : AppCompatActivity() {
                 row.setOnClickListener { s.action() }
             }
             setupList.addView(row)
+        }
+    }
+
+    // ---- Shizuku / root one-tap setup ---------------------------------------------------------
+
+    private lateinit var shellBox: LinearLayout
+    private val shizukuListener = Shizuku.OnBinderReceivedListener { runOnUiThread { buildShellCard() } }
+
+    private fun buildShellCard() {
+        if (!::shellBox.isInitialized) return
+        shellBox.removeAllViews()
+        val c = ui.card(shellBox)
+        when {
+            Privileged.backend() != Privileged.Backend.NONE -> ui.link(c, R.drawable.ic_check,
+                getString(R.string.shell_connected, Privileged.backend().name.lowercase().replaceFirstChar { it.uppercase() }),
+                getString(R.string.shell_connected_desc)) { runShellSetup() }
+            else -> {
+                if (Privileged.shizukuRunning()) {
+                    ui.link(c, R.drawable.ic_play, getString(R.string.shell_shizuku), getString(R.string.shell_desc)) {
+                        Privileged.requestShizuku { ok ->
+                            if (ok) runShellSetup()
+                            else Toast.makeText(this, R.string.shell_denied, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                if (Privileged.rootLikely()) {
+                    if (Privileged.shizukuRunning()) ui.divider(c)
+                    ui.link(c, R.drawable.ic_play, getString(R.string.shell_root), getString(R.string.shell_desc)) {
+                        Privileged.requestRoot { ok ->
+                            prefs.sp.edit().putBoolean(Privileged.PREF_ROOT_OK, ok).apply()
+                            if (ok) runShellSetup()
+                            else Toast.makeText(this, R.string.shell_denied, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                if (!Privileged.shizukuRunning() && !Privileged.rootLikely()) {
+                    ui.link(c, R.drawable.ic_apps, getString(R.string.shell_get), getString(R.string.shell_get_desc)) {
+                        open(Intent(Intent.ACTION_VIEW, Uri.parse("https://shizuku.rikka.app/download/")))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun runShellSetup() {
+        Toast.makeText(this, R.string.shell_running, Toast.LENGTH_SHORT).show()
+        Privileged.setup(this) { summary ->
+            Toast.makeText(this, summary, Toast.LENGTH_LONG).show()
+            buildSetup()
+            refreshLive()
         }
     }
 

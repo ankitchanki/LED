@@ -26,6 +26,7 @@ import com.glowled.app.service.NotifyListenerService
 import com.glowled.app.service.OverlayHost
 import com.glowled.app.service.PulseReceiver
 import com.glowled.app.ui.AodActivity
+import com.glowled.app.util.Privileged
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
@@ -76,6 +77,8 @@ object LedController {
         }
         ContextCompat.registerReceiver(app, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
+        // Root managers remember the grant, so re-use it after a restart without prompting.
+        if (prefs.sp.getBoolean(Privileged.PREF_ROOT_OK, false)) Privileged.markRootGranted()
     }
 
     // SharedPreferences keeps only a weak reference, so hold the listener in a field.
@@ -159,7 +162,8 @@ object LedController {
 
     fun isLocked(): Boolean = app.getSystemService(KeyguardManager::class.java).isKeyguardLocked
 
-    fun canTurnScreenOff(): Boolean = LedAccessibilityService.instance != null
+    fun canTurnScreenOff(): Boolean =
+        LedAccessibilityService.instance != null || Privileged.backend() != Privileged.Backend.NONE
 
     fun canLaunchFromBackground(): Boolean =
         LedAccessibilityService.instance != null || Settings.canDrawOverlays(app)
@@ -295,7 +299,9 @@ object LedController {
     }
 
     /** Locks/turns the screen off (needs the accessibility service). Returns false if unavailable. */
-    fun turnScreenOff(): Boolean = LedAccessibilityService.instance?.lockScreen() == true
+    /** Switches the panel off: accessibility lock action, else Shizuku/root power key. */
+    fun turnScreenOff(): Boolean =
+        LedAccessibilityService.instance?.lockScreen() == true || Privileged.screenOff()
 
     // ---- screen-on overlay ------------------------------------------------------------------------
 

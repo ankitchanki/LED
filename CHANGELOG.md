@@ -1,3 +1,20 @@
+# Glow LED v1.4.0
+
+**Install:** download `GlowLED-v1.4.0.apk` below, open it, then follow the in-app *Setup* tab.
+
+## Shizuku & root support (optional)
+- **One-tap setup** in the Setup tab: with Shizuku (no root needed) or root, Glow LED grants its own
+  permissions in one go - notification access, display over apps, notifications, battery
+  unrestricted, accessibility, Android 14+ turn-screen-on / full-screen alerts, and on Xiaomi the
+  lock-screen, background pop-up and autostart permissions. No Settings hunting and no
+  "restricted settings" step. Every grant is approved by you in Shizuku / your root manager and only
+  touches Glow LED itself.
+- **Instant screen-off without Accessibility**: when the light times out (or you double-tap), Shizuku/root
+  presses the power key for you.
+- Get Shizuku: https://shizuku.rikka.app/download/
+
+---
+
 # Glow LED v1.3.0
 
 **Install:** download `GlowLED-v1.3.0.apk` below, open it, then follow the in-app *Setup* tab.
