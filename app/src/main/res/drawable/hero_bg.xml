@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Soft glow behind the hero lens that fades into pure black (blends with the status bar). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:type="radial"
+        android:centerX="0.5"
+        android:centerY="0.42"
+        android:gradientRadius="62%p"
+        android:startColor="#2200E5FF"
+        android:centerColor="#0A00E5FF"
+        android:endColor="#00000000" />
+</shape>

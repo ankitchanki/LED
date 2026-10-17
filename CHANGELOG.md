@@ -1,8 +1,24 @@
+# Glow LED v1.1.0
+
+**Install:** download `GlowLED-v1.1.0.apk` below, open it, then follow the in-app *Setup* list.
+
+## New design
+- Completely redesigned, one-hand friendly UI: big collapsing header with a live preview, main actions in a bottom dock within thumb reach
+- Edge-to-edge: header and screens flow seamlessly under the status bar and navigation bar
+- Tap-to-pick animation carousel with live mini previews, one-tap colour row, toggle tiles for screen-off / screen-on light
+- Setup checklist with progress bar; finished steps tuck away
+- Settings and Apps screens get the same large header; app search moved to the bottom
+- Haptic feedback on taps
+
+## Fixes
+- Preview ring no longer slides into / gets cut off by the top bar while scrolling
+- Buttons no longer show a stray purple tint
+
+---
+
 # Glow LED v1.0.0
 
 First release. Works on Android 10 – 15+, any brand.
-
-**Install:** download `GlowLED-v1.0.0.apk` below, open it, then follow the in-app *Setup* list.
 
 ## Features
 - Notification light around the camera punch-hole, pill cutout, notch, or a classic LED dot

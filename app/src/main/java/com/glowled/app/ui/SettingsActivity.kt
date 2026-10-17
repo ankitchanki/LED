@@ -4,10 +4,7 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.glowled.app.BuildConfig
@@ -17,29 +14,27 @@ import java.util.Calendar
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        goEdgeToEdge()
         super.onCreate(savedInstanceState)
         LedController.init(this)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val container = FrameLayout(this).apply { id = R.id.settings_container }
-        setContentView(container)
-        ViewCompat.setOnApplyWindowInsetsListener(container) { v, insets ->
-            v.setPadding(0, 0, 0, insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom)
-            insets
-        }
+        setContentView(R.layout.activity_settings)
+        setupHeader(getString(R.string.title_settings))
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(R.id.settings_container, SettingsFragment()).commit()
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return true
-    }
 }
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private val prefs get() = LedController.prefs
+
+    override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        listView.clipToPadding = false
+        listView.padForNavBar { (24 * resources.displayMetrics.density).toInt() }
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)

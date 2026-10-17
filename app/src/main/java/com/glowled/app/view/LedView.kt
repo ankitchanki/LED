@@ -56,6 +56,13 @@ class LedView @JvmOverloads constructor(
     private var fpsCap = 30
     private var cornerRadius = 40 * density
 
+    /**
+     * When true (overlay / AOD) the geometry is in absolute screen pixels. When false (in-app
+     * previews) it is relative to this view, so scrolling or collapsing headers never shift it.
+     */
+    var useScreenCoords = true
+        set(v) { field = v; dirty = true; invalidate() }
+
     /** Pixel offset applied by burn-in protection. */
     var shiftX = 0f
     var shiftY = 0f
@@ -135,17 +142,22 @@ class LedView @JvmOverloads constructor(
 
     private fun rebuild() {
         dirty = false
-        getLocationOnScreen(loc)
+        if (useScreenCoords) getLocationOnScreen(loc) else { loc[0] = 0; loc[1] = 0 }
         val g = geometry ?: return
         cx = g.cx - loc[0]
         cy = g.cy - loc[1]
         shapePath.reset()
         if (style.isEdge) {
-            @Suppress("DEPRECATION")
-            display?.getRealSize(screen) ?: CutoutGeometry.display(context).getRealSize(screen)
-            val inset = thickness / 2f + 0.5f
+            if (useScreenCoords) {
+                @Suppress("DEPRECATION")
+                display?.getRealSize(screen) ?: CutoutGeometry.display(context).getRealSize(screen)
+            } else {
+                screen.set(width, height)
+            }
+            val inset = thickness / 2f + 0.5f + (if (useScreenCoords) 0f else glowRadius())
             rect.set(inset - loc[0], inset - loc[1], screen.x - inset - loc[0], screen.y - inset - loc[1])
-            val r = max(0f, cornerRadius - inset)
+            val maxR = if (useScreenCoords) cornerRadius else min(cornerRadius, min(width, height) / 4f)
+            val r = max(0f, maxR - inset)
             shapePath.addRoundRect(rect, r, r, Path.Direction.CW)
         } else {
             buildShape(shapePath, 0f)

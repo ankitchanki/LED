@@ -16,8 +16,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.glowled.app.R
@@ -40,17 +38,17 @@ class AppsActivity : AppCompatActivity() {
     private val adapter = Adapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        goEdgeToEdge()
         super.onCreate(savedInstanceState)
         LedController.init(this)
         setContentView(R.layout.activity_apps)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setupHeader(getString(R.string.title_apps))
         val list = findViewById<RecyclerView>(R.id.list)
         list.layoutManager = LinearLayoutManager(this)
         list.adapter = adapter
-        ViewCompat.setOnApplyWindowInsetsListener(list) { v, insets ->
-            v.setPadding(0, 0, 0, insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom)
-            insets
-        }
+        val dock = findViewById<View>(R.id.searchDock)
+        dock.dockAboveNavBar()
+        list.padForNavBar { dock.height }
         findViewById<EditText>(R.id.search).addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) = filter(s?.toString().orEmpty())
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) = Unit
@@ -95,11 +93,6 @@ class AppsActivity : AppCompatActivity() {
     override fun onDestroy() {
         io.shutdownNow()
         super.onDestroy()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return true
     }
 
     private inner class Holder(v: View) : RecyclerView.ViewHolder(v) {
