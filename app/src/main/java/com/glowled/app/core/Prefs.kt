@@ -2,11 +2,13 @@ package com.glowled.app.core
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 
 /** Typed access to all settings. Keys match res/xml/preferences.xml. */
 class Prefs(context: Context) {
-    val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
+    // Same file androidx.preference used, so settings survive the upgrade.
+    val sp: SharedPreferences = context.applicationContext.let {
+        it.getSharedPreferences("${it.packageName}_preferences", Context.MODE_PRIVATE)
+    }
 
     private fun int(key: String, def: Int) = sp.getInt(key, def)
     private fun bool(key: String, def: Boolean) = sp.getBoolean(key, def)

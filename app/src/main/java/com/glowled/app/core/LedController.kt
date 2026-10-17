@@ -20,6 +20,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.glowled.app.R
+import com.glowled.app.service.AodOverlay
 import com.glowled.app.service.LedAccessibilityService
 import com.glowled.app.service.NotifyListenerService
 import com.glowled.app.service.OverlayHost
@@ -101,7 +102,10 @@ object LedController {
     // ---- events -----------------------------------------------------------------------------------
 
     fun onNotificationsChanged(newPost: Boolean) = main.post {
-        if (newPost) suppressed = false
+        if (newPost) {
+            suppressed = false
+            DebugLog.add("Notification received")
+        }
         notifyListeners()
         if (NotificationStore.isEmpty()) {
             cancelPulse()
@@ -116,9 +120,15 @@ object LedController {
             when (i.action) {
                 Intent.ACTION_SCREEN_OFF -> {
                     OverlayHost.hide()
-                    if (!aodVisible && !suppressed && prefs.aodOnScreenOff) {
-                        // Give the system a moment to finish its own screen-off transition.
-                        main.postDelayed({ if (!isInteractive()) startAod(pulse = false) }, 700)
+                    when {
+                        aodVisible -> Unit
+                        !prefs.aodOnScreenOff -> DebugLog.add("Screen off (show-on-screen-off is disabled)")
+                        suppressed -> DebugLog.add("Screen off (already shown for these notifications)")
+                        else -> {
+                            DebugLog.add("Screen off: ${NotificationStore.colors().size} unread")
+                            // Give the system a moment to finish its own screen-off transition.
+                            main.postDelayed({ if (!isInteractive()) startAod(pulse = false) }, 800)
+                        }
                     }
                 }
                 Intent.ACTION_SCREEN_ON -> {
@@ -149,16 +159,35 @@ object LedController {
 
     fun isLocked(): Boolean = app.getSystemService(KeyguardManager::class.java).isKeyguardLocked
 
+    fun canTurnScreenOff(): Boolean = LedAccessibilityService.instance != null
+
     fun canLaunchFromBackground(): Boolean =
         LedAccessibilityService.instance != null || Settings.canDrawOverlays(app)
 
     fun startAod(pulse: Boolean, preview: Boolean = false) {
         if (!preview) {
-            if (!prefs.enabled || !prefs.aodEnabled || aodVisible) return
-            if (NotificationStore.isEmpty()) return
-            PowerGuard.blockReason(app, prefs)?.let { Log.d(TAG, "AOD blocked: $it"); return }
+            if (!prefs.enabled) return DebugLog.add("Skipped: Glow LED is off")
+            if (!prefs.aodEnabled) return DebugLog.add("Skipped: screen-off light is off")
+            if (aodVisible || AodOverlay.isShowing) return
+            if (NotificationStore.isEmpty()) return DebugLog.add("Skipped: no notifications to show")
+            PowerGuard.blockReason(app, prefs)?.let { return DebugLog.add("Skipped: $it") }
         }
         val duration = if (pulse) prefs.pulseDurationSec else prefs.aodTimeoutSec
+
+        // Preferred path: accessibility overlay. Not an activity start, so ROMs that block
+        // background activities (HyperOS/MIUI, ColorOS, OriginOS...) can't stop it.
+        if (LedAccessibilityService.instance != null) {
+            ourWakeUntil = SystemClock.uptimeMillis() + LAUNCH_WINDOW_MS
+            if (AodOverlay.show(duration, preview)) {
+                if (!preview) wakeBriefly()
+                DebugLog.add("Light started (overlay)")
+                return
+            }
+        }
+        DebugLog.add(
+            if (canLaunchFromBackground()) "Light starting (activity)"
+            else "Light starting (full-screen alert) - enable Accessibility for reliability",
+        )
         val intent = Intent(app, AodActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION or
@@ -195,6 +224,7 @@ object LedController {
                 "GlowLED:wake",
             )
             wl.acquire(1500)
+            main.postDelayed({ if (!isInteractive()) DebugLog.add("Screen did not turn on - check 'Turn screen on' / lock-screen permissions") }, 1200)
         } catch (e: Exception) {
             Log.w(TAG, "wake lock failed", e)
         }

@@ -32,6 +32,8 @@ are switched off, so only the light itself uses power.
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
+| **One screen** | Every setting sits on the home page (no menus to dig through), with one-hand-friendly controls at the bottom. |
+| **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Quick Settings tile, preview, test notification, themed (monochrome) icon. |
 
 ## Install
@@ -57,9 +59,11 @@ NotificationListenerService ──► NotificationStore ──► LedController
                                                              └── screen OFF → AodActivity → LedView (black, min brightness, low Hz)
 ```
 
-* **Turning the screen on and off:** `AodActivity` uses `showWhenLocked` and `turnScreenOn`. It is launched
-  through the accessibility service or overlay permission (Android 10+ blocks background activity starts
-  otherwise), with a full-screen-intent fallback. When the light times out, the accessibility service locks
+* **Turning the screen on and off:** with Accessibility enabled, the always-on screen is a full-screen
+  accessibility overlay (`AodOverlay`) and the panel is woken with a short wake lock. That isn't an
+  activity start, so ROMs that block background activities (HyperOS/MIUI, ColorOS, OriginOS) can't stop it.
+  Without Accessibility, `AodActivity` (`showWhenLocked` + `turnScreenOn`) is launched through the overlay
+  permission, with a full-screen-intent fallback. When the light times out, the accessibility service locks
   the screen (`GLOBAL_ACTION_LOCK_SCREEN`) so the panel switches off straight away.
 * **Rendering:** `LedView` builds one `Path` for the cutout shape and animates with `PathMeasure` segments.
   It allocates nothing per frame and schedules frames only as often as needed: never for static styles,
@@ -113,6 +117,7 @@ Without these secrets, CI signs the APK with a throwaway debug key. Such APKs ca
 
 | Problem | Fix |
 |---|---|
+| Test does nothing when the screen turns off (Xiaomi/HyperOS) | Enable the **Accessibility overlay**, then the **Xiaomi lock-screen permissions** step. Check the *Diagnostics* card on the home screen: it says why the light was skipped. |
 | Light stops after a while | Set battery to *Unrestricted* and allow *Autostart* (Setup list). On Xiaomi also lock the app in Recents. |
 | Screen doesn't turn on when a notification arrives | Enable the accessibility overlay. On Xiaomi, also allow *Show on lock screen* and *Display pop-up windows while running in background* (the Autostart button opens that page). |
 | Ring is slightly off-centre | *Camera position*, then nudge with the arrows. Some phones report a cutout box larger than the hole. |

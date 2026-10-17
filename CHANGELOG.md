@@ -1,6 +1,21 @@
-# Glow LED v1.1.0
+# Glow LED v1.2.0
 
-**Install:** download `GlowLED-v1.1.0.apk` below, open it, then follow the in-app *Setup* list.
+**Install:** download `GlowLED-v1.2.0.apk` below, open it, then follow the in-app *Setup* list.
+
+## Fixes
+- **Screen-off light now works on HyperOS / MIUI** (and other ROMs that block background screens such as ColorOS, OriginOS, Funtouch): with Accessibility on, the light is drawn in an accessibility overlay instead of opening an activity, so the ROM can't block it
+- New Setup step for Xiaomi: detects and opens "Show on lock screen" + "Display pop-up windows while running in background"
+- Declares the Android 14+ "turn screen on" permission so the wake-up isn't ignored
+
+## UI
+- No separate Settings screen any more: every setting is on the home page in clear sections (Look, Screen off, Screen on, Notifications, Battery) with switches, sliders and chips
+- Settings that don't apply are dimmed automatically
+- New Diagnostics card: shows what the app did (notification received, screen off, light started/skipped and why) with a one-tap "Copy event log" for bug reports
+- Smaller APK (removed the preference library)
+
+---
+
+# Glow LED v1.1.0
 
 ## New design
 - Completely redesigned, one-hand friendly UI: big collapsing header with a live preview, main actions in a bottom dock within thumb reach

@@ -15,6 +15,7 @@ class LedAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         instance = this
         LedController.init(this)
+        com.glowled.app.core.DebugLog.add("Accessibility service connected")
         OverlayHost.hide() // re-create on the trusted window type
         LedController.updateOverlay()
     }
@@ -35,6 +36,7 @@ class LedAccessibilityService : AccessibilityService() {
 
     private fun release() {
         if (instance === this) {
+            AodOverlay.forceRemove()
             OverlayHost.hide()
             instance = null
             LedController.updateOverlay()

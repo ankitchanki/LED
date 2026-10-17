@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.glowled.app.R
 import com.glowled.app.core.CutoutShape
+import com.glowled.app.core.DebugLog
 import com.glowled.app.core.Geometry
 import com.glowled.app.core.LedController
 import com.glowled.app.core.LedStyle
@@ -98,12 +99,13 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btnPreview).setOnClickListener { LedController.startAod(pulse = false, preview = true) }
         findViewById<View>(R.id.btnTest).setOnClickListener { sendTest() }
-        findViewById<View>(R.id.settingsRow).setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         findViewById<View>(R.id.restrictedHint).visibility =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) View.VISIBLE else View.GONE
 
         setupStyles()
         setupSwatches()
+        buildSections()
+        prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
         hero.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> configureHero() }
     }
 
@@ -134,6 +136,18 @@ class MainActivity : AppCompatActivity() {
         LedController.removeListener(storeListener)
     }
 
+    override fun onDestroy() {
+        prefs.sp.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        super.onDestroy()
+    }
+
+    // Live preview: any setting change re-renders the hero and carousel immediately.
+    private val prefsListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "style") styleAdapter.notifyItemRangeChanged(0, styleAdapter.itemCount)
+        configureHero()
+        if (key == "style") settingsUi.refresh()
+    }
+
     private fun previewColors(): IntArray =
         intArrayOf(prefs.defaultColor, 0xFF25D366.toInt(), 0xFFFF4081.toInt())
 
@@ -162,9 +176,10 @@ class MainActivity : AppCompatActivity() {
         }
         hero.animate().alpha(if (on) 1f else 0.25f).setDuration(200).start()
         configureHero()
-        bindTiles()
         styleAdapter.notifyItemRangeChanged(0, styleAdapter.itemCount)
         updateSwatchSelection()
+        settingsUi.refresh()
+        diagText?.text = DebugLog.text()
     }
 
     // ---- animation carousel ------------------------------------------------------------------
@@ -287,43 +302,123 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ---- quick tiles -------------------------------------------------------------------------
+    // ---- inline settings ----------------------------------------------------------------------
 
-    private fun bindTiles() {
-        tile(R.id.tileCutout, R.drawable.ic_camera_ring, getString(R.string.action_cutout), getString(R.string.tile_cutout_sub), null) {
+    private lateinit var settingsUi: SettingsUi
+    private var diagText: TextView? = null
+    private var quietSub: TextView? = null
+
+    private fun buildSections() {
+        val root = findViewById<LinearLayout>(R.id.sections)
+        val ui = SettingsUi(this, prefs.sp)
+        settingsUi = ui
+        val aodOn = { prefs.aodEnabled }
+
+        // Look -----------------------------------------------------------------------------------
+        var c = ui.section(root, getString(R.string.section_look))
+        ui.link(c, R.drawable.ic_camera_ring, getString(R.string.action_cutout), getString(R.string.tile_cutout_sub)) {
             startActivity(Intent(this, CutoutActivity::class.java))
         }
-        tile(R.id.tileApps, R.drawable.ic_apps, getString(R.string.action_apps), getString(R.string.tile_apps_sub), null) {
+        ui.divider(c)
+        ui.chips(c, "Several notifications", "multi_mode",
+            listOf("Cycle colours", "Split ring", "Newest only"), listOf("cycle", "segments", "latest"), "cycle")
+        ui.slider(c, "Animation speed", "speed", 1, 10, 5, "")
+        ui.slider(c, "Ring thickness", "thickness", 1, 16, 3, " dp")
+        ui.slider(c, "Gap from camera", "gap", 0, 20, 2, " dp")
+        ui.slider(c, "Light intensity", "led_alpha", 10, 100, 100, "%")
+        ui.slider(c, "Edge lighting corners", "edge_radius", 0, 120, 40, " dp", dependsOn = { prefs.style.isEdge })
+        ui.switch(c, "Soft glow", "Turn off for maximum battery", "glow", true)
+        ui.switch(c, "Use the app's notification colour", null, "use_notif_color", true)
+        ui.switch(c, "Use the app icon's colour", "When the notification has no colour", "use_icon_color", true)
+
+        // Screen off -----------------------------------------------------------------------------
+        c = ui.section(root, getString(R.string.section_screen_off))
+        ui.switch(c, "Light while the screen is off", "Black screen; only the light's pixels use power", "aod_enabled", true)
+        ui.switch(c, "When I turn the screen off", "If unread notifications are waiting", "aod_on_screen_off", true, aodOn)
+        ui.switch(c, "When a new notification arrives", null, "aod_on_new", true, aodOn)
+        ui.chips(c, "Keep the light on for", "aod_timeout",
+            listOf("30 s", "1 min", "2 min", "5 min", "15 min", "1 hour", "Until cleared"),
+            listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
+        ui.chips(c, "Remind me afterwards", "pulse_interval",
+            listOf("Off", "Every 2 min", "5 min", "10 min", "30 min"), listOf("0", "2", "5", "10", "30"), "0", aodOn)
+        ui.slider(c, "Reminder length", "pulse_duration", 3, 60, 10, " s", dependsOn = { prefs.aodEnabled && prefs.pulseIntervalMin > 0 })
+        ui.slider(c, "Screen brightness", "aod_brightness", 1, 100, 3, "%", dependsOn = aodOn)
+        ui.switch(c, "Pocket detection", "Hide when covered, stop after 10 s", "proximity", true, aodOn)
+        ui.switch(c, "Tap to show the lock screen", null, "tap_dismiss", true, aodOn)
+        ui.switch(c, "Double-tap to turn the screen off", null, "double_tap_off", true, aodOn)
+        ui.switch(c, "Burn-in protection", "Shifts the light a few pixels every minute", "burn_in", true, aodOn)
+
+        // Screen on ------------------------------------------------------------------------------
+        c = ui.section(root, getString(R.string.section_screen_on))
+        ui.switch(c, "Light while using the phone", "Small ring around the camera", "overlay_enabled", true)
+        ui.switch(c, "Only on the lock screen", null, "overlay_lock_only", false) { prefs.overlayEnabled }
+
+        // Notifications --------------------------------------------------------------------------
+        c = ui.section(root, getString(R.string.section_notifications))
+        ui.link(c, R.drawable.ic_apps, getString(R.string.action_apps), "Turn apps on/off, pick colours") {
             startActivity(Intent(this, AppsActivity::class.java))
         }
-        tile(R.id.tileAod, R.drawable.ic_moon, getString(R.string.tile_aod), onOff(prefs.aodEnabled), prefs.aodEnabled) {
-            prefs.sp.edit().putBoolean("aod_enabled", !prefs.aodEnabled).apply()
-            bindTiles()
+        ui.divider(c)
+        ui.chips(c, "Which apps", "app_mode", listOf("All apps", "Only apps I choose"), listOf("all", "selected"), "all")
+        ui.switch(c, "Ignore silent notifications", null, "ignore_low", true)
+        ui.switch(c, "Respect Do Not Disturb", null, "respect_dnd", true)
+        ui.switch(c, "Clear the light after I unlock", "Off: stays until the notification is dismissed", "clear_on_unlock", false)
+
+        // Battery --------------------------------------------------------------------------------
+        c = ui.section(root, getString(R.string.section_battery))
+        ui.chips(c, "Animation frame rate", "fps_cap",
+            listOf("15 fps", "24 fps", "30 fps", "60 fps", "Max"), listOf("15", "24", "30", "60", "0"), "30")
+        ui.switch(c, "Lowest refresh rate while off", "Big saving on 90/120 Hz screens", "low_refresh", true)
+        ui.slider(c, "Pause below battery", "min_battery", 0, 50, 10, "%")
+        ui.switch(c, "Quiet hours", "No always-on light at night", "quiet_enabled", false)
+        quietSub = ui.link(c, R.drawable.ic_moon, "Quiet hours time", quietText()) { pickQuietHours() }
+
+        // Diagnostics ----------------------------------------------------------------------------
+        c = ui.section(root, getString(R.string.section_diag))
+        diagText = TextView(this).apply {
+            typeface = android.graphics.Typeface.MONOSPACE
+            textSize = 11f
+            setTextColor(getColor(R.color.text_secondary))
+            setPadding((20 * density).toInt(), (12 * density).toInt(), (20 * density).toInt(), (4 * density).toInt())
+            maxLines = 14
+            text = DebugLog.text()
         }
-        tile(R.id.tileOverlay, R.drawable.ic_phone_on, getString(R.string.tile_overlay), onOff(prefs.overlayEnabled), prefs.overlayEnabled) {
-            prefs.sp.edit().putBoolean("overlay_enabled", !prefs.overlayEnabled).apply()
-            bindTiles()
+        c.addView(diagText)
+        ui.link(c, R.drawable.ic_bell, "Copy event log", "Send this to the developer if something fails") {
+            val cm = getSystemService(android.content.ClipboardManager::class.java)
+            cm.setPrimaryClip(android.content.ClipData.newPlainText("Glow LED log", deviceInfo() + "\n\n" + DebugLog.text()))
+            Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
         }
+
+        root.addView(TextView(this).apply {
+            text = "Glow LED ${com.glowled.app.BuildConfig.VERSION_NAME} · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"
+            setTextColor(getColor(R.color.text_secondary))
+            textSize = 12f
+            gravity = android.view.Gravity.CENTER
+            setPadding(0, (24 * density).toInt(), 0, (8 * density).toInt())
+        })
+        ui.refresh()
     }
 
-    private fun onOff(b: Boolean) = getString(if (b) R.string.on else R.string.off)
+    private fun deviceInfo() =
+        "Glow LED ${com.glowled.app.BuildConfig.VERSION_NAME}, ${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT}), " +
+            "a11y=${LedAccessibilityService.instance != null}, overlay=${Settings.canDrawOverlays(this)}, " +
+            "listener=${NotifyListenerService.isEnabled(this)}, miuiLock=${OemHelper.miuiLockScreenAllowed(this)}"
 
-    /** [active] null = navigation tile; true/false = toggle tile with highlighted state. */
-    private fun tile(id: Int, icon: Int, title: String, sub: String, active: Boolean?, onClick: () -> Unit) {
-        val card = findViewById<MaterialCardView>(id)
-        card.findViewById<ImageView>(R.id.tileIcon).setImageResource(icon)
-        card.findViewById<TextView>(R.id.tileTitle).text = title
-        card.findViewById<TextView>(R.id.tileSub).text = sub
-        val on = active == true
-        card.setCardBackgroundColor(getColor(if (on) R.color.accent_dim else R.color.surface))
-        card.findViewById<View>(R.id.tileIconBg).backgroundTintList =
-            ColorStateList.valueOf(getColor(if (on) R.color.accent else R.color.surface_high))
-        card.findViewById<ImageView>(R.id.tileIcon).imageTintList =
-            ColorStateList.valueOf(getColor(if (on) R.color.black else R.color.accent))
-        card.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
-            onClick()
-        }
+    private fun quietText(): String {
+        fun f(m: Int) = String.format("%02d:%02d", m / 60, m % 60)
+        return "${f(prefs.quietStart)} – ${f(prefs.quietEnd)}"
+    }
+
+    private fun pickQuietHours() {
+        val is24 = android.text.format.DateFormat.is24HourFormat(this)
+        android.app.TimePickerDialog(this, { _, h, m ->
+            prefs.sp.edit().putInt("quiet_start", h * 60 + m).apply()
+            android.app.TimePickerDialog(this, { _, h2, m2 ->
+                prefs.sp.edit().putInt("quiet_end", h2 * 60 + m2).apply()
+                quietSub?.text = quietText()
+            }, prefs.quietEnd / 60, prefs.quietEnd % 60, is24).apply { setTitle("Quiet hours end") }.show()
+        }, prefs.quietStart / 60, prefs.quietStart % 60, is24).apply { setTitle("Quiet hours start") }.show()
     }
 
     // ---- setup checklist ---------------------------------------------------------------------
@@ -367,6 +462,12 @@ class MainActivity : AppCompatActivity() {
         val pm = getSystemService(PowerManager::class.java)
         steps += Step(getString(R.string.perm_battery), getString(R.string.perm_battery_desc),
             pm.isIgnoringBatteryOptimizations(packageName), false) { requestBatteryExemption() }
+        if (OemHelper.isXiaomi) {
+            val ok = OemHelper.miuiLockScreenAllowed(this)
+            steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_desc), ok == true, false, isLink = ok == null) {
+                OemHelper.openMiuiPermissions(this)
+            }
+        }
         OemHelper.brand?.let { b ->
             steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_desc), false, false, isLink = true) {
                 OemHelper.openAutostart(this)

@@ -19,11 +19,13 @@ class NotifyListenerService : NotificationListenerService() {
         super.onListenerConnected()
         instance = this
         LedController.init(this)
+        com.glowled.app.core.DebugLog.add("Notification access connected")
         rebuild()
     }
 
     override fun onListenerDisconnected() {
         if (instance === this) instance = null
+        com.glowled.app.core.DebugLog.add("Notification access disconnected - rebinding")
         NotificationStore.clear()
         LedController.onNotificationsChanged(false)
         // Ask the system to bind us again (OEM task killers often drop the binding).
