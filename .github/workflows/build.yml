@@ -47,6 +47,7 @@ jobs:
         run: |
           ./gradlew --no-daemon assembleRelease
           VERSION=$(grep -m1 'versionName' app/build.gradle.kts | sed -E 's/.*"(.*)".*/\1/')
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           mkdir -p dist
           cp app/build/outputs/apk/release/app-release.apk "dist/GlowLED-v${VERSION}.apk"
           (cd dist && sha256sum *.apk > SHA256SUMS.txt)
@@ -56,10 +57,16 @@ jobs:
           name: GlowLED-apk
           path: dist/*
 
+      # Publishes v<versionName> automatically when main is pushed (or the workflow is run by hand).
+      # Re-running replaces the APK, e.g. after adding the signing secrets.
       - name: Publish GitHub release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ env.VERSION }}
+          name: Glow LED v${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
           files: dist/*
           body_path: CHANGELOG.md
+          make_latest: true
           fail_on_unmatched_files: true

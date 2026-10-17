@@ -104,8 +104,10 @@ Without these secrets, CI signs the APK with a throwaway debug key. Such APKs ca
 ### Making a release
 
 1. Bump `versionCode` / `versionName` in `app/build.gradle.kts` and update `CHANGELOG.md`.
-2. `git tag v1.0.1 && git push origin v1.0.1`.
-3. The **Build & Release** workflow tests, builds, signs and publishes the APK with a SHA-256 checksum.
+2. Push to `main`. The **Build & Release** workflow tests, builds and signs the app, then creates the
+   `v<versionName>` tag and GitHub Release with the APK and a SHA-256 checksum.
+3. To rebuild an existing release (e.g. after adding the signing secrets), run the workflow from the
+   *Actions* tab → *Build & Release* → *Run workflow*. The APK on the release is replaced.
 
 ## Troubleshooting
 
