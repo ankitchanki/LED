@@ -10,7 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><b>⬇ Download the latest APK</b></a>
+  <a href="releases/GlowLED-latest.apk?raw=1"><b>⬇ Download the latest APK</b></a>
+  &nbsp;·&nbsp; ✅ signed build &nbsp;·&nbsp; <a href="releases/">all downloads &amp; install help</a>
 </p>
 
 ---
@@ -27,20 +28,34 @@ are switched off, so only the light itself uses power.
 | **Cutout aware** | Detects the camera punch-hole, pill or notch automatically (exact shape on Android 12+). Fine-tune by dragging, with sliders, or in 1 px steps. Keeps its position when the screen resolution changes (Samsung FHD+/QHD+). |
 | **9 animations** | Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static ring, Edge lighting, Edge pulse. Adjustable speed, thickness, gap, intensity and glow. |
 | **Colours** | Per-app colour you pick, or the app's own notification colour, or a colour taken from its icon. Several notifications can take turns, split the ring into colour segments, or show only the newest. |
-| **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate. Timeout, optional reminder pulses, pocket detection, burn-in protection. Tap to show the lock screen, double-tap to turn the screen off. |
+| **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate, flicker-free. Timeout, optional reminder pulses, pocket detection, burn-in protection. Double-tap to wake, tap to show the app. |
 | **App under the camera** | One UI-style strip of app icons (in each app's LED colour) with the app name and count, dropping in under the ring with a smooth motion. Double-tap to wake. |
 | **Screen on** | A small light around the camera, also over the lock screen. |
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
-| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Log) - no menus, almost no scrolling, controls in thumb reach. |
+| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, More) - no menus, almost no scrolling, controls in thumb reach. |
+| **Easy updates** | Signed builds that install over each other, settings backup/restore to a file, a signature check and a "Check for updates" link in the More tab. |
 | **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Quick Settings tile, preview, test notification, themed (monochrome) icon. |
 
 ## Install
 
-1. Download `GlowLED-vX.Y.Z.apk` from [Releases](../../releases/latest) and open it (allow "install unknown apps" for your browser or file manager).
+> ✅ **Signed build.** Every APK in [`releases/`](releases/) is signed with the official Glow LED key
+> (SHA-256 `5D:04:DE:1A…0C:50:23`), so each new version installs **over** the previous one and keeps
+> your settings.
+>
+> **"App not installed" / "Invalid package" when updating?** Your phone has an older build signed
+> with a different key (the early v1.0.0–v1.2.0 GitHub releases). This is a one-time fix:
+> 1. *(Optional)* Glow LED → **More** → **Back up settings**.
+> 2. Uninstall the old app: long-press **Glow LED** → **App info** → **Uninstall**.
+> 3. Install [`GlowLED-latest.apk`](releases/GlowLED-latest.apk?raw=1) again.
+> 4. *(Optional)* Glow LED → **More** → **Restore settings**.
+>
+> After that, updates install normally. The **More** tab shows *Official signed build* when you have the right one.
+
+1. Download [`GlowLED-latest.apk`](releases/GlowLED-latest.apk?raw=1) and open it (allow "install unknown apps" for your browser or file manager).
 2. Open **Glow LED** and work through the **Setup** tab:
    - **Notification access** (required): lets the app know a notification arrived. Nothing leaves your phone.
    - **Have [Shizuku](https://shizuku.rikka.app/download/) or root?** Tap *One-tap setup* at the top of the Setup tab and everything below is granted for you.

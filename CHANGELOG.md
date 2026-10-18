@@ -1,3 +1,18 @@
+# Glow LED v1.5.1
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later. If you see "App not installed" / "Invalid package", your phone has an early build with a
+different key: back up settings (More tab), uninstall once, reinstall, restore. Updates install
+normally after that.
+
+## Easy updates
+- Signed APKs now live in the repo's `releases/` folder (`GlowLED-latest.apk` is always the newest).
+- **More** tab (was Log): shows whether you have the official signed build, **Check for updates**,
+  **Back up settings** and **Restore settings** (all settings, per-app colours and the camera
+  position, saved to a file you choose - no storage permission needed).
+
+---
+
 # Glow LED v1.5.0
 
 **Install:** download `GlowLED-v1.5.0.apk` below, open it, then follow the in-app *Setup* tab.

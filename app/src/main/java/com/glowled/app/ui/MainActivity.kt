@@ -57,7 +57,10 @@ import com.glowled.app.service.LedAccessibilityService
 import com.glowled.app.service.NotifyListenerService
 import com.glowled.app.ui.SettingsUi.Range
 import com.glowled.app.ui.SettingsUi.Toggle
+import androidx.activity.result.contract.ActivityResultContracts
+import com.glowled.app.util.AppSignature
 import com.glowled.app.util.OemHelper
+import com.glowled.app.util.SettingsBackup
 import com.glowled.app.util.Privileged
 import rikka.shizuku.Shizuku
 import com.glowled.app.view.LedView
@@ -388,8 +391,47 @@ class MainActivity : AppCompatActivity() {
         return page
     }
 
+    // Settings backup/restore through the system file picker (no storage permission needed).
+    private val backupLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        if (uri == null) return@registerForActivityResult
+        val ok = SettingsBackup.write(this, prefs.sp, uri)
+        Toast.makeText(this, if (ok) R.string.backup_done else R.string.backup_failed, Toast.LENGTH_SHORT).show()
+    }
+    private val restoreLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        val n = SettingsBackup.read(this, prefs.sp, uri)
+        if (n < 0) {
+            Toast.makeText(this, R.string.restore_failed, Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, getString(R.string.restore_done, n), Toast.LENGTH_SHORT).show()
+            recreate() // rebuild every control from the restored values
+        }
+    }
+
     private fun pageLog(): View {
         val (page, col) = ui.page()
+
+        // Install / update: whether this is the signed release (updates install over it).
+        val official = AppSignature.isOfficial(this)
+        val u = ui.card(col)
+        ui.link(u, if (official) R.drawable.ic_check else R.drawable.ic_bell,
+            getString(if (official) R.string.sig_official else R.string.sig_other),
+            getString(R.string.sig_desc, BuildConfig.VERSION_NAME, AppSignature.short(AppSignature.sha256(this)))) {
+            open(Intent(Intent.ACTION_VIEW, Uri.parse(DOWNLOAD_URL)))
+        }
+        ui.divider(u)
+        ui.link(u, R.drawable.ic_play, getString(R.string.check_updates), getString(R.string.check_updates_desc)) {
+            open(Intent(Intent.ACTION_VIEW, Uri.parse(DOWNLOAD_URL)))
+        }
+        ui.divider(u)
+        ui.link(u, R.drawable.ic_apps, getString(R.string.backup), getString(R.string.backup_desc)) {
+            backupLauncher.launch("glowled-settings.json")
+        }
+        ui.divider(u)
+        ui.link(u, R.drawable.ic_add, getString(R.string.restore), getString(R.string.restore_desc)) {
+            restoreLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
+        }
+
         val c = ui.card(col)
         ui.link(c, R.drawable.ic_bell, "Copy event log", "Send this to the developer if something fails") {
             getSystemService(ClipboardManager::class.java)
@@ -723,5 +765,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TEST_CHANNEL = "test"
+        private const val DOWNLOAD_URL = "https://github.com/ankitchanki/LED/tree/main/releases"
     }
 }
