@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/overview.png" alt="Glow LED screenshots: always-on light, styles, screen-off options, setup" />
+  <img src="docs/screenshots/v1.6/overview.png" alt="Glow LED screenshots: always-on light, styles, screen-off options, setup" />
 </p>
 
 ---
@@ -48,7 +48,7 @@ are switched off, so only the light itself uses power.
 
 | Always-on light | Styles & colours | Screen-off options | One-tap setup |
 |:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/1-always-on.png" width="200" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/2-style.png" width="200" alt="Style tab with animation cards, colour row and sliders" /> | <img src="docs/screenshots/3-screen-off.png" width="200" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/4-setup.png" width="200" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
+| <img src="docs/screenshots/v1.6/1-always-on.png" width="200" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.6/2-style.png" width="200" alt="Style tab with animation cards, colour row and sliders" /> | <img src="docs/screenshots/v1.6/3-screen-off.png" width="200" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.6/4-setup.png" width="200" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
 | Ring around the camera, app icons drop in below it. Everything else stays black, so AMOLED pixels stay off. | Tap an animation (live previews), pick a colour, tune speed, size and gap. | Every option on one screen: when to show, how long, pocket detection, double-tap to wake. | Shizuku/root grants everything in one tap, or follow the checklist. |
 
 ## How it works (for users)

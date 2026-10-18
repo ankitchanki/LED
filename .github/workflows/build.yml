@@ -52,6 +52,32 @@ jobs:
           cp app/build/outputs/apk/release/app-release.apk "dist/GlowLED-v${VERSION}.apk"
           (cd dist && sha256sum *.apk > SHA256SUMS.txt)
 
+      # Without signing secrets, publish the signed APK already committed in releases/ instead -
+      # but only after checking it carries the official Glow LED signing certificate.
+      - name: Use committed signed APK
+        if: env.SIGNED != 'release'
+        run: |
+          APK="releases/GlowLED-v${VERSION}.apk"
+          if [ ! -f "$APK" ]; then
+            echo "::warning::No $APK committed and no signing secrets - skipping the release."
+            exit 0
+          fi
+          OFFICIAL="5d04de1a96a80107ec87658382b063f15c53cfea8043f554a339f285fe0c5023"
+          APKSIGNER="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner"
+          CERT=$("$APKSIGNER" verify --print-certs "$APK" | grep -m1 'certificate SHA-256 digest' | awk '{print $NF}')
+          if [ "$CERT" != "$OFFICIAL" ]; then
+            echo "::error::$APK is not signed with the official key ($CERT) - not publishing."
+            exit 1
+          fi
+          rm -f dist/*.apk
+          cp "$APK" "dist/GlowLED-v${VERSION}.apk"
+          (cd dist && sha256sum *.apk > SHA256SUMS.txt)
+          echo "SIGNED=release" >> "$GITHUB_ENV"
+
+      # Release notes = only the newest section of CHANGELOG.md.
+      - name: Release notes
+        run: awk '/^---$/{exit} {print}' CHANGELOG.md > release-notes.md
+
       - uses: actions/upload-artifact@v4
         with:
           name: GlowLED-apk
@@ -68,6 +94,6 @@ jobs:
           name: Glow LED v${{ env.VERSION }}
           target_commitish: ${{ github.sha }}
           files: dist/*
-          body_path: CHANGELOG.md
+          body_path: release-notes.md
           make_latest: true
           fail_on_unmatched_files: true
