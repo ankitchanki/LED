@@ -1,3 +1,23 @@
+# Glow LED v1.6.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Live preview on your real camera
+- Open the app and the ring grows out of **your phone's actual camera hole** (auto-detected, or your
+  saved Camera position) instead of a picture of a lens in the middle of the screen.
+- Change the animation, colour or "several notifications" mode and the ring on the camera replays its
+  entrance; sliders (speed, thickness, gap, intensity) update it live while you drag.
+- Phones without a camera hole get the classic LED dot at the top.
+- While the app is open, the screen-on ring is hidden so you never see two rings.
+- The old preview box is gone, so the settings tabs get more room.
+
+## Performance
+- The ring no longer uses an offscreen GPU layer: about 10 MB less memory and one less composition
+  pass per frame, on the always-on screen too.
+
+---
+
 # Glow LED v1.5.1
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

@@ -41,6 +41,7 @@
 
     <string name="action_preview">Preview</string>
     <string name="action_test_short">Test</string>
+    <string name="preview_on_camera">Live preview on your camera ↑</string>
     <string name="tab_setup">Setup</string>
     <string name="tab_style">Style</string>
     <string name="tab_off">Screen off</string>

@@ -15,6 +15,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -25,6 +26,7 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
@@ -45,6 +47,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.glowled.app.BuildConfig
 import com.glowled.app.R
+import com.glowled.app.core.CutoutGeometry
 import com.glowled.app.core.CutoutShape
 import com.glowled.app.core.DebugLog
 import com.glowled.app.core.Geometry
@@ -79,8 +82,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var master: MaterialSwitch
     private lateinit var status: TextView
-    private lateinit var hero: LedView
-    private lateinit var heroLens: View
+    /** Full-screen, touch-through layer that draws the ring on the phone's real camera cutout. */
+    private lateinit var cameraLed: LedView
+    private var introAnim: ValueAnimator? = null
     private lateinit var pager: ViewPager2
     private lateinit var tabs: TabLayout
     private lateinit var ui: SettingsUi
@@ -103,7 +107,9 @@ class MainActivity : AppCompatActivity() {
         if (key == "style") styleAdapter.notifyItemRangeChanged(0, styleAdapter.itemCount)
         // A new method choice gets a fresh chance to use the flicker-free lock-screen window.
         if (key == "aod_method") prefs.sp.edit().remove(LedController.PREF_WINDOW_BLOCKED).apply()
-        configureHero()
+        configureCameraLed()
+        // Visual feedback right on the camera when the look changes.
+        if (key in REPLAY_KEYS) playCameraIntro()
         if (key == "style" || key == Prefs.K_ENABLED) ui.refresh()
     }
 
@@ -115,14 +121,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         LedController.init(this)
         setContentView(R.layout.activity_main)
+        // Draw into the camera cutout area so the ring can surround the real camera.
+        window.attributes = window.attributes.apply {
+            layoutInDisplayCutoutMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+            } else {
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+        }
+        cameraLed = LedView(this).apply {
+            useScreenCoords = true
+            isClickable = false
+            isFocusable = false
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }
+        findViewById<FrameLayout>(android.R.id.content).addView(cameraLed, FrameLayout.LayoutParams(-1, -1))
+        cameraLed.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> configureCameraLed() }
 
         master = findViewById(R.id.master)
         status = findViewById(R.id.status)
-        hero = findViewById(R.id.hero)
-        heroLens = findViewById(R.id.heroLens)
         pager = findViewById(R.id.pager)
         tabs = findViewById(R.id.tabs)
-        hero.useScreenCoords = false
         ui = SettingsUi(this, prefs.sp)
 
         applyInsets()
@@ -135,7 +154,6 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<View>(R.id.btnPreview).setOnClickListener { LedController.startAod(pulse = false, preview = true) }
         findViewById<View>(R.id.btnTest).setOnClickListener { sendTest() }
-        hero.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> configureHero() }
 
         buildPages()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
@@ -162,15 +180,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        LedController.appInForeground = true
+        LedController.updateOverlay() // our own preview replaces the screen-on ring meanwhile
         master.isChecked = prefs.enabled
         buildSetup()
         refreshLive()
         LedController.addListener(storeListener)
+        cameraLed.post { playCameraIntro() }
     }
 
     override fun onPause() {
         super.onPause()
+        LedController.appInForeground = false
+        LedController.updateOverlay()
         LedController.removeListener(storeListener)
+        introAnim?.cancel()
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        configureCameraLed()
     }
 
     override fun onDestroy() {
@@ -181,13 +210,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun previewColors(): IntArray = intArrayOf(prefs.defaultColor, 0xFF25D366.toInt(), 0xFFFF4081.toInt())
 
-    /** Hero preview in view-local coordinates, so it never drifts. */
-    private fun configureHero() {
-        if (hero.width == 0) return
-        val cx = heroLens.left + heroLens.width / 2f
-        val cy = heroLens.top + heroLens.height / 2f
-        val d = heroLens.width.toFloat()
-        hero.configure(prefs, Geometry(CutoutShape.CIRCLE, cx, cy, d, d), previewColors(), gapDp = 4, thicknessDp = 4)
+    /** Preview colours: real notification colours when there are any, else a sample set. */
+    private fun cameraColors(): IntArray = NotificationStore.colors().takeIf { it.isNotEmpty() } ?: previewColors()
+
+    /**
+     * Puts the live preview on the phone's real camera: auto-detected cutout (or the saved camera
+     * position), in screen coordinates. Hidden in landscape and when Glow LED is switched off.
+     */
+    private fun configureCameraLed() {
+        if (!::cameraLed.isInitialized) return
+        val show = prefs.enabled && (CutoutGeometry.isPortrait(this) || prefs.style.isEdge)
+        cameraLed.visibility = if (show) View.VISIBLE else View.INVISIBLE
+        if (!show) return
+        cameraLed.configure(prefs, CutoutGeometry.resolve(this, prefs), cameraColors())
+    }
+
+    /** The ring grows out of the camera and fades in (same entrance as the always-on screen). */
+    private fun playCameraIntro() {
+        if (!::cameraLed.isInitialized || cameraLed.visibility != View.VISIBLE) return
+        introAnim?.cancel()
+        introAnim = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 520
+            interpolator = android.view.animation.DecelerateInterpolator(1.6f)
+            addUpdateListener { cameraLed.intro = it.animatedValue as Float }
+            start()
+        }
+        cameraLed.restartAnimation()
     }
 
     private fun refreshLive() {
@@ -201,8 +249,7 @@ class MainActivity : AppCompatActivity() {
             !NotificationStore.isEmpty() -> getString(R.string.status_active, count)
             else -> getString(R.string.status_waiting)
         }
-        hero.animate().alpha(if (on) 1f else 0.25f).setDuration(200).start()
-        configureHero()
+        configureCameraLed()
         ui.refresh()
         updateSwatchSelection()
         logText?.text = DebugLog.text()
@@ -765,6 +812,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TEST_CHANNEL = "test"
+        // Discrete changes replay the entrance; sliders just update the ring live while dragging.
+        private val REPLAY_KEYS = setOf("style", "default_color", "multi_mode", "glow", "enabled")
         private const val DOWNLOAD_URL = "https://github.com/ankitchanki/LED/tree/main/releases"
     }
 }

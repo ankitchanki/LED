@@ -89,10 +89,8 @@ class LedView @JvmOverloads constructor(
     private var startTime = SystemClock.uptimeMillis()
     private var dirty = true
 
-    init {
-        // Shadow layers (glow) are GPU-accelerated on API 28+.
-        setLayerType(LAYER_TYPE_HARDWARE, null)
-    }
+    // No offscreen layer: shadow layers (glow) render directly on the hardware canvas on API 28+,
+    // and a full-screen layer would cost ~10 MB plus an extra composition pass every frame.
 
     fun configure(
         prefs: Prefs,

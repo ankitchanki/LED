@@ -62,6 +62,10 @@ object LedController {
     @Volatile
     var aodVisible = false
 
+    /** True while Glow LED's own screen is open; it shows its preview on the camera instead. */
+    @Volatile
+    var appInForeground = false
+
     /** Set when an AOD session ended (timeout / user) so we don't relight for the same notifications. */
     private var suppressed = false
     private var ourWakeUntil = 0L
@@ -338,7 +342,7 @@ object LedController {
     fun updateOverlay() {
         if (!initialized) return
         val launching = SystemClock.uptimeMillis() < ourWakeUntil
-        val want = prefs.enabled && prefs.overlayEnabled && !aodVisible && !launching && isInteractive() &&
+        val want = prefs.enabled && prefs.overlayEnabled && !aodVisible && !launching && !appInForeground && isInteractive() &&
             !NotificationStore.isEmpty() && (!prefs.overlayLockOnly || isLocked()) &&
             (prefs.style.isEdge || CutoutGeometry.isPortrait(app))
         if (want) OverlayHost.show(app) else OverlayHost.hide()
