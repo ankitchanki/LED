@@ -1,5 +1,5 @@
 # UKSSSC UNIT V — BUSINESS ECONOMICS
-## MASTER DEVELOPMENT, RESEARCH, AUDIT & HTML INTEGRATION INSTRUCTIONS (v2)
+## MASTER DEVELOPMENT, RESEARCH, AUDIT & HTML INTEGRATION INSTRUCTIONS (v2.1 — aligned to official syllabus)
 ### 31 Syllabus Topics | 13 Integrated Chapters | One Offline Master HTML
 
 ---
@@ -33,6 +33,12 @@ Statistics (the other part of Unit V) is already complete. **Do not recreate, ed
 
 ## 2. COMPLETE SYLLABUS (Non-negotiable)
 
+### 2.0 Official syllabus text (the final authority)
+
+> **Business Economics:** Definition, Nature, Scope and Methodology of Economics, Micro and Macro Economics. Measurements of Utility, Law of Diminishing Marginal Utility, Law of Equi-Marginal Utility, Demand Schedule and Curves, Elasticity of Demand, Methods of Measurement of Elasticity of Demand and Elasticity of Supply, Consumer's Surplus, Consumer's Equilibrium- Indifference Curve Analysis. Production function and returns to factor, Concepts of Cost of Production, SAC, LAC Curves, Theory of Exchange, Forms of markets and market equilibrium under perfect competition, Concept of Economic Growth and Development. Conceptual overview of the National and State Income. An overview of Economy of Uttarakhand.
+
+The 31-topic list below is a breakdown of this text. **If the breakdown and the official text ever differ, the official text wins.** Every phrase of the official text must map to at least one topic (see §2.5).
+
 All 31 original topics must remain individually identifiable, numbered and directly navigable. Never delete, skip, renumber or silently replace a topic.
 
 ### M1 — Economics Foundations
@@ -52,14 +58,14 @@ All 31 original topics must remain individually identifiable, numbered and direc
 | T8 | Law of Diminishing Marginal Utility |
 | T9 | Law of Equi-Marginal Utility |
 | T10 | Demand Schedule |
-| T11 | Demand Curves and Law of Demand |
+| T11 | Demand Curves (including the Law of Demand) |
 | T12 | Elasticity of Demand |
 | T13 | Methods of Measurement of Elasticity of Demand |
 | T14 | Elasticity of Supply |
 | T15 | Methods of Measurement of Elasticity of Supply |
 | T16 | Consumer's Surplus |
-| T17 | Consumer's Equilibrium — Cardinal Approach |
-| T18 | Indifference Curve Analysis — Ordinal Approach |
+| T17 | Indifference Curve Analysis — IC, MRS, Properties, Budget Line |
+| T18 | Consumer's Equilibrium through Indifference Curve Analysis |
 
 ### M3 — Production, Costs and Markets
 | Topic | Subject |
@@ -69,9 +75,9 @@ All 31 original topics must remain individually identifiable, numbered and direc
 | T21 | Concepts of Cost of Production |
 | T22 | Short-Run Average Cost Curve |
 | T23 | Long-Run Average Cost Curve |
-| T24 | Exchange |
+| T24 | Theory of Exchange |
 | T25 | Forms of Market |
-| T26 | Price and Output Determination under Perfect Competition |
+| T26 | Market Equilibrium under Perfect Competition |
 
 ### M4 — Growth, Development and Uttarakhand Economy
 | Topic | Subject |
@@ -80,7 +86,32 @@ All 31 original topics must remain individually identifiable, numbered and direc
 | T28 | Concept of Economic Development |
 | T29 | Conceptual Overview of National Income |
 | T30 | Concept of State Income |
-| T31 | Economy of Uttarakhand |
+| T31 | An Overview of the Economy of Uttarakhand |
+
+### 2.5 Official syllabus → topic mapping and changes from the earlier list
+
+| Official phrase | Topic(s) | Note |
+|---|---|---|
+| Definition, Nature, Scope and Methodology of Economics | T1–T4 | — |
+| Micro and Macro Economics | T5–T6 | — |
+| Measurements of Utility | T7 | Cardinal and ordinal measurement |
+| Law of Diminishing Marginal Utility | T8 | — |
+| Law of Equi-Marginal Utility | T9 | Now also **owns the cardinal consumer equilibrium** (MUₓ/Pₓ = MUᵧ/Pᵧ = MUₘ) |
+| Demand Schedule and Curves | T10–T11 | Law of Demand is taught inside T11 because a demand curve cannot be explained without it |
+| Elasticity of Demand | T12 | — |
+| Methods of Measurement of Elasticity of Demand and Elasticity of Supply | T13, T14, T15 | Read as: methods for **both** demand and supply elasticity. Elasticity of supply needs its meaning and types (T14) before its methods (T15), so both stay |
+| Consumer's Surplus | T16 | — |
+| Consumer's Equilibrium – Indifference Curve Analysis | T17–T18 | **Changed.** Official text ties equilibrium to the IC (ordinal) approach. T17 = IC tools; T18 = equilibrium (MRS = Pₓ/Pᵧ, tangency with budget line), with a short comparison to the cardinal approach (linked to T9) |
+| Production function and returns to factor | T19–T20 | Returns to scale added as a short Prerequisite block (needed for LAC in T23) |
+| Concepts of Cost of Production, SAC, LAC Curves | T21–T23 | — |
+| Theory of Exchange | T24 | **Renamed.** See §6.4 for scope |
+| Forms of markets | T25 | — |
+| Market equilibrium under perfect competition | T26 | **Broadened.** Covers industry (market) equilibrium by demand and supply, firm equilibrium (short and long run), and effects of demand/supply shifts — not only firm price-output |
+| Concept of Economic Growth and Development | T27–T28 | — |
+| Conceptual overview of the National and State Income | T29–T30 | Keep it **conceptual**: meanings, aggregates, methods, difficulties. No heavy numerical accounting beyond simple examples |
+| An overview of Economy of Uttarakhand | T31 | Keep it an **overview** with key, dated facts — not a full state report |
+
+**Migration rule for the changed topics:** if the existing Master has content under the old T17 "Consumer's Equilibrium — Cardinal Approach", move that content to T9 (cardinal equilibrium) or into the comparison block of T18. Do not delete it. Move its MCQs with it and update their concept targets.
 
 ---
 
@@ -94,10 +125,10 @@ All 31 original topics must remain individually identifiable, numbered and direc
 | C4 | T10–T11 | Theory of Demand |
 | C5 | T12–T13 | Elasticity of Demand and Measurement |
 | C6 | T14–T15 | Elasticity of Supply and Measurement |
-| C7 | T16–T18 | Consumer Surplus and Consumer Equilibrium |
+| C7 | T16–T18 | Consumer Surplus, Indifference Curves and Consumer Equilibrium |
 | C8 | T19–T20 | Production Function and Returns |
 | C9 | T21–T23 | Theory of Cost — Concepts, SAC and LAC |
-| C10 | T24–T26 | Exchange, Market Structures and Perfect Competition |
+| C10 | T24–T26 | Theory of Exchange, Forms of Market and Equilibrium under Perfect Competition |
 | C11 | T27–T28 | Economic Growth and Development |
 | C12 | T29–T30 | National and State Income |
 | C13 | T31 | Economy of Uttarakhand |
@@ -170,13 +201,15 @@ Each shared concept is explained **in full exactly once** (in its "owner" topic)
 | Shared concept | Owner topic | Other topics use a reminder + link |
 |---|---|---|
 | Cardinal vs ordinal utility | T7 | T17, T18 |
+| Indifference curve, MRS, budget line | T17 | T18 |
 | TU / MU relationship | T7–T8 | T9, T16, T17 |
-| Equi-marginal principle (law) | T9 | T17 (applies it as MU/P = MUₘ condition) |
+| Equi-marginal principle and cardinal equilibrium (MU/P = MUₘ) | T9 | T18 (comparison only) |
 | Demand schedule & curve | T10–T11 | T12, T16, T26 |
 | Elasticity formulas (point, arc, percentage, total outlay) | T13 | T15 (supply versions only) |
 | Short-run vs long-run | T19–T20 | T22, T23, T26 |
 | TC / AC / MC relationships | T21–T22 | T23, T26 |
-| AR / MR (revenue concepts) | T25 or T26 (choose one) | T26 / T25 |
+| AR / MR (revenue concepts) | T25 | T26 |
+| Demand–supply equilibrium price | T26 | T24 (if the chosen meaning of Exchange uses it) |
 | Growth vs development | T27–T28 | T29, T31 |
 | GDP / GNP / NDP / NNP, methods of measurement | T29 | T30, T31 |
 
@@ -206,8 +239,14 @@ Required chapter connections:
 All internal links must work across chapters and be tested.
 
 ### 6.4 Ambiguous syllabus terms
-- **T24 "Exchange":** research its meaning in Indian university/State PSC Business Economics syllabi (typically: barter vs money exchange, conditions and advantages of exchange, and price determination through exchange/markets). State which interpretation is used and why.
+- **T24 "Theory of Exchange":** this phrase has different meanings in different textbooks:
+  1. Meaning of exchange, barter vs money exchange, conditions, merits and limitations of barter.
+  2. Exchange as the basis of price/value determination (how markets set prices through demand and supply).
+  3. Gains from exchange between two consumers (Edgeworth box, contract curve) — mostly at higher levels.
+
+  First check the B.Com/BA Business Economics syllabi of Uttarakhand universities (Kumaun University, HNB Garhwal University, Sri Dev Suman Uttarakhand University), because UKSSSC syllabi usually follow them. Default if that is unclear: teach (1) and (2) fully, and (3) as a short concept-level block with its own MCQs. State which interpretation was used and why.
 - **T7 "Measurements of Utility":** must cover both cardinal (utils, Marshall) and ordinal (ranking, Hicks–Allen) measurement.
+- **T26 "market equilibrium":** include Marshall's time element (market period, short period, long period) if the chosen sources treat it under perfect competition.
 
 ---
 
@@ -419,7 +458,7 @@ Save score, answers, bookmarks, progress and theme in `localStorage`. Wrap every
 ## 15. SPECIAL ACADEMIC PRIORITIES
 
 ### Priority A — Topics 21–26
-Verify complete coverage of: explicit/implicit cost; opportunity cost; accounting vs economic cost; fixed/variable cost; TC/AC/MC; AFC, AVC, ATC relationships; MC cutting AVC and ATC at their minimums; reasons for the U-shaped SAC; LAC as envelope (planning curve); economies and diseconomies of scale (internal and external); meaning of Exchange; market classification bases; characteristics of perfect competition, monopoly, monopolistic competition, oligopoly (and duopoly where relevant); price taker vs price maker; AR = MR = P under perfect competition; TR–TC and MR–MC approaches; firm vs industry; short-run (profit, normal profit, loss, shutdown point) and long-run equilibrium; diagrams and numericals for each.
+Verify complete coverage of: explicit/implicit cost; opportunity cost; accounting vs economic cost; fixed/variable cost; TC/AC/MC; AFC, AVC, ATC relationships; MC cutting AVC and ATC at their minimums; reasons for the U-shaped SAC; LAC as envelope (planning curve); economies and diseconomies of scale (internal and external); Theory of Exchange (scope per §6.4); market classification bases; characteristics of perfect competition, monopoly, monopolistic competition, oligopoly (and duopoly where relevant); price taker vs price maker; AR = MR = P under perfect competition; industry equilibrium (demand = supply) and effects of shifts; time element; TR–TC and MR–MC approaches; firm vs industry; short-run (profit, normal profit, loss, shutdown point) and long-run equilibrium; diagrams and numericals for each.
 
 ### Priority B — Topic 31: Economy of Uttarakhand
 Use official Uttarakhand sources (§7). Cover where relevant: formation and geography of the economy; GSDP, per-capita income and sectoral shares; agriculture and horticulture (hill vs plains); industry (industrial areas, MSMEs, policies); services; tourism (religious, adventure, eco); forests and hydropower; employment, livelihood and migration; infrastructure; regional disparity (hill vs plain districts); key state schemes; growth and development challenges. Each figure must have its year and source.
@@ -504,7 +543,7 @@ Never present a partly verified topic as complete.
 ## 20. FINAL NON-NEGOTIABLE RULES
 
 1. Statistics is excluded.
-2. Keep all 31 topic identifiers, organised into 13 chapters.
+2. Keep all 31 topic identifiers, organised into 13 chapters. The official syllabus text (§2.0) is the final authority.
 3. Topic numbers appear inside M1–M4 navigation, between module labels.
 4. Q, Theme, ↑, ↓ always visible on the right.
 5. Keep the approved UI; new features must fit inside it.
