@@ -18,8 +18,7 @@ import android.widget.TextView
 import com.glowled.app.core.NotificationStore
 
 /**
- * One UI-style app strip under the camera on the always-on screen: icons only (no text), each with
- * a small dot in its LED colour. Icons are tappable ([onAppTap]) to open the peek card. The newest
+ * One UI-style app strip under the camera on the always-on screen: plain icons only (no text). Icons are tappable ([onAppTap]) to open the peek card. The newest
  * icon can pop out of the droplet that falls from the camera ([prepareDrop] / [popFirst]).
  */
 class AppInfoView(context: Context) : LinearLayout(context) {
@@ -77,7 +76,7 @@ class AppInfoView(context: Context) : LinearLayout(context) {
         applySelection()
     }
 
-    /** App icon (no frame) with a small LED-colour dot under it. */
+    /** Plain app icon (no frame, no dot); the ring segments already show each app's colour. */
     private fun iconChip(pm: PackageManager, app: NotificationStore.AppInfo): View {
         val size = dp(34f)
         return LinearLayout(context).apply {
@@ -104,9 +103,6 @@ class AppInfoView(context: Context) : LinearLayout(context) {
                     }
                 }, LayoutParams(size, size))
             }
-            addView(View(context).apply {
-                background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(app.color) }
-            }, LayoutParams(dp(5f), dp(5f)).apply { topMargin = dp(5f) })
             setOnClickListener {
                 selected = if (selected == app.pkg) null else app.pkg
                 applySelection()

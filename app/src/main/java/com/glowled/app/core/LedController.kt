@@ -84,11 +84,7 @@ object LedController {
             addAction(Intent.ACTION_CONFIGURATION_CHANGED)
         }
         ContextCompat.registerReceiver(app, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
-        // v1.8: one-time switch of the old "cycle colours" default to the split-by-app ring.
-        if (!prefs.sp.getBoolean("mig_split_ring", false)) {
-            prefs.sp.edit().apply { if (prefs.sp.getString("multi_mode", null) == "cycle") remove("multi_mode") }
-                .putBoolean("mig_split_ring", true).apply()
-        }
+        migrate()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
         // Root managers remember the grant, so re-use it after a restart without prompting.
         if (prefs.sp.getBoolean(Privileged.PREF_ROOT_OK, false)) Privileged.markRootGranted()
@@ -102,6 +98,20 @@ object LedController {
     private val prefListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
         main.removeCallbacks(prefsChanged)
         main.postDelayed(prefsChanged, 150)
+    }
+
+    /** One-time clean-up of settings from older versions. */
+    private fun migrate() {
+        val sp = prefs.sp
+        val e = sp.edit()
+        // v1.8: the old "cycle colours" default becomes the split-by-app ring.
+        if (!sp.getBoolean("mig_split_ring", false)) {
+            if (sp.getString("multi_mode", null) == "cycle") e.remove("multi_mode")
+            e.putBoolean("mig_split_ring", true)
+        }
+        // v1.8.1: drop keys no version reads any more.
+        listOf("tap_dismiss", "double_tap_off").forEach { if (sp.contains(it)) e.remove(it) }
+        e.apply()
     }
 
     // ---- listeners (AOD activity / overlay) ------------------------------------------------------
@@ -255,12 +265,22 @@ object LedController {
      * The lock-screen window didn't cover the status bar (HyperOS keeps it on some builds), so the
      * camera area can't be drawn. Auto mode switches to the overlay, which always covers it.
      */
-    fun onAodWindowOffset(px: Int) {
-        if (LedAccessibilityService.instance != null && prefs.aodMethod == "auto") {
-            DebugLog.add("Status bar stayed visible ($px px) - using the overlay from now on")
+    /**
+     * Returns true when the caller should end its session because the overlay takes over right now
+     * (it always covers the camera area). Otherwise the caller keeps going with a shifted layout.
+     */
+    fun onAodWindowOffset(px: Int, preview: Boolean, durationSec: Int): Boolean {
+        if (preview) return false
+        val overlay = LedAccessibilityService.instance != null && prefs.aodMethod != "activity"
+        return if (overlay) {
+            DebugLog.add("Window started $px px below the camera - switching to the overlay now")
             prefs.sp.edit().putBoolean(PREF_WINDOW_BLOCKED, true).apply()
+            // Let the activity finish first, then show the overlay for the rest of the session.
+            main.postDelayed({ startOverlay(durationSec, false) }, 120)
+            true
         } else {
-            DebugLog.add("Status bar stayed visible ($px px) - enable Accessibility so the light can cover it")
+            DebugLog.add("Window started $px px below the camera - turn on Accessibility (or Shizuku setup) so the ring can sit on the camera")
+            false
         }
     }
 
@@ -320,11 +340,12 @@ object LedController {
         }
     }
 
-    enum class EndReason { TIMEOUT, USER, CLEARED, POCKET, SCREEN_OFF, UNLOCK }
+    /** SWITCH = handing over to another host (activity → overlay); not a user dismissal. */
+    enum class EndReason { TIMEOUT, USER, CLEARED, POCKET, SCREEN_OFF, UNLOCK, SWITCH }
 
     fun onAodEnded(reason: EndReason) {
         aodVisible = false
-        if (reason != EndReason.CLEARED) suppressed = true
+        if (reason != EndReason.CLEARED && reason != EndReason.SWITCH) suppressed = true
         if ((reason == EndReason.TIMEOUT || reason == EndReason.POCKET) && prefs.pulseIntervalMin > 0) {
             schedulePulse()
         }

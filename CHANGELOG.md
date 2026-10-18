@@ -1,3 +1,25 @@
+# Glow LED v1.8.1
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **Text and icons no longer land on the camera.** On some HyperOS lock screens the window starts below
+  the camera, which pushed everything up. Glow LED now notices this straight away and, with Accessibility
+  on, hands over to the overlay in the same session (not just next time). Without Accessibility, the ring
+  moves just under the top edge so it stays visible.
+- The app icons and the message peek always start **below the status bar / camera band** (read from the
+  system's window insets), so nothing is cropped.
+- Removed the coloured dot under each app icon - the split ring already shows each app's colour.
+- **Preview** now shows messaging apps actually installed on your phone (WhatsApp, Telegram, Instagram…)
+  instead of Glow LED's own icon.
+
+## Clean-up
+- Removed a test-only hook and settings keys that no version reads any more (cleared automatically).
+- Status-bar height now comes from window insets instead of an internal Android resource.
+
+---
+
 # Glow LED v1.8.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

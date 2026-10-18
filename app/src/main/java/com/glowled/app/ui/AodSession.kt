@@ -28,6 +28,7 @@ import com.glowled.app.view.AppInfoView
 import com.glowled.app.view.LedView
 import com.glowled.app.view.NotificationPeekView
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.random.Random
 
 /**
@@ -38,7 +39,7 @@ import kotlin.random.Random
 class AodSession(
     private val context: Context,
     private val preview: Boolean,
-    durationSec: Int,
+    private val durationSec: Int,
     private val host: Host,
 ) {
     interface Host {
@@ -104,7 +105,7 @@ class AodSession(
 
     init {
         led.useScreenCoords = true
-        led.configure(prefs, CutoutGeometry.resolve(context, prefs), currentColors())
+        led.configure(prefs, geometry(), currentColors())
         led.intro = 0f
         root.addView(info, FrameLayout.LayoutParams(-2, -2))
         val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
@@ -120,27 +121,72 @@ class AodSession(
     }
 
     /** Centres the strip (and the peek card under it) below the ring, in this window's coordinates. */
+    /**
+     * Ring geometry for this window. Normally the real camera position; if the window starts below
+     * the camera (some HyperOS lock screens) the ring is moved just under the window's top edge so
+     * it stays visible instead of being drawn off-window.
+     */
+    private var yShift = 0f
+
+    private fun geometry() = CutoutGeometry.resolve(context, prefs).let { if (yShift > 0f) it.copy(cy = it.cy + yShift) else it }
+
+    /** Height of the status bar / camera cutout band inside this window (from the window insets). */
+    private fun statusBandPx(): Int {
+        val ins = root.rootWindowInsets ?: return 0
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            ins.getInsetsIgnoringVisibility(
+                android.view.WindowInsets.Type.statusBars() or android.view.WindowInsets.Type.displayCutout(),
+            ).top
+        } else {
+            @Suppress("DEPRECATION")
+            max(ins.displayCutout?.safeInsetTop ?: 0, ins.stableInsetTop)
+        }
+    }
+
+    /**
+     * Centres the strip (and the peek card under it) below the ring, in this window's coordinates.
+     * Both always start below the status bar / camera area, so text is never drawn over the camera.
+     */
     private fun positionInfo() {
-        val g = CutoutGeometry.resolve(context, prefs)
+        if (!root.isAttachedToWindow) return
         val loc = IntArray(2)
         root.getLocationOnScreen(loc)
-        if (loc[1] > 0 && !offsetReported && root.isAttachedToWindow) {
-            // The window starts below the status bar, so the camera area isn't ours to draw on.
+        if (loc[1] > 0 && !offsetReported) {
             offsetReported = true
-            LedController.onAodWindowOffset(loc[1])
+            // Only the lock-screen window hands over to the overlay (never the overlay to itself).
+            if (context is android.app.Activity && LedController.onAodWindowOffset(loc[1], preview, remainingSec())) {
+                end(EndReason.SWITCH, lock = false)
+                return
+            }
+            // No overlay available: keep the ring visible right under the window's top edge.
+            val g = CutoutGeometry.resolve(context, prefs)
+            val ringTop = g.cy - led.ringBottom() + g.cy // mirror of the bottom around the centre
+            if (ringTop < loc[1]) {
+                yShift = loc[1] - ringTop + 6 * density
+                led.configure(prefs, geometry(), currentColors())
+            }
         }
+        val g = geometry()
+        // Window coordinates: below the ring, below the status-bar/cutout band, never at the very edge.
+        val safeTop = max(led.ringBottom() + 16 * density - loc[1], statusBandPx() + 8 * density)
         info.x = g.cx - loc[0] - info.width / 2f + led.shiftX
-        info.y = led.ringBottom() - loc[1] + 16 * density + led.shiftY
+        info.y = max(safeTop, 8 * density) + led.shiftY
         peek.x = g.cx - loc[0] - peek.width / 2f
-        peek.y = info.y + info.height + 14 * density
+        peek.y = info.y + (if (info.visibility == View.VISIBLE) info.height + 14 * density else 0f)
+    }
+
+    private val startedAt = android.os.SystemClock.uptimeMillis()
+
+    private fun remainingSec(): Int {
+        if (durationSec <= 0) return 0
+        val left = durationSec - ((android.os.SystemClock.uptimeMillis() - startedAt) / 1000).toInt()
+        return left.coerceAtLeast(10)
     }
 
     private fun bindInfo() {
         if (!prefs.showAppInfo) return
         var apps = NotificationStore.apps()
-        if (preview && apps.isEmpty()) {
-            apps = listOf(NotificationStore.AppInfo(context.packageName, prefs.defaultColor, 1))
-        }
+        if (preview && apps.isEmpty()) apps = sampleApps
         info.bind(apps)
     }
 
@@ -331,8 +377,26 @@ class AodSession(
 
     private fun currentColors(): IntArray {
         val c = NotificationStore.colors()
-        if (preview && c.isEmpty()) return intArrayOf(prefs.defaultColor, 0xFF25D366.toInt(), 0xFFFF4081.toInt())
+        if (preview && c.isEmpty()) return sampleApps.map { it.color }.distinct().toIntArray()
         return c
+    }
+
+    /**
+     * Preview without real notifications: messaging apps that are actually installed, so the
+     * preview looks like the real thing (instead of Glow LED's own icon).
+     */
+    private val sampleApps: List<NotificationStore.AppInfo> by lazy {
+        val pm = context.packageManager
+        SAMPLE_PACKAGES.mapNotNull { pkg ->
+            try {
+                pm.getApplicationInfo(pkg, 0)
+                NotificationStore.AppInfo(pkg, LedController.colors.colorFor(pkg, null), 1)
+            } catch (_: Exception) {
+                null
+            }
+        }.distinctBy { it.color }.take(3).ifEmpty {
+            listOf(NotificationStore.AppInfo(context.packageName, prefs.defaultColor, 1))
+        }
     }
 
     private fun onStoreChanged() {
@@ -341,7 +405,7 @@ class AodSession(
             end(EndReason.CLEARED, lock = true)
             return
         }
-        led.configure(prefs, CutoutGeometry.resolve(context, prefs), currentColors())
+        led.configure(prefs, geometry(), currentColors())
         bindInfo()
         val newest = NotificationStore.newestTime()
         if (newest > newestTime) {
@@ -449,6 +513,11 @@ class AodSession(
         private const val POCKET_MS = 10_000L
         private const val PREVIEW_MS = 15_000L
         private const val INFO_MS = 8_000L
+        private val SAMPLE_PACKAGES = listOf(
+            "com.whatsapp", "org.telegram.messenger", "com.instagram.android", "com.google.android.gm",
+            "com.google.android.apps.messaging", "com.facebook.orca", "com.snapchat.android", "com.discord",
+            "com.whatsapp.w4b", "com.android.mms", "com.samsung.android.messaging",
+        )
         private const val PEEK_MS = 12_000L
         private const val DOUBLE_TAP_MS = 350L
         private const val TAP_MAX_MS = 300L

@@ -198,17 +198,6 @@ class LedView @JvmOverloads constructor(
         }
     }
 
-    /** Freezes the droplet at progress [t] (for screenshots/tests). */
-    @androidx.annotation.VisibleForTesting
-    fun setDropletFrame(color: Int, targetY: Float, t: Float, targetX: Float = Float.NaN) {
-        dropColor = color or 0xFF000000.toInt()
-        dropTargetY = targetY
-        dropTargetX = targetX
-        dropRetract = false
-        dropT = t
-        invalidate()
-    }
-
     /** Droplet that drips [distancePx] below the ring (view-local), e.g. springing back on screen-on. */
     fun playDropletBelow(color: Int, distancePx: Float, retract: Boolean) {
         if (dirty) rebuild()

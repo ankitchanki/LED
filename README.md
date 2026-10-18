@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/v1.8/overview.png" alt="Glow LED screenshots: tap to read, droplet from the camera, styles, settings" />
+  <img src="docs/screenshots/v1.8.1/overview.png" alt="Glow LED screenshots: tap to read, droplet from the camera, styles, settings" />
 </p>
 
 ---
@@ -48,18 +48,18 @@ are switched off, so only the light itself uses power.
 
 | Always-on light | Tap an icon to read | Styles & colours |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v1.8/1-always-on.png" width="220" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.8/2-tap-to-read.png" width="220" alt="Peek card under the app icons showing the sender and the latest messages" /> | <img src="docs/screenshots/v1.8/4-style.png" width="220" alt="Style tab with animation cards, colour row and sliders, ring shown on the real camera" /> |
+| <img src="docs/screenshots/v1.8.1/1-always-on.png" width="220" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.8.1/2-tap-to-read.png" width="220" alt="Peek card under the app icons showing the sender and the latest messages" /> | <img src="docs/screenshots/v1.8.1/4-style.png" width="220" alt="Style tab with animation cards, colour row and sliders, ring shown on the real camera" /> |
 | Ring split into each app's colour, app icons (no text) below it. Everything else stays black, so AMOLED pixels stay off. | Tap an app icon: who sent it and the latest messages in dim text on pure black (Samsung AOD style), with 📷 Photo / 🎥 Video / 🎤 Voice labels. Tap to open the chat. | Live preview on your real camera. Tap an animation, pick a colour, tune speed, size and gap. |
 
 | Screen-off options | One-tap setup |
 |:---:|:---:|
-| <img src="docs/screenshots/v1.8/5-screen-off.png" width="220" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.8/6-setup.png" width="220" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
+| <img src="docs/screenshots/v1.8.1/5-screen-off.png" width="220" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.8.1/6-setup.png" width="220" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
 | Every option on one screen: when to show, how long, pocket detection, double-tap to wake, droplet. | Shizuku/root grants everything in one tap, or follow the checklist. |
 
 **Droplet:** when a notification arrives, a liquid drop in the app's colour stretches out of the camera,
 breaks off, falls onto its spot in the icon row and turns into the app's icon.
 
-<img src="docs/screenshots/v1.8/droplet-sequence.png" alt="Droplet sequence: drop stretching out of the camera ring, falling, then the app icons appearing" />
+<img src="docs/screenshots/v1.8.1/droplet-sequence.png" alt="Droplet sequence: drop stretching out of the camera ring, falling, then the app icons appearing" />
 
 ## How it works (for users)
 
