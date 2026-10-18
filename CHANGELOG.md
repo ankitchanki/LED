@@ -1,3 +1,31 @@
+# Glow LED v1.7.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **Status bar no longer shows on the always-on screen, and the ring sits on the camera again.**
+  On HyperOS the lock-screen window started below the status bar, which pushed the ring out of view
+  and moved the app icon onto the camera. The window now uses the full-screen flags HyperOS respects;
+  if a phone still keeps the status bar, Glow LED detects it and switches to the overlay automatically.
+- App icons under the camera no longer have a circle around them: plain icons with a small dot in the
+  app's LED colour, always below the ring.
+
+## Tap an icon to read
+- Tap an app icon on the always-on screen to see **who it's from and what they sent**: the latest
+  messages, or a label for media (📷 Photo, 🎥 Video, 🎤 Voice message, 📄 Document).
+- Tap the card to open the chat (Android asks you to unlock first). Tap the black area to close it.
+- Message text is kept in memory only - never stored or sent. Turn it off with
+  *Screen off → Tap icon to read message*. Notifications marked secret never show content.
+
+## Droplet animation
+- When a notification arrives, a liquid drop in the app's colour stretches out of the camera, breaks off,
+  falls and splashes - and the app icons pop in where it lands.
+- While you're using the phone, a smaller drop drips out of the camera and springs back.
+- Toggle: *Screen off → Droplet animation*.
+
+---
+
 # Glow LED v1.6.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

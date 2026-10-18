@@ -383,6 +383,8 @@ class MainActivity : AppCompatActivity() {
             Toggle("Burn-in protection", "burn_in", true, aodOn),
             Toggle("Show app under camera", "show_app_info", true, aodOn),
             Toggle("Keep app icons visible", "app_info_always", false) { prefs.aodEnabled && prefs.showAppInfo },
+            Toggle("Tap icon to read message", "show_content", true) { prefs.aodEnabled && prefs.showAppInfo },
+            Toggle("Droplet animation", "droplet", true),
         ))
         val c = ui.card(col)
         ui.chips(c, "Screen-off method", "aod_method",

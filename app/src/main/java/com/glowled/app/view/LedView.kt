@@ -140,6 +140,162 @@ class LedView @JvmOverloads constructor(
         return g.cy + r + glowRadius()
     }
 
+    // ---- droplet: liquid drop that stretches out of the camera, detaches, falls and splashes ------
+
+    private val dropPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
+    private val splashPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
+    private val dropPath = Path()
+    private var dropAnim: android.animation.ValueAnimator? = null
+    private var dropT = -1f
+    private var dropColor = 0
+    private var dropTargetY = 0f
+    private var dropRetract = false
+
+    /**
+     * Plays the droplet in [color] from the bottom of the ring down to [targetY] (view coordinates).
+     * [retract] = stretch down and spring back into the camera instead of falling (small windows).
+     * [onLanded] fires when the drop hits its target (e.g. to reveal the app icons there).
+     */
+    fun playDroplet(color: Int, targetY: Float, retract: Boolean = false, onLanded: (() -> Unit)? = null) {
+        if (dirty) rebuild()
+        if (geometry == null) {
+            onLanded?.invoke()
+            return
+        }
+        dropAnim?.cancel()
+        dropColor = color or 0xFF000000.toInt()
+        dropTargetY = targetY
+        dropRetract = retract
+        var landed = false
+        dropAnim = android.animation.ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = if (retract) 900 else 1150
+            interpolator = android.view.animation.LinearInterpolator()
+            addUpdateListener {
+                dropT = it.animatedValue as Float
+                if (!landed && !retract && dropT >= LAND_AT) {
+                    landed = true
+                    onLanded?.invoke()
+                }
+                invalidate()
+            }
+            addListener(object : android.animation.AnimatorListenerAdapter() {
+                override fun onAnimationEnd(a: android.animation.Animator) {
+                    dropT = -1f
+                    if (!landed) onLanded?.invoke()
+                    invalidate()
+                }
+            })
+            start()
+        }
+    }
+
+    /** Freezes the droplet at progress [t] (for screenshots/tests). */
+    @androidx.annotation.VisibleForTesting
+    fun setDropletFrame(color: Int, targetY: Float, t: Float) {
+        dropColor = color or 0xFF000000.toInt()
+        dropTargetY = targetY
+        dropRetract = false
+        dropT = t
+        invalidate()
+    }
+
+    /** Droplet that drips [distancePx] below the ring (view-local), e.g. springing back on screen-on. */
+    fun playDropletBelow(color: Int, distancePx: Float, retract: Boolean) {
+        if (dirty) rebuild()
+        playDroplet(color, cy + ringRadius() + distancePx, retract)
+    }
+
+    private fun ringRadius(): Float {
+        val g = geometry ?: return 0f
+        return if (g.shape == CutoutShape.DOT) max(g.w, g.h) / 2f else g.h / 2f + gap + thickness / 2f
+    }
+
+    private fun drawDroplet(c: Canvas) {
+        val t = dropT
+        if (t < 0f) return
+        val ringR = ringRadius()
+        val x = cx
+        val top = cy + ringR // bottom edge of the ring: where the liquid comes out
+        val dist = max(dropTargetY - top, ringR * 2f)
+        val rb = max(thickness * 1.7f, ringR * 0.36f)
+        dropPaint.color = dropColor
+        if (glow) dropPaint.setShadowLayer(glowRadius(), 0f, 0f, dropColor) else dropPaint.clearShadowLayer()
+
+        if (dropRetract) {
+            // Stretch down with an elastic neck, then spring back into the camera.
+            val s = if (t < 0.5f) easeOut(t / 0.5f) else 1f - easeInOutBack((t - 0.5f) / 0.5f)
+            val by = top + rb * 0.4f + (dist - rb) * s
+            neck(c, x, top, ringR * 0.55f, by, rb * (0.7f + 0.3f * s), 1f - s * 0.7f)
+            c.drawCircle(x, by, rb * (0.7f + 0.3f * s), dropPaint)
+            return
+        }
+
+        when {
+            t < DETACH_AT -> {
+                // Bulge grows out of the ring and stretches; the neck thins as it pulls away.
+                val p = easeInOut(t / DETACH_AT)
+                val by = top + rb * 0.3f + dist * 0.42f * p
+                val r = rb * (0.45f + 0.55f * p)
+                neck(c, x, top, ringR * 0.6f, by, r, 1f - p * 0.85f)
+                c.drawCircle(x, by, r, dropPaint)
+            }
+            t < LAND_AT -> {
+                // Detached: falls with gravity; a little blob snaps back into the camera.
+                val p = (t - DETACH_AT) / (LAND_AT - DETACH_AT)
+                val start = top + rb * 0.3f + dist * 0.42f
+                val by = start + (dropTargetY - start) * (p * p)
+                val stretch = 1f + 0.25f * p
+                c.save()
+                c.scale(1f / stretch, stretch, x, by)
+                c.drawCircle(x, by, rb, dropPaint)
+                c.restore()
+                val back = 1f - easeOut(min(1f, p * 2.5f))
+                if (back > 0.01f) c.drawCircle(x, top + rb * 0.2f * back, rb * 0.5f * back, dropPaint)
+            }
+            else -> {
+                // Splash: the drop flattens and fades while a ripple spreads out.
+                val p = (t - LAND_AT) / (1f - LAND_AT)
+                val a = (1f - p)
+                dropPaint.alpha = (255 * a).toInt()
+                c.save()
+                c.scale(1f + 0.8f * p, 1f - 0.6f * p, x, dropTargetY)
+                c.drawCircle(x, dropTargetY, rb, dropPaint)
+                c.restore()
+                splashPaint.color = dropColor
+                splashPaint.alpha = (200 * a * a).toInt()
+                splashPaint.strokeWidth = max(1.5f * density, thickness * 0.8f * a)
+                c.drawCircle(x, dropTargetY, rb * (1.2f + 3.2f * easeOut(p)), splashPaint)
+            }
+        }
+    }
+
+    /** Gooey connection between the ring bottom (width [wa]) and a drop at [by] (radius [rb]). */
+    private fun neck(c: Canvas, x: Float, ya: Float, wa: Float, by: Float, rb: Float, thick: Float) {
+        val yb = by - rb * 0.5f
+        if (yb <= ya) return
+        val w = max(1f * density, min(wa, rb) * 0.55f * thick)
+        val lb = rb * 0.85f
+        val mid = (ya + yb) / 2f
+        dropPath.reset()
+        dropPath.moveTo(x - wa, ya - wa * 0.15f)
+        dropPath.cubicTo(x - wa * 0.6f, ya + (mid - ya) * 0.4f, x - w, mid - (mid - ya) * 0.3f, x - w, mid)
+        dropPath.cubicTo(x - w, mid + (yb - mid) * 0.4f, x - lb, yb - (yb - mid) * 0.5f, x - lb, yb)
+        dropPath.lineTo(x + lb, yb)
+        dropPath.cubicTo(x + lb, yb - (yb - mid) * 0.5f, x + w, mid + (yb - mid) * 0.4f, x + w, mid)
+        dropPath.cubicTo(x + w, mid - (mid - ya) * 0.3f, x + wa * 0.6f, ya + (mid - ya) * 0.4f, x + wa, ya - wa * 0.15f)
+        dropPath.close()
+        c.drawPath(dropPath, dropPaint)
+    }
+
+    private fun easeOut(x: Float) = 1f - (1f - x) * (1f - x)
+    private fun easeInOut(x: Float) = if (x < 0.5f) 2f * x * x else 1f - (-2f * x + 2f).pow(2) / 2f
+    private fun easeInOutBack(x: Float): Float {
+        val c1 = 1.70158f
+        val c2 = c1 * 1.525f
+        return if (x < 0.5f) ((2f * x).pow(2) * ((c2 + 1) * 2f * x - c2)) / 2f
+        else ((2f * x - 2f).pow(2) * ((c2 + 1) * (x * 2f - 2f) + c2) + 2f) / 2f
+    }
+
     /**
      * Entrance progress 0..1: the ring grows out of the camera hole and fades in, so it never
      * pops onto the screen at full size.
@@ -256,6 +412,13 @@ class LedView @JvmOverloads constructor(
         }
 
         if (transformed) canvas.restore()
+        if (dropT >= 0f && !style.isEdge) {
+            if (shiftX != 0f || shiftY != 0f) {
+                canvas.save(); canvas.translate(shiftX, shiftY); drawDroplet(canvas); canvas.restore()
+            } else {
+                drawDroplet(canvas)
+            }
+        }
         scheduleNext(period, inPeriod, n, segmented)
     }
 
@@ -391,6 +554,11 @@ class LedView @JvmOverloads constructor(
         if (visibility == VISIBLE) invalidate()
     }
 
+    override fun onDetachedFromWindow() {
+        dropAnim?.cancel()
+        super.onDetachedFromWindow()
+    }
+
     override fun onWindowVisibilityChanged(visibility: Int) {
         super.onWindowVisibilityChanged(visibility)
         if (visibility == VISIBLE) invalidate()
@@ -398,6 +566,8 @@ class LedView @JvmOverloads constructor(
 
     companion object {
         private const val BLINK_ON = 0.12f
+        private const val DETACH_AT = 0.42f
+        private const val LAND_AT = 0.74f
         private const val TAIL_SLICES = 9
     }
 }

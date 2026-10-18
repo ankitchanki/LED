@@ -76,7 +76,9 @@ object OverlayHost {
             p.gravity = Gravity.TOP or Gravity.START
         } else {
             val e = v.extentPx(g)
-            p = WindowManager.LayoutParams(e * 2, e * 2, type, flags, PixelFormat.TRANSLUCENT)
+            // Extra room below the ring for the droplet that drips out on a new notification.
+            val dropRoom = (DROP_DP * ctx.resources.displayMetrics.density).toInt() * 2
+            p = WindowManager.LayoutParams(e * 2, e * 2 + dropRoom, type, flags, PixelFormat.TRANSLUCENT)
             p.gravity = Gravity.TOP or Gravity.START
             p.x = (g.cx - e).toInt()
             p.y = (g.cy - e).toInt()
@@ -106,6 +108,15 @@ object OverlayHost {
             Log.w("GlowLED", "overlay update failed", e)
         }
     }
+
+    /** New notification while the screen is on: a drop stretches out of the camera and springs back. */
+    fun droplet(color: Int) {
+        val v = view ?: return
+        // Post: the window may have just been added and not laid out yet.
+        v.post { v.playDropletBelow(color, DROP_DP * v.resources.displayMetrics.density, retract = true) }
+    }
+
+    private const val DROP_DP = 26f
 
     fun hide() {
         val v = view ?: return

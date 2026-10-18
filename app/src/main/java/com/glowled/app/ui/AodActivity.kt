@@ -1,6 +1,7 @@
 package com.glowled.app.ui
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -43,6 +44,10 @@ class AodActivity : Activity() {
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
+                // Legacy full-screen flags: HyperOS/MIUI only hides the lock-screen status bar for
+                // windows that ask for it this way.
+                WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
         )
         configureWindow()
@@ -62,6 +67,15 @@ class AodActivity : Activity() {
                     ContextCompat.RECEIVER_NOT_EXPORTED,
                 )
                 waitingForOff = true
+            }
+
+            // Show the PIN/fingerprint prompt, then open the chat once unlocked.
+            override fun dismissKeyguard(then: () -> Unit) {
+                val km = getSystemService(KeyguardManager::class.java)
+                if (!km.isKeyguardLocked) return then()
+                km.requestDismissKeyguard(this@AodActivity, object : KeyguardManager.KeyguardDismissCallback() {
+                    override fun onDismissSucceeded() = then()
+                })
             }
         })
         setContentView(session.root)
@@ -88,16 +102,16 @@ class AodActivity : Activity() {
 
     @Suppress("DEPRECATION")
     private fun hideSystemBars(root: View) {
+        // Both the legacy flags and the insets controller: OEM lock screens honour one or the other.
+        root.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)
             window.insetsController?.let {
                 it.hide(WindowInsets.Type.systemBars())
                 it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
-        } else {
-            root.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         }
         window.statusBarColor = Color.BLACK
         window.navigationBarColor = Color.BLACK

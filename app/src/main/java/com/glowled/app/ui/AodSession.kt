@@ -26,6 +26,7 @@ import com.glowled.app.core.LedController.EndReason
 import com.glowled.app.core.NotificationStore
 import com.glowled.app.view.AppInfoView
 import com.glowled.app.view.LedView
+import com.glowled.app.view.NotificationPeekView
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -46,6 +47,9 @@ class AodSession(
 
         /** Called when the screen must be allowed to time out on its own. */
         fun releaseKeepScreenOn()
+
+        /** Asks to unlock (when possible) and then runs [then]; default: run right away. */
+        fun dismissKeyguard(then: () -> Unit) = then()
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -86,32 +90,49 @@ class AodSession(
         }
     }
 
-    // ---- app strip under the camera (One UI style) ----------------------------------------------
+    // ---- app strip + peek card under the camera (One UI style) -----------------------------------
 
+    private val density = context.resources.displayMetrics.density
     private val info = AppInfoView(context)
-    private val hideInfo = Runnable { info.hide() }
+    private val peek = NotificationPeekView(context)
+    private val hideInfo = Runnable { info.hide(); hidePeek() }
+    private val hidePeekRunnable = Runnable { hidePeek() }
     private var entrancePlayed = false
     private var intro: ValueAnimator? = null
+    private var newestTime = NotificationStore.newestTime()
+    private var offsetReported = false
 
     init {
         led.useScreenCoords = true
         led.configure(prefs, CutoutGeometry.resolve(context, prefs), currentColors())
         led.intro = 0f
         root.addView(info, FrameLayout.LayoutParams(-2, -2))
+        val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
+        root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
         info.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> positionInfo() }
+        peek.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> positionInfo() }
+        info.onAppTap = { pkg -> onAppTapped(pkg) }
+        peek.onOpen = { e -> openNotification(e) }
         bindInfo()
         installGestures()
         if (durationSec > 0) handler.postDelayed(timeout, durationSec * 1000L)
         if (preview) handler.postDelayed(timeout, PREVIEW_MS)
     }
 
-    /** Centres the strip under the ring (geometry is in screen pixels; the root may be offset). */
+    /** Centres the strip (and the peek card under it) below the ring, in this window's coordinates. */
     private fun positionInfo() {
         val g = CutoutGeometry.resolve(context, prefs)
         val loc = IntArray(2)
         root.getLocationOnScreen(loc)
+        if (loc[1] > 0 && !offsetReported && root.isAttachedToWindow) {
+            // The window starts below the status bar, so the camera area isn't ours to draw on.
+            offsetReported = true
+            LedController.onAodWindowOffset(loc[1])
+        }
         info.x = g.cx - loc[0] - info.width / 2f + led.shiftX
-        info.y = led.ringBottom() - loc[1] + 14 * context.resources.displayMetrics.density + led.shiftY
+        info.y = led.ringBottom() - loc[1] + 16 * density + led.shiftY
+        peek.x = g.cx - loc[0] - peek.width / 2f
+        peek.y = info.y + info.height + 14 * density
     }
 
     private fun bindInfo() {
@@ -131,7 +152,20 @@ class AodSession(
         if (!prefs.appInfoAlways) handler.postDelayed(hideInfo, INFO_MS)
     }
 
-    /** Ring grows out of the camera and fades in, then the app strip drops in. */
+    /**
+     * Liquid drop from the camera into the icon row, then the icons pop in where it lands.
+     * Falls back to just showing the icons when the droplet is off.
+     */
+    private fun dropIntoIcons(color: Int) {
+        if (!prefs.droplet || !prefs.showAppInfo) {
+            showInfo()
+            return
+        }
+        val target = info.y + info.iconCenterY()
+        led.playDroplet(color, target) { showInfo() }
+    }
+
+    /** Ring grows out of the camera and fades in, then a droplet falls and the app strip appears. */
     private fun playEntrance() {
         if (entrancePlayed || ended) return
         entrancePlayed = true
@@ -142,7 +176,62 @@ class AodSession(
             addUpdateListener { led.intro = it.animatedValue as Float }
             start()
         }
-        handler.postDelayed({ showInfo() }, 250)
+        val color = NotificationStore.apps().firstOrNull()?.color ?: prefs.defaultColor
+        handler.postDelayed({ dropIntoIcons(color) }, 380)
+    }
+
+    // ---- tap an icon: who sent what -------------------------------------------------------------
+
+    private fun onAppTapped(pkg: String) {
+        handler.removeCallbacks(hideInfo)
+        if (!prefs.showContent) {
+            showInfo()
+            return
+        }
+        val entries = NotificationStore.entriesFor(pkg)
+        if (entries.isEmpty() || (peek.isShowing() && peekPkg == pkg)) {
+            hidePeek()
+            showInfo()
+            return
+        }
+        peekPkg = pkg
+        peek.bind(entries)
+        peek.show()
+        handler.removeCallbacks(hidePeekRunnable)
+        handler.postDelayed(hidePeekRunnable, PEEK_MS)
+    }
+
+    private var peekPkg: String? = null
+
+    private fun hidePeek() {
+        peekPkg = null
+        peek.hide()
+        info.clearSelection()
+        if (!prefs.appInfoAlways) {
+            handler.removeCallbacks(hideInfo)
+            handler.postDelayed(hideInfo, INFO_MS)
+        }
+    }
+
+    /** Opens the chat behind a notification; Android asks to unlock first when the phone is locked. */
+    private fun openNotification(e: NotificationStore.Entry) {
+        val pi = e.intent ?: return
+        root.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+        host.dismissKeyguard {
+            try {
+                val opts = android.app.ActivityOptions.makeBasic()
+                if (android.os.Build.VERSION.SDK_INT >= 34) {
+                    opts.setPendingIntentBackgroundActivityStartMode(
+                        android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED,
+                    )
+                }
+                pi.send(context, 0, null, null, null, null, opts.toBundle())
+            } catch (ex: Exception) {
+                DebugLog.add("Could not open notification: ${ex.javaClass.simpleName}")
+            }
+            // End only after unlocking succeeded, so the PIN prompt isn't cancelled by finishing.
+            end(EndReason.USER, lock = false)
+        }
     }
 
     /** Call once the host window is visible. */
@@ -186,7 +275,10 @@ class AodSession(
     private var downTime = 0L
     private var downX = 0f
     private var downY = 0f
-    private val singleTap = Runnable { showInfo() }
+    private val singleTap = Runnable {
+        // Tap on the black area: close the peek card, or bring the app icons back.
+        if (peek.isShowing()) hidePeek() else showInfo()
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun installGestures() {
@@ -240,7 +332,18 @@ class AodSession(
         }
         led.configure(prefs, CutoutGeometry.resolve(context, prefs), currentColors())
         bindInfo()
-        showInfo()
+        val newest = NotificationStore.newestTime()
+        if (newest > newestTime) {
+            // A new notification: drip it out of the camera into the icon row.
+            newestTime = newest
+            dropIntoIcons(NotificationStore.apps().firstOrNull()?.color ?: prefs.defaultColor)
+        } else {
+            showInfo()
+        }
+        peekPkg?.let { pkg ->
+            val entries = NotificationStore.entriesFor(pkg)
+            if (entries.isEmpty()) hidePeek() else peek.bind(entries)
+        }
     }
 
     // ---- pocket / face-down detection -----------------------------------------------------------
@@ -251,12 +354,14 @@ class AodSession(
             if (near) {
                 led.visibility = View.INVISIBLE // nothing to draw while covered
                 info.visibility = View.INVISIBLE
+                peek.visibility = View.INVISIBLE
                 handler.removeCallbacks(pocketEnd)
                 handler.postDelayed(pocketEnd, POCKET_MS)
             } else {
                 handler.removeCallbacks(pocketEnd)
                 led.visibility = View.VISIBLE
                 info.visibility = View.VISIBLE
+                if (peek.isShowing()) peek.visibility = View.VISIBLE
             }
         }
 
@@ -333,6 +438,7 @@ class AodSession(
         private const val POCKET_MS = 10_000L
         private const val PREVIEW_MS = 15_000L
         private const val INFO_MS = 8_000L
+        private const val PEEK_MS = 12_000L
         private const val DOUBLE_TAP_MS = 350L
         private const val TAP_MAX_MS = 300L
 

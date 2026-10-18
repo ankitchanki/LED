@@ -124,6 +124,9 @@ object LedController {
             startAod(pulse = false)
         }
         updateOverlay()
+        if (newPost && prefs.droplet && isInteractive() && !aodVisible) {
+            NotificationStore.apps().firstOrNull()?.let { OverlayHost.droplet(it.color) }
+        }
     }
 
     private val screenReceiver = object : BroadcastReceiver() {
@@ -241,6 +244,19 @@ object LedController {
         // Only force the panel on if turnScreenOn didn't (some OEM ROMs ignore it); doing it
         // first would flash the lock screen before the black AOD appears.
         if (!preview) main.postDelayed({ if (aodVisible && !isInteractive()) wakeBriefly() }, 600)
+    }
+
+    /**
+     * The lock-screen window didn't cover the status bar (HyperOS keeps it on some builds), so the
+     * camera area can't be drawn. Auto mode switches to the overlay, which always covers it.
+     */
+    fun onAodWindowOffset(px: Int) {
+        if (LedAccessibilityService.instance != null && prefs.aodMethod == "auto") {
+            DebugLog.add("Status bar stayed visible ($px px) - using the overlay from now on")
+            prefs.sp.edit().putBoolean(PREF_WINDOW_BLOCKED, true).apply()
+        } else {
+            DebugLog.add("Status bar stayed visible ($px px) - enable Accessibility so the light can cover it")
+        }
     }
 
     private fun startOverlay(duration: Int, preview: Boolean) {

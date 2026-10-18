@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/v1.6/overview.png" alt="Glow LED screenshots: always-on light, styles, screen-off options, setup" />
+  <img src="docs/screenshots/v1.7/overview.png" alt="Glow LED screenshots: tap to read, droplet from the camera, styles, settings" />
 </p>
 
 ---
@@ -33,7 +33,7 @@ are switched off, so only the light itself uses power.
 | **9 animations** | Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static ring, Edge lighting, Edge pulse. Adjustable speed, thickness, gap, intensity and glow. |
 | **Colours** | Per-app colour you pick, or the app's own notification colour, or a colour taken from its icon. Several notifications can take turns, split the ring into colour segments, or show only the newest. |
 | **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate, flicker-free. Timeout, optional reminder pulses, pocket detection, burn-in protection. Double-tap to wake, tap to show the app. |
-| **App under the camera** | One UI-style strip of app icons (in each app's LED colour) with the app name and count, dropping in under the ring with a smooth motion. Double-tap to wake. |
+| **App under the camera** | One UI-style app icons under the ring; tap one to read who sent what (text, or 📷 Photo / 🎥 Video / 🎤 Voice / 📄 Document) and tap the card to open the chat. A liquid droplet drips from the camera when a notification arrives. Double-tap to wake. |
 | **Screen on** | A small light around the camera, also over the lock screen. |
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. Low-battery cut-off, quiet hours, pause during calls. |
@@ -46,10 +46,20 @@ are switched off, so only the light itself uses power.
 
 ## Screenshots
 
-| Always-on light | Styles & colours | Screen-off options | One-tap setup |
-|:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/v1.6/1-always-on.png" width="200" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.6/2-style.png" width="200" alt="Style tab with animation cards, colour row and sliders" /> | <img src="docs/screenshots/v1.6/3-screen-off.png" width="200" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.6/4-setup.png" width="200" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
-| Ring around the camera, app icons drop in below it. Everything else stays black, so AMOLED pixels stay off. | Tap an animation (live previews), pick a colour, tune speed, size and gap. | Every option on one screen: when to show, how long, pocket detection, double-tap to wake. | Shizuku/root grants everything in one tap, or follow the checklist. |
+| Always-on light | Tap an icon to read | Styles & colours |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/v1.7/1-always-on.png" width="220" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.7/2-tap-to-read.png" width="220" alt="Peek card under the app icons showing the sender and the latest messages" /> | <img src="docs/screenshots/v1.7/4-style.png" width="220" alt="Style tab with animation cards, colour row and sliders, ring shown on the real camera" /> |
+| Ring around the camera, app icons below it. Everything else stays black, so AMOLED pixels stay off. | Tap an app icon: who sent it, the latest messages, and 📷 Photo / 🎥 Video / 🎤 Voice labels. Tap the card to open the chat. | Live preview on your real camera. Tap an animation, pick a colour, tune speed, size and gap. |
+
+| Screen-off options | One-tap setup |
+|:---:|:---:|
+| <img src="docs/screenshots/v1.7/5-screen-off.png" width="220" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.7/6-setup.png" width="220" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
+| Every option on one screen: when to show, how long, pocket detection, double-tap to wake, droplet. | Shizuku/root grants everything in one tap, or follow the checklist. |
+
+**Droplet:** when a notification arrives, a liquid drop in the app's colour stretches out of the camera,
+breaks off, falls and splashes, and the app icons pop in where it lands.
+
+<img src="docs/screenshots/v1.7/droplet-sequence.png" alt="Droplet sequence: drop stretching out of the camera ring, falling, then the app icons appearing" />
 
 ## How it works (for users)
 
@@ -162,8 +172,11 @@ Without these secrets, CI signs the APK with a throwaway debug key. Such APKs ca
 
 ## Privacy
 
-Glow LED has **no internet permission**. It reads only the app name and colour of each notification and
-keeps them in memory. Notification text is never read or stored.
+Glow LED has **no internet permission**, so nothing can leave your phone. To show the tap-to-read card
+it reads the sender and the latest message text of each notification and keeps them **in memory only**:
+they are never written to storage, logged or sent anywhere, and they disappear when the notification is
+dismissed. Turn off *Screen off → Tap icon to read message* to stop reading message text entirely.
+Notifications an app marks as secret never show their content.
 
 ## License
 

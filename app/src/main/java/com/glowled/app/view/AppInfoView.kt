@@ -18,11 +18,13 @@ import android.widget.TextView
 import com.glowled.app.core.NotificationStore
 
 /**
- * One UI-style app strip shown under the camera ring on the always-on screen: up to four app
- * icons in coloured rings (+N for more) and the newest app's name. Drops in from the camera with
- * a slight overshoot and staggered icons; fades away after a few seconds to protect the panel.
+ * One UI-style app strip under the camera on the always-on screen: plain app icons, each with a
+ * small dot in its LED colour, plus the newest app's name. Icons are tappable ([onAppTap]) to open
+ * the peek card. Drops in with a slight overshoot and staggered icons.
  */
 class AppInfoView(context: Context) : LinearLayout(context) {
+
+    var onAppTap: ((String) -> Unit)? = null
 
     private val d = resources.displayMetrics.density
     private fun dp(v: Float) = (v * d).toInt()
@@ -40,6 +42,8 @@ class AppInfoView(context: Context) : LinearLayout(context) {
         letterSpacing = 0.02f
     }
     private var shown = false
+    private var selected: String? = null
+    private val chips = mutableListOf<Pair<String, View>>()
 
     init {
         orientation = VERTICAL
@@ -47,95 +51,118 @@ class AppInfoView(context: Context) : LinearLayout(context) {
         clipChildren = false
         clipToPadding = false
         addView(icons, LayoutParams(-2, -2))
-        addView(label, LayoutParams(-2, -2).apply { topMargin = dp(8f) })
+        addView(label, LayoutParams(-2, -2).apply { topMargin = dp(6f) })
         alpha = 0f
         visibility = INVISIBLE
     }
 
-    /** Fills the strip from the current notifications (or [preview] sample data). */
+    /** Vertical centre of the icon row, relative to this view (where the droplet should land). */
+    fun iconCenterY(): Float = icons.top + dp(17f).toFloat()
+
     fun bind(apps: List<NotificationStore.AppInfo>) {
         icons.removeAllViews()
+        chips.clear()
         val pm = context.packageManager
-        val size = dp(34f)
         apps.take(MAX_ICONS).forEachIndexed { i, app ->
-            icons.addView(iconChip(pm, app, size), LayoutParams(size, size).apply {
-                if (i > 0) marginStart = dp(10f)
-            })
+            val chip = iconChip(pm, app)
+            chips += app.pkg to chip
+            icons.addView(chip, LayoutParams(-2, -2).apply { if (i > 0) marginStart = dp(14f) })
         }
         val extra = apps.size - MAX_ICONS
         if (extra > 0) {
             icons.addView(TextView(context).apply {
                 text = "+$extra"
-                setTextColor(Color.WHITE)
-                textSize = 12f
+                setTextColor(Color.argb(200, 255, 255, 255))
+                textSize = 13f
                 gravity = Gravity.CENTER
-                background = GradientDrawable().apply {
-                    shape = GradientDrawable.OVAL
-                    setColor(Color.argb(40, 255, 255, 255))
-                }
-            }, LayoutParams(size, size).apply { marginStart = dp(10f) })
+            }, LayoutParams(dp(34f), dp(34f)).apply { marginStart = dp(10f) })
         }
         val first = apps.firstOrNull()
-        label.text = when {
-            first == null -> ""
-            else -> {
-                val name = labelFor(pm, first.pkg)
-                val total = apps.sumOf { it.count }
-                if (total > 1) "$name · $total notifications" else name
-            }
+        label.text = if (first == null) "" else {
+            val total = apps.sumOf { it.count }
+            val name = labelFor(pm, first.pkg)
+            if (total > 1) "$name · $total notifications" else name
         }
+        if (selected != null && apps.none { it.pkg == selected }) selected = null
+        applySelection()
     }
 
-    private fun iconChip(pm: PackageManager, app: NotificationStore.AppInfo, size: Int): View {
-        val ring = (2 * d)
-        return FrameLayout(context).apply {
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.OVAL
-                setColor(Color.BLACK)
-                setStroke(ring.toInt().coerceAtLeast(2), app.color)
-            }
+    /** App icon (no frame) with a small LED-colour dot under it. */
+    private fun iconChip(pm: PackageManager, app: NotificationStore.AppInfo): View {
+        val size = dp(34f)
+        return LinearLayout(context).apply {
+            orientation = VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            isClickable = true
+            contentDescription = labelFor(pm, app.pkg)
             val icon = iconFor(pm, app.pkg)
             if (icon != null) {
                 addView(ImageView(context).apply {
                     setImageDrawable(icon)
                     alpha = 0.92f // a touch dimmer than full brightness on a black panel
-                }, FrameLayout.LayoutParams(size - dp(10f), size - dp(10f), Gravity.CENTER))
+                }, LayoutParams(size, size))
             } else {
-                // No icon available: first letter of the app name in its LED colour.
                 addView(TextView(context).apply {
                     text = labelFor(pm, app.pkg).take(1).uppercase()
                     setTextColor(app.color)
-                    textSize = 14f
+                    textSize = 16f
                     typeface = Typeface.DEFAULT_BOLD
                     gravity = Gravity.CENTER
-                }, FrameLayout.LayoutParams(-1, -1))
+                    background = GradientDrawable().apply {
+                        shape = GradientDrawable.OVAL
+                        setColor(Color.argb(36, 255, 255, 255))
+                    }
+                }, LayoutParams(size, size))
+            }
+            addView(View(context).apply {
+                background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(app.color) }
+            }, LayoutParams(dp(5f), dp(5f)).apply { topMargin = dp(5f) })
+            setOnClickListener {
+                selected = if (selected == app.pkg) null else app.pkg
+                applySelection()
+                onAppTap?.invoke(app.pkg)
             }
         }
     }
 
-    /** Entrance: drop from the camera with a slight overshoot; icons pop in one after another. */
+    /** The tapped app stays bright and lifts slightly; the others dim. */
+    private fun applySelection() {
+        chips.forEach { (pkg, v) ->
+            val on = selected == null || selected == pkg
+            v.animate().alpha(if (on) 1f else 0.45f).translationY(if (selected == pkg) -dp(3f).toFloat() else 0f)
+                .setDuration(180).start()
+        }
+    }
+
+    fun clearSelection() {
+        selected = null
+        applySelection()
+    }
+
+    /** Entrance: drop in with a slight overshoot; icons pop in one after another. */
     fun show() {
         if (icons.childCount == 0) return
         animate().cancel()
         visibility = VISIBLE
         if (!shown) {
             alpha = 0f
-            translationY = -dp(18f).toFloat()
-            scaleX = 0.82f
-            scaleY = 0.82f
+            translationY = -dp(14f).toFloat()
+            scaleX = 0.85f
+            scaleY = 0.85f
             for (i in 0 until icons.childCount) {
-                icons.getChildAt(i).apply { alpha = 0f; scaleX = 0.4f; scaleY = 0.4f }
+                icons.getChildAt(i).apply { alpha = 0f; scaleX = 0.3f; scaleY = 0.3f }
             }
+            label.alpha = 0f
         }
         shown = true
         animate().alpha(1f).translationY(0f).scaleX(1f).scaleY(1f)
-            .setDuration(450).setInterpolator(OvershootInterpolator(1.3f)).start()
+            .setDuration(420).setInterpolator(OvershootInterpolator(1.3f)).start()
         for (i in 0 until icons.childCount) {
             icons.getChildAt(i).animate().alpha(1f).scaleX(1f).scaleY(1f)
-                .setStartDelay(120L + i * 60L).setDuration(320).setInterpolator(OvershootInterpolator(2f)).start()
+                .setStartDelay(60L + i * 60L).setDuration(320).setInterpolator(OvershootInterpolator(2f))
+                .withEndAction { applySelection() }.start()
         }
-        label.alpha = 0f
-        label.animate().alpha(1f).setStartDelay(220).setDuration(300).start()
+        label.animate().alpha(1f).setStartDelay(200).setDuration(300).start()
     }
 
     fun hide() {
@@ -149,16 +176,16 @@ class AppInfoView(context: Context) : LinearLayout(context) {
     }
 
     companion object {
-        private const val MAX_ICONS = 4
+        private const val MAX_ICONS = 5
         private val labelCache = LruCache<String, String>(32)
 
-        private fun labelFor(pm: PackageManager, pkg: String): String = labelCache.get(pkg) ?: try {
+        fun labelFor(pm: PackageManager, pkg: String): String = labelCache.get(pkg) ?: try {
             pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString()
         } catch (_: Exception) {
             pkg.substringAfterLast('.').replaceFirstChar { it.uppercase() }
         }.also { labelCache.put(pkg, it) }
 
-        private fun iconFor(pm: PackageManager, pkg: String) = try {
+        fun iconFor(pm: PackageManager, pkg: String) = try {
             pm.getApplicationIcon(pkg)
         } catch (_: Exception) {
             null

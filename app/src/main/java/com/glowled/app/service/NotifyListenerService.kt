@@ -8,6 +8,7 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.glowled.app.core.LedController
+import com.glowled.app.core.NotificationContent
 import com.glowled.app.core.NotificationStore
 
 /** Tracks which notifications should light the LED. Bound by the system, so no foreground service is needed. */
@@ -94,7 +95,20 @@ class NotifyListenerService : NotificationListenerService() {
                 if (ranking.isSuspended) return null
             }
         }
-        return NotificationStore.Entry(sbn.key, pkg, LedController.colors.colorFor(pkg, n), sbn.postTime)
+        // Content is kept in memory only, for the tap-to-peek card on the always-on screen.
+        val hidden = n.visibility == Notification.VISIBILITY_SECRET || !prefs.showContent
+        val content = if (hidden) null else NotificationContent.read(n)
+        return NotificationStore.Entry(
+            key = sbn.key,
+            pkg = pkg,
+            color = LedController.colors.colorFor(pkg, n),
+            time = sbn.postTime,
+            title = content?.title,
+            lines = content?.lines.orEmpty(),
+            kind = content?.kind ?: NotificationStore.Kind.OTHER,
+            hidden = hidden,
+            intent = n.contentIntent,
+        )
     }
 
     private fun hasChildren(summary: StatusBarNotification): Boolean {

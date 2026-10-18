@@ -59,6 +59,34 @@ class NotificationStoreTest {
     }
 }
 
+class NotificationContentTest {
+    @Test
+    fun mediaKindFromText() {
+        org.junit.Assert.assertEquals(NotificationStore.Kind.IMAGE, NotificationContent.guessKind("📷 Photo", null))
+        org.junit.Assert.assertEquals(NotificationStore.Kind.VIDEO, NotificationContent.guessKind("🎥 Video", null))
+        org.junit.Assert.assertEquals(NotificationStore.Kind.AUDIO, NotificationContent.guessKind("🎤 Voice message (0:12)", null))
+        org.junit.Assert.assertEquals(NotificationStore.Kind.FILE, NotificationContent.guessKind("📄 report.pdf", null))
+        org.junit.Assert.assertEquals(NotificationStore.Kind.TEXT, NotificationContent.guessKind("See you at 6", null))
+    }
+
+    @Test
+    fun mediaKindFromMime() {
+        org.junit.Assert.assertEquals(NotificationStore.Kind.IMAGE, NotificationContent.guessKind("", "image/jpeg"))
+        org.junit.Assert.assertEquals(NotificationStore.Kind.VIDEO, NotificationContent.guessKind(null, "video/mp4"))
+        org.junit.Assert.assertEquals(NotificationStore.Kind.AUDIO, NotificationContent.guessKind(null, "audio/ogg"))
+    }
+
+    @Test
+    fun contentChangeCountsAsChange() {
+        NotificationStore.clear()
+        val a = NotificationStore.Entry("k", "p", 1, 1, title = "Ankit", lines = listOf("hi"))
+        assertTrue(NotificationStore.put(a))
+        assertFalse(NotificationStore.put(a.copy(time = 2)))
+        assertTrue(NotificationStore.put(a.copy(lines = listOf("hi", "are you there?"))))
+        org.junit.Assert.assertEquals(2, NotificationStore.entriesFor("p").first().lines.size)
+    }
+}
+
 class QuietHoursTest {
     @Test
     fun sameDayWindow() {

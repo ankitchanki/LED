@@ -46,6 +46,10 @@ class Prefs(context: Context) {
     val doubleTapWake get() = bool("double_tap_wake", true)
     val showAppInfo get() = bool("show_app_info", true)
     val appInfoAlways get() = bool("app_info_always", false)
+    /** Tap an app icon on the always-on screen to see who sent what. */
+    val showContent get() = bool("show_content", true)
+    /** Liquid droplet from the camera when a notification arrives. */
+    val droplet get() = bool("droplet", true)
 
     /** "auto", "activity" (lock-screen window) or "overlay" (accessibility overlay). */
     val aodMethod get() = str("aod_method", "auto")
