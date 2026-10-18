@@ -18,9 +18,9 @@ import android.widget.TextView
 import com.glowled.app.core.NotificationStore
 
 /**
- * One UI-style app strip under the camera on the always-on screen: plain app icons, each with a
- * small dot in its LED colour, plus the newest app's name. Icons are tappable ([onAppTap]) to open
- * the peek card. Drops in with a slight overshoot and staggered icons.
+ * One UI-style app strip under the camera on the always-on screen: icons only (no text), each with
+ * a small dot in its LED colour. Icons are tappable ([onAppTap]) to open the peek card. The newest
+ * icon can pop out of the droplet that falls from the camera ([prepareDrop] / [popFirst]).
  */
 class AppInfoView(context: Context) : LinearLayout(context) {
 
@@ -32,15 +32,6 @@ class AppInfoView(context: Context) : LinearLayout(context) {
         orientation = HORIZONTAL
         gravity = Gravity.CENTER
     }
-    private val label = TextView(context).apply {
-        setTextColor(Color.argb(200, 255, 255, 255))
-        textSize = 13f
-        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
-        gravity = Gravity.CENTER
-        maxLines = 1
-        ellipsize = TextUtils.TruncateAt.END
-        letterSpacing = 0.02f
-    }
     private var shown = false
     private var selected: String? = null
     private val chips = mutableListOf<Pair<String, View>>()
@@ -51,13 +42,18 @@ class AppInfoView(context: Context) : LinearLayout(context) {
         clipChildren = false
         clipToPadding = false
         addView(icons, LayoutParams(-2, -2))
-        addView(label, LayoutParams(-2, -2).apply { topMargin = dp(6f) })
         alpha = 0f
         visibility = INVISIBLE
     }
 
     /** Vertical centre of the icon row, relative to this view (where the droplet should land). */
     fun iconCenterY(): Float = icons.top + dp(17f).toFloat()
+
+    /** Horizontal centre of icon [index], relative to this view. */
+    fun iconCenterX(index: Int = 0): Float {
+        val chip = chips.getOrNull(index)?.second ?: return width / 2f
+        return icons.left + chip.left + chip.width / 2f
+    }
 
     fun bind(apps: List<NotificationStore.AppInfo>) {
         icons.removeAllViews()
@@ -76,12 +72,6 @@ class AppInfoView(context: Context) : LinearLayout(context) {
                 textSize = 13f
                 gravity = Gravity.CENTER
             }, LayoutParams(dp(34f), dp(34f)).apply { marginStart = dp(10f) })
-        }
-        val first = apps.firstOrNull()
-        label.text = if (first == null) "" else {
-            val total = apps.sumOf { it.count }
-            val name = labelFor(pm, first.pkg)
-            if (total > 1) "$name · $total notifications" else name
         }
         if (selected != null && apps.none { it.pkg == selected }) selected = null
         applySelection()
@@ -152,7 +142,6 @@ class AppInfoView(context: Context) : LinearLayout(context) {
             for (i in 0 until icons.childCount) {
                 icons.getChildAt(i).apply { alpha = 0f; scaleX = 0.3f; scaleY = 0.3f }
             }
-            label.alpha = 0f
         }
         shown = true
         animate().alpha(1f).translationY(0f).scaleX(1f).scaleY(1f)
@@ -162,7 +151,36 @@ class AppInfoView(context: Context) : LinearLayout(context) {
                 .setStartDelay(60L + i * 60L).setDuration(320).setInterpolator(OvershootInterpolator(2f))
                 .withEndAction { applySelection() }.start()
         }
-        label.animate().alpha(1f).setStartDelay(200).setDuration(300).start()
+    }
+
+    /**
+     * Before a droplet falls: show the strip with the newest icon hidden (it will pop out of the
+     * drop). The other icons fade in meanwhile.
+     */
+    fun prepareDrop() {
+        if (icons.childCount == 0) return
+        animate().cancel()
+        visibility = VISIBLE
+        alpha = 1f; translationY = 0f; scaleX = 1f; scaleY = 1f
+        for (i in 0 until icons.childCount) {
+            val c = icons.getChildAt(i)
+            c.animate().cancel()
+            if (i == 0) {
+                c.alpha = 0f; c.scaleX = 0.25f; c.scaleY = 0.25f
+            } else if (!shown) {
+                c.alpha = 0f; c.scaleX = 0.6f; c.scaleY = 0.6f
+                c.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(150L + i * 60L).setDuration(300).start()
+            }
+        }
+        shown = true
+    }
+
+    /** The drop has landed: the newest app's icon pops out of it. */
+    fun popFirst() {
+        val c = icons.getChildAt(0) ?: return
+        c.animate().cancel()
+        c.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(0).setDuration(380)
+            .setInterpolator(OvershootInterpolator(2.4f)).withEndAction { applySelection() }.start()
     }
 
     fun hide() {

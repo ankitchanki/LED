@@ -1,3 +1,19 @@
+# Glow LED v1.8.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Changes
+- **Ring in every app's colour:** with WhatsApp, Telegram and Instagram notifications waiting, the ring
+  now splits into green, blue and pink arcs (new default "Split ring by app"; the old "cycle colours"
+  default is switched over once).
+- **Droplet becomes the icon:** a new notification's drop falls from the camera onto that app's spot in the
+  icon row and turns into the WhatsApp (or other) icon.
+- **Icons only:** the app name / "N notifications" text under the icons is gone.
+- **Samsung AOD-style message peek:** pitch black (no grey box), soft dimmed text, centred.
+
+---
+
 # Glow LED v1.7.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

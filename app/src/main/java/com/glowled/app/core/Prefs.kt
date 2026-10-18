@@ -21,7 +21,7 @@ class Prefs(context: Context) {
 
     // Look
     val style: LedStyle get() = LedStyle.from(str("style", LedStyle.PULSE.key))
-    val multiMode: MultiMode get() = MultiMode.from(str("multi_mode", MultiMode.CYCLE.key))
+    val multiMode: MultiMode get() = MultiMode.from(str("multi_mode", MultiMode.SEGMENTS.key))
     var defaultColor: Int
         get() = int("default_color", DEFAULT_COLOR)
         set(v) = sp.edit().putInt("default_color", v).apply()
@@ -126,7 +126,7 @@ enum class MultiMode(val key: String) {
     CYCLE("cycle"), SEGMENTS("segments"), LATEST("latest");
 
     companion object {
-        fun from(key: String) = entries.firstOrNull { it.key == key } ?: CYCLE
+        fun from(key: String) = entries.firstOrNull { it.key == key } ?: SEGMENTS
     }
 }
 

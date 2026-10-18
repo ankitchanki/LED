@@ -16,8 +16,9 @@ import com.glowled.app.core.NotificationContent
 import com.glowled.app.core.NotificationStore
 
 /**
- * Card shown under the app strip when an app icon is tapped: app + time, who it's from, the latest
- * messages, and a media label (Photo / Video / Voice message / Document). Tap it to open the chat.
+ * Samsung AOD-style notification peek under the app icons: pitch black (no box, so AMOLED pixels
+ * stay off), soft dimmed text. Shows the app + time, who it's from, the latest messages and a
+ * media label (Photo / Video / Voice message / Document). Tap it to open the chat.
  */
 class NotificationPeekView(context: Context) : LinearLayout(context) {
 
@@ -28,69 +29,66 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
     private var current: NotificationStore.Entry? = null
     private var shown = false
 
-    private val appIcon = ImageView(context)
+    // Dim greys on black, like an always-on display: readable without lighting the panel up.
+    private fun grey(alpha: Float) = Color.argb((255 * alpha).toInt(), 255, 255, 255)
+
+    private val appIcon = ImageView(context).apply { alpha = 0.6f }
     private val appName = TextView(context).apply {
-        setTextColor(Color.argb(170, 255, 255, 255))
+        setTextColor(grey(0.42f))
         textSize = 12f
         maxLines = 1
         ellipsize = TextUtils.TruncateAt.END
+        gravity = Gravity.CENTER_VERTICAL
     }
     private val title = TextView(context).apply {
-        setTextColor(Color.WHITE)
+        setTextColor(grey(0.72f))
         textSize = 15f
         typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         maxLines = 1
         ellipsize = TextUtils.TruncateAt.END
+        gravity = Gravity.CENTER_HORIZONTAL
     }
     private val body = TextView(context).apply {
-        setTextColor(Color.argb(215, 255, 255, 255))
+        setTextColor(grey(0.55f))
         textSize = 14f
         maxLines = 4
         ellipsize = TextUtils.TruncateAt.END
-        setLineSpacing(0f, 1.1f)
+        setLineSpacing(0f, 1.12f)
+        gravity = Gravity.CENTER_HORIZONTAL
     }
     private val media = TextView(context).apply {
-        setTextColor(Color.WHITE)
+        setTextColor(grey(0.6f))
         textSize = 12f
-        setPadding(dp(10f), dp(4f), dp(10f), dp(4f))
+        setPadding(dp(10f), dp(3f), dp(10f), dp(3f))
     }
     private val more = TextView(context).apply {
-        setTextColor(Color.argb(150, 255, 255, 255))
+        setTextColor(grey(0.35f))
         textSize = 12f
-    }
-    private val hint = TextView(context).apply {
-        setTextColor(Color.argb(120, 255, 255, 255))
-        textSize = 11f
-        text = "Tap to open"
     }
 
     init {
         orientation = VERTICAL
-        setPadding(dp(16f), dp(14f), dp(16f), dp(12f))
-        background = GradientDrawable().apply {
-            cornerRadius = 22 * d
-            setColor(Color.rgb(16, 16, 20))
-            setStroke(dp(1f), Color.argb(40, 255, 255, 255))
-        }
+        gravity = Gravity.CENTER_HORIZONTAL
+        setPadding(dp(12f), dp(8f), dp(12f), dp(8f))
+        setBackgroundColor(Color.BLACK)
         val head = LinearLayout(context).apply {
             orientation = HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            addView(appIcon, LayoutParams(dp(18f), dp(18f)))
-            addView(appName, LayoutParams(0, -2, 1f).apply { marginStart = dp(8f) })
-            addView(hint)
+            gravity = Gravity.CENTER
+            addView(appIcon, LayoutParams(dp(16f), dp(16f)))
+            addView(appName, LayoutParams(-2, -2).apply { marginStart = dp(6f) })
         }
-        addView(head)
-        addView(title, LayoutParams(-1, -2).apply { topMargin = dp(8f) })
-        addView(body, LayoutParams(-1, -2).apply { topMargin = dp(2f) })
+        addView(head, LayoutParams(-2, -2))
+        addView(title, LayoutParams(-1, -2).apply { topMargin = dp(10f) })
+        addView(body, LayoutParams(-1, -2).apply { topMargin = dp(4f) })
         addView(media, LayoutParams(-2, -2).apply { topMargin = dp(8f) })
-        addView(more, LayoutParams(-2, -2).apply { topMargin = dp(6f) })
+        addView(more, LayoutParams(-2, -2).apply { topMargin = dp(8f) })
         alpha = 0f
         visibility = INVISIBLE
         isClickable = true
         setOnClickListener { current?.let { onOpen?.invoke(it) } }
     }
 
-    /** Fills the card with the newest notification of an app (+ how many more). */
+    /** Fills the peek with the newest notification of an app (+ how many more). */
     fun bind(entries: List<NotificationStore.Entry>) {
         val e = entries.firstOrNull() ?: return
         current = e
@@ -102,24 +100,26 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
         appName.text = "${AppInfoView.labelFor(pm, e.pkg)} · $ago"
         if (e.hidden) {
             title.text = "New notification"
-            body.text = "Content hidden on the lock screen"
+            body.text = "Content hidden"
+            body.visibility = VISIBLE
             media.visibility = GONE
         } else {
             title.text = e.title ?: AppInfoView.labelFor(pm, e.pkg)
-            title.visibility = VISIBLE
             val text = e.lines.joinToString("\n")
             body.text = text
             body.visibility = if (text.isBlank()) GONE else VISIBLE
             val label = NotificationContent.label(e.kind)
             media.text = label
             media.visibility = if (label.isEmpty()) GONE else VISIBLE
+            // Thin outline in the app's colour (no fill, keeps pixels off).
             media.background = GradientDrawable().apply {
                 cornerRadius = 12 * d
-                setColor(e.color and 0x00FFFFFF or 0x44000000)
+                setColor(Color.BLACK)
+                setStroke(dp(1f), (e.color and 0x00FFFFFF) or 0x66000000)
             }
         }
         val extra = entries.size - 1
-        more.text = if (extra > 0) "+$extra more from this app" else ""
+        more.text = if (extra > 0) "+$extra more" else ""
         more.visibility = if (extra > 0) VISIBLE else GONE
     }
 
@@ -130,20 +130,18 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
         visibility = VISIBLE
         if (!shown) {
             alpha = 0f
-            translationY = -dp(16f).toFloat()
-            scaleX = 0.94f
-            scaleY = 0.94f
+            translationY = -dp(12f).toFloat()
         }
         shown = true
-        animate().alpha(1f).translationY(0f).scaleX(1f).scaleY(1f)
-            .setDuration(360).setInterpolator(OvershootInterpolator(1.1f)).start()
+        animate().alpha(1f).translationY(0f)
+            .setDuration(320).setInterpolator(OvershootInterpolator(1f)).start()
     }
 
     fun hide() {
         if (!shown) return
         shown = false
         animate().cancel()
-        animate().alpha(0f).translationY(-dp(10f).toFloat()).setDuration(220)
+        animate().alpha(0f).translationY(-dp(8f).toFloat()).setDuration(220)
             .setInterpolator(DecelerateInterpolator())
             .withEndAction { if (!shown) visibility = INVISIBLE }.start()
     }

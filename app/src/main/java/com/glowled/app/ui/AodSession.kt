@@ -161,8 +161,19 @@ class AodSession(
             showInfo()
             return
         }
-        val target = info.y + info.iconCenterY()
-        led.playDroplet(color, target) { showInfo() }
+        // Wait for the freshly bound strip to be laid out, so the newest icon's position is known.
+        info.post {
+            if (ended) return@post
+            handler.removeCallbacks(hideInfo)
+            info.prepareDrop()
+            val tx = info.x + info.iconCenterX(0)
+            val ty = info.y + info.iconCenterY()
+            led.playDroplet(color, ty, targetX = tx) {
+                // The drop becomes the app icon.
+                info.popFirst()
+                if (!prefs.appInfoAlways) handler.postDelayed(hideInfo, INFO_MS)
+            }
+        }
     }
 
     /** Ring grows out of the camera and fades in, then a droplet falls and the app strip appears. */

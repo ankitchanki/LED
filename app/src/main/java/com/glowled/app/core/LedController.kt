@@ -84,6 +84,11 @@ object LedController {
             addAction(Intent.ACTION_CONFIGURATION_CHANGED)
         }
         ContextCompat.registerReceiver(app, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        // v1.8: one-time switch of the old "cycle colours" default to the split-by-app ring.
+        if (!prefs.sp.getBoolean("mig_split_ring", false)) {
+            prefs.sp.edit().apply { if (prefs.sp.getString("multi_mode", null) == "cycle") remove("multi_mode") }
+                .putBoolean("mig_split_ring", true).apply()
+        }
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
         // Root managers remember the grant, so re-use it after a restart without prompting.
         if (prefs.sp.getBoolean(Privileged.PREF_ROOT_OK, false)) Privileged.markRootGranted()

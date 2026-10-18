@@ -359,7 +359,7 @@ class MainActivity : AppCompatActivity() {
         }
         ui.divider(c)
         ui.chips(c, "Several notifications", "multi_mode",
-            listOf("Cycle colours", "Split ring", "Newest only"), listOf("cycle", "segments", "latest"), "cycle")
+            listOf("Split ring by app", "Cycle colours", "Newest only"), listOf("segments", "cycle", "latest"), "segments")
         ui.sliders(c, Range("Speed", "speed", 1, 10, 5, ""), Range("Intensity", "led_alpha", 10, 100, 100, "%"))
         ui.sliders(c, Range("Thickness", "thickness", 1, 16, 3, "dp"), Range("Gap", "gap", 0, 20, 2, "dp"))
         ui.sliders(c, Range("Edge corners", "edge_radius", 0, 120, 40, "dp"), dependsOn = { prefs.style.isEdge })

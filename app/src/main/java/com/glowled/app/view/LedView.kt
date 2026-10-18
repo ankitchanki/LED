@@ -149,14 +149,22 @@ class LedView @JvmOverloads constructor(
     private var dropT = -1f
     private var dropColor = 0
     private var dropTargetY = 0f
+    private var dropTargetX = Float.NaN // NaN = straight below the camera
     private var dropRetract = false
 
     /**
      * Plays the droplet in [color] from the bottom of the ring down to [targetY] (view coordinates).
      * [retract] = stretch down and spring back into the camera instead of falling (small windows).
-     * [onLanded] fires when the drop hits its target (e.g. to reveal the app icons there).
+     * [targetX] lets the drop curve sideways onto a specific icon (NaN = straight down).
+     * [onLanded] fires when the drop hits its target (e.g. to pop the app icon out of it).
      */
-    fun playDroplet(color: Int, targetY: Float, retract: Boolean = false, onLanded: (() -> Unit)? = null) {
+    fun playDroplet(
+        color: Int,
+        targetY: Float,
+        retract: Boolean = false,
+        targetX: Float = Float.NaN,
+        onLanded: (() -> Unit)? = null,
+    ) {
         if (dirty) rebuild()
         if (geometry == null) {
             onLanded?.invoke()
@@ -165,6 +173,7 @@ class LedView @JvmOverloads constructor(
         dropAnim?.cancel()
         dropColor = color or 0xFF000000.toInt()
         dropTargetY = targetY
+        dropTargetX = targetX
         dropRetract = retract
         var landed = false
         dropAnim = android.animation.ValueAnimator.ofFloat(0f, 1f).apply {
@@ -191,9 +200,10 @@ class LedView @JvmOverloads constructor(
 
     /** Freezes the droplet at progress [t] (for screenshots/tests). */
     @androidx.annotation.VisibleForTesting
-    fun setDropletFrame(color: Int, targetY: Float, t: Float) {
+    fun setDropletFrame(color: Int, targetY: Float, t: Float, targetX: Float = Float.NaN) {
         dropColor = color or 0xFF000000.toInt()
         dropTargetY = targetY
+        dropTargetX = targetX
         dropRetract = false
         dropT = t
         invalidate()
@@ -244,10 +254,12 @@ class LedView @JvmOverloads constructor(
                 val p = (t - DETACH_AT) / (LAND_AT - DETACH_AT)
                 val start = top + rb * 0.3f + dist * 0.42f
                 val by = start + (dropTargetY - start) * (p * p)
+                // Drift sideways onto the target icon while falling.
+                val bx = x + (landX() - x) * easeInOut(p)
                 val stretch = 1f + 0.25f * p
                 c.save()
-                c.scale(1f / stretch, stretch, x, by)
-                c.drawCircle(x, by, rb, dropPaint)
+                c.scale(1f / stretch, stretch, bx, by)
+                c.drawCircle(bx, by, rb, dropPaint)
                 c.restore()
                 val back = 1f - easeOut(min(1f, p * 2.5f))
                 if (back > 0.01f) c.drawCircle(x, top + rb * 0.2f * back, rb * 0.5f * back, dropPaint)
@@ -258,16 +270,19 @@ class LedView @JvmOverloads constructor(
                 val a = (1f - p)
                 dropPaint.alpha = (255 * a).toInt()
                 c.save()
-                c.scale(1f + 0.8f * p, 1f - 0.6f * p, x, dropTargetY)
-                c.drawCircle(x, dropTargetY, rb, dropPaint)
+                val lx = landX()
+                c.scale(1f + 0.8f * p, 1f - 0.6f * p, lx, dropTargetY)
+                c.drawCircle(lx, dropTargetY, rb, dropPaint)
                 c.restore()
                 splashPaint.color = dropColor
                 splashPaint.alpha = (200 * a * a).toInt()
                 splashPaint.strokeWidth = max(1.5f * density, thickness * 0.8f * a)
-                c.drawCircle(x, dropTargetY, rb * (1.2f + 3.2f * easeOut(p)), splashPaint)
+                c.drawCircle(lx, dropTargetY, rb * (1.2f + 3.2f * easeOut(p)), splashPaint)
             }
         }
     }
+
+    private fun landX() = if (dropTargetX.isNaN()) cx else dropTargetX
 
     /** Gooey connection between the ring bottom (width [wa]) and a drop at [by] (radius [rb]). */
     private fun neck(c: Canvas, x: Float, ya: Float, wa: Float, by: Float, rb: Float, thick: Float) {
