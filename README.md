@@ -14,6 +14,10 @@
   &nbsp;·&nbsp; ✅ signed build &nbsp;·&nbsp; <a href="releases/">all downloads &amp; install help</a>
 </p>
 
+<p align="center">
+  <img src="docs/screenshots/overview.png" alt="Glow LED screenshots: always-on light, styles, screen-off options, setup" />
+</p>
+
 ---
 
 Most phones no longer have a notification LED. Glow LED draws one around the front camera
@@ -39,6 +43,20 @@ are switched off, so only the light itself uses power.
 | **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Quick Settings tile, preview, test notification, themed (monochrome) icon. |
+
+## Screenshots
+
+| Always-on light | Styles & colours | Screen-off options | One-tap setup |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/1-always-on.png" width="200" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/2-style.png" width="200" alt="Style tab with animation cards, colour row and sliders" /> | <img src="docs/screenshots/3-screen-off.png" width="200" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/4-setup.png" width="200" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
+| Ring around the camera, app icons drop in below it. Everything else stays black, so AMOLED pixels stay off. | Tap an animation (live previews), pick a colour, tune speed, size and gap. | Every option on one screen: when to show, how long, pocket detection, double-tap to wake. | Shizuku/root grants everything in one tap, or follow the checklist. |
+
+## How it works (for users)
+
+1. A notification arrives and Glow LED picks its colour (your choice per app, the app's colour, or its icon colour).
+2. **Screen on:** a small ring glows around the camera.
+3. **Screen off:** the screen wakes to pure black at minimum brightness. The ring grows out of the camera and the app icons drop in below it.
+4. **Double-tap** to wake to the lock screen, **tap** to show which app it is. After your chosen time (or when you clear the notification) the screen turns off again.
 
 ## Install
 
