@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- UKSSSC Unit V Business Economics Master · {{VERSION}}
+     Changelog:
+     v3.0 — New single-page UI (right rail M1–M4 + topic numbers, Q/Theme/↑/↓), Topic 1 rebuilt and audited,
+            T2–T31 carried over unchanged from the previous master as "rework pending". -->
+<title>Business Economics Master</title>
+<style>
+:root{--bg:#eef2f6;--paper:#fff;--paper2:#f5f8fb;--ink:#172c43;--mut:#5a6f84;--border:#d3dee8;--teal:#087d77;--tealbg:#e3f5f2;--navy:#1d446d;--warn:#9a5b00;--warnbg:#fff4e0;--ok:#16794a;--okbg:#e5f6ec;--bad:#b42318;--badbg:#fdeceb;--hl:#fff3b0;--shadow:0 2px 10px rgba(9,36,59,.08)}
+:root[data-theme="dark"]{--bg:#0f1822;--paper:#1a2733;--paper2:#213140;--ink:#e3edf8;--mut:#9fb2c4;--border:#36495a;--teal:#6fd8ca;--tealbg:#16363d;--navy:#cfe3f6;--warn:#f3c26b;--warnbg:#3a2e17;--ok:#6fd49c;--okbg:#173527;--bad:#ff9b8f;--badbg:#3d1f1d;--hl:#4a4520;--shadow:0 2px 10px rgba(0,0,0,.3)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1822;--paper:#1a2733;--paper2:#213140;--ink:#e3edf8;--mut:#9fb2c4;--border:#36495a;--teal:#6fd8ca;--tealbg:#16363d;--navy:#cfe3f6;--warn:#f3c26b;--warnbg:#3a2e17;--ok:#6fd49c;--okbg:#173527;--bad:#ff9b8f;--badbg:#3d1f1d;--hl:#4a4520;--shadow:0 2px 10px rgba(0,0,0,.3)}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
+a{color:var(--teal)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.wrap{max-width:780px;margin:0 auto;padding:18px 16px 60px}
+@media (max-width:860px){.wrap{padding:14px 52px 60px 14px}}
+.apphead{padding:6px 0 14px}
+.apphead .kick{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);font-weight:700}
+.apphead h1{margin:2px 0 0;font-size:24px;color:var(--navy)}
+.apphead p{margin:2px 0 0;color:var(--mut);font-size:14px}
+.chapter[hidden]{display:none}
+.chead{background:var(--navy);color:var(--paper);border-radius:14px;padding:14px 16px;margin:4px 0 16px}
+:root[data-theme="dark"] .chead{background:var(--paper2);color:var(--ink);border:1px solid var(--border)}
+.chead .ck{font-size:12px;opacity:.8;text-transform:uppercase;letter-spacing:.06em}
+.chead h2{margin:2px 0 6px;font-size:21px}
+.chead .ct{display:flex;flex-wrap:wrap;gap:6px}
+.chead .ct a{font-size:13px;color:inherit;text-decoration:none;border:1px solid currentColor;border-radius:999px;padding:1px 9px;opacity:.9}
+.topic{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:16px;margin:0 0 18px;box-shadow:var(--shadow);scroll-margin-top:10px}
+.thead .tkick{font-size:12px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.thead h2{margin:2px 0 8px;font-size:22px;color:var(--navy);line-height:1.3}
+.links{display:flex;flex-direction:column;gap:2px;font-size:13.5px;color:var(--mut);margin-bottom:8px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.toc a{font-size:12.5px;text-decoration:none;background:var(--tealbg);color:var(--teal);border-radius:999px;padding:2px 10px}
+.pending{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:14px;margin:6px 0}
+.blk{border-top:1px solid var(--border);padding:16px 0 4px;scroll-margin-top:10px;position:relative}
+.blk h3{margin:0 0 8px;font-size:19px;color:var(--navy);line-height:1.35;padding-right:30px}
+.num{font-size:11.5px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.07em}
+.card{background:var(--paper2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0;scroll-margin-top:10px;position:relative}
+.card h4,h4.sub{margin:0 0 6px;font-size:16.5px;color:var(--navy);padding-right:30px}
+.card p{margin:6px 0}
+.def{border-left:4px solid var(--teal);background:var(--tealbg);padding:9px 12px;border-radius:0 10px 10px 0;margin:8px 0}
+.src{font-size:12.5px;color:var(--mut)}
+.mini,.note{font-size:14px;color:var(--mut)}
+.key{margin:8px 0;padding-left:20px}.key li{margin:3px 0}
+.crit{font-size:15px;border-top:1px dashed var(--border);padding-top:6px}
+.trap{background:var(--warnbg);border-radius:10px;padding:8px 12px;font-size:15px;margin:10px 0}
+.trap b:first-child{color:var(--warn)}
+.eg{background:var(--paper2);border-radius:10px;padding:8px 12px}
+.work{background:var(--paper2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+.grid2 .card{margin:0}
+.tw{overflow-x:auto;margin:10px 0;border:1px solid var(--border);border-radius:10px}
+table.t{border-collapse:collapse;width:100%;font-size:14.5px}
+table.t th,table.t td{padding:7px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+table.t th{background:var(--paper2);color:var(--navy);font-size:13px}
+table.t tr:last-child td{border-bottom:0}
+table.num td{font-variant-numeric:tabular-nums}
+.fig{margin:10px 0}
+.fig svg{width:100%;height:auto;display:block;max-width:560px;margin:0 auto}
+.sv text{fill:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif}
+.sv .mt{fill:var(--mut)}.sv .at{fill:var(--teal)}.sv .wt{fill:var(--paper)}
+.sv .ax{stroke:var(--ink);stroke-width:1.5;fill:none}
+.sv .ln{stroke:var(--mut);stroke-width:1.4;fill:none}
+.sv .gd{stroke:var(--border);stroke-width:1;fill:none;stroke-dasharray:3 3}
+.sv .cv{stroke:var(--teal);stroke-width:2.6;fill:none}
+.sv .cv2{stroke:var(--teal);stroke-width:2;fill:none;stroke-dasharray:6 4}
+.sv .bx{fill:var(--paper2);stroke:var(--border);stroke-width:1.2}
+.sv .bxa{fill:var(--tealbg);stroke:var(--teal);stroke-width:1.4}
+.sv .af{fill:var(--teal)}.sv .mf{fill:var(--mut)}
+.sv .tl{cursor:pointer}.sv .tl:focus{outline:none}.sv .tl:focus .dot,.sv .tl.sel .dot{stroke:var(--ink);stroke-width:2.5}
+.tmap{margin:6px 0 2px}.tmap svg{width:100%;max-width:420px;height:auto;display:block}
+.tapinfo{font-size:14.5px;background:var(--paper2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;min-height:40px}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.seg button{border:1px solid var(--border);background:var(--paper);border-radius:999px;padding:4px 12px;font-size:14px}
+.seg button.on{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+.star-b{position:absolute;top:12px;right:0;border:0;background:none;font-size:18px;line-height:1;color:var(--mut);padding:4px}
+.card>.star-b{top:8px;right:8px}
+.star-b.on{color:#e0a100}
+.flash{animation:fl 2.2s ease}
+@keyframes fl{0%,40%{background:var(--hl)}100%{background:transparent}}
+.back-q{display:inline-flex;align-items:center;gap:4px;margin-left:8px;border:1px solid var(--teal);background:var(--tealbg);color:var(--teal);border-radius:999px;font-size:12.5px;padding:1px 9px;vertical-align:middle;font-weight:700}
+.tfoot{display:flex;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border);margin-top:10px}
+.donebtn{border:1px solid var(--teal);background:var(--paper);color:var(--teal);border-radius:999px;padding:6px 14px;font-weight:700}
+.donebtn.on{background:var(--teal);color:var(--paper)}
+.cnav{display:flex;justify-content:space-between;gap:10px;margin:6px 0 20px}
+.cnav button{border:1px solid var(--border);background:var(--paper);border-radius:10px;padding:8px 12px;font-size:14px;max-width:48%;text-align:left}
+.cnav button:last-child{text-align:right;margin-left:auto}
+.legacy-frame iframe{width:100%;height:82vh;height:82dvh;border:1px solid var(--border);border-radius:10px;background:var(--paper)}
+.legacy-frame .lf-load{border:1px solid var(--teal);background:var(--tealbg);color:var(--teal);border-radius:10px;padding:8px 14px;font-weight:700}
+/* quiz */
+.qbar{position:sticky;top:0;z-index:5;background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:8px 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 10px}
+.qbar .score{font-weight:800;color:var(--navy);margin-right:auto;font-size:14.5px}
+.qbar button{border:1px solid var(--border);background:var(--paper2);border-radius:999px;padding:2px 10px;font-size:13px}
+.qbar button.on{background:var(--teal);color:var(--paper);border-color:var(--teal)}
+.weak{background:var(--badbg);border-radius:12px;padding:8px 12px;margin:0 0 10px;font-size:14.5px}
+.weak b{color:var(--bad)}.weak ul{margin:4px 0;padding-left:18px}
+.qc{border:1px solid var(--border);border-radius:12px;padding:12px;margin:0 0 10px;background:var(--paper);scroll-margin-top:70px}
+.qh{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--mut)}
+.qh .qn{font-weight:800;color:var(--teal)}
+.qh .qt{background:var(--paper2);border-radius:999px;padding:0 8px}
+.qh .star-q{margin-left:auto;border:0;background:none;font-size:17px;color:var(--mut);padding:2px}
+.qh .star-q.on{color:#e0a100}
+.qq{margin:6px 0 8px;font-weight:600}
+.opts{display:grid;gap:6px}
+.opt{display:flex;gap:8px;align-items:flex-start;text-align:left;border:1px solid var(--border);background:var(--paper2);border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.45}
+.opt .ol{font-weight:800;color:var(--mut);min-width:18px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.qex{margin-top:8px;font-size:15px;background:var(--paper2);border-radius:10px;padding:8px 12px}
+.qex .verdict{font-weight:800}.qex .verdict.ok{color:var(--ok)}.qex .verdict.no{color:var(--bad)}
+.qex ul{margin:6px 0;padding-left:18px;font-size:14px;color:var(--mut)}
+.qex .sc{border:1px solid var(--teal);background:var(--paper);color:var(--teal);border-radius:999px;padding:2px 12px;font-size:13.5px;font-weight:700;margin-top:4px}
+.empty{color:var(--mut);font-size:14.5px;padding:8px}
+/* revision mode */
+:root.rev .ex,:root.rev .eg,:root.rev .toc,:root.rev .tapinfo:empty{display:none}
+.revtag{display:none}
+:root.rev .revtag{display:block;background:var(--tealbg);color:var(--teal);font-weight:700;font-size:13px;border-radius:999px;padding:3px 12px;width:max-content;margin:0 0 10px}
+/* right rail */
+#rail{position:fixed;right:max(6px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;align-items:center;gap:4px;width:40px}
+.rb{width:36px;height:30px;border-radius:9px;border:1px solid var(--border);background:var(--paper);color:var(--navy);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);padding:0}
+.rb.mod.on{background:var(--teal);border-color:var(--teal);color:var(--paper)}
+.tg{display:none;flex-direction:column;align-items:center;gap:3px;max-height:calc(100dvh - 340px);min-height:60px;overflow-y:auto;padding:2px 0;scrollbar-width:none}
+.tg::-webkit-scrollbar{display:none}
+.tg.open{display:flex}
+.rb.tn{width:30px;height:26px;font-size:12px;font-weight:700;border-radius:8px;position:relative;flex:0 0 auto}
+.rb.tn.on{border:2px solid var(--teal);color:var(--teal);font-weight:900}
+.rb.tn.done::after{content:"";position:absolute;right:2px;top:2px;width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.rb.tn.pend{color:var(--mut)}
+.rsep{height:6px}
+.rb.ctl{width:36px;height:34px;border-radius:50%}
+.rb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* panel */
+#panel{position:fixed;z-index:50;right:54px;top:50%;transform:translateY(-50%);width:min(360px,calc(100vw - 70px));max-height:min(80vh,640px);overflow:auto;background:var(--paper);border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.25);padding:12px}
+#panel[hidden],#fc[hidden]{display:none}
+@media (max-width:600px){#panel{top:auto;bottom:10px;transform:none;left:8px;right:52px;width:auto;max-height:78vh}}
+.ph{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ph b{font-size:15px;color:var(--navy);margin-right:auto}
+.x{border:0;background:var(--paper2);border-radius:50%;width:30px;height:30px;font-size:18px;line-height:1}
+.pbtn{display:block;width:100%;text-align:left;border:1px solid var(--border);background:var(--paper2);border-radius:10px;padding:8px 12px;margin:6px 0;font-size:14.5px}
+.pbtn.main{background:var(--teal);color:var(--paper);border-color:var(--teal);font-weight:700}
+.prow{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.prow .pbtn{margin:0;text-align:center}
+.pbtn.on{border-color:var(--teal);color:var(--teal);font-weight:700}
+.psearch{width:100%;border:1px solid var(--border);background:var(--paper2);color:var(--ink);border-radius:10px;padding:8px 12px;font-size:15px;margin:8px 0 4px}
+.res{list-style:none;margin:0;padding:0}
+.res li button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--border);background:none;padding:7px 4px;font-size:14px}
+.res small{color:var(--mut);display:block}
+.res mark{background:var(--hl);color:inherit}
+.psec{border-top:1px solid var(--border);margin-top:10px;padding-top:8px}
+.psec h5{margin:0 0 4px;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+/* flashcards */
+#fc{position:fixed;inset:0;z-index:60;background:rgba(5,15,25,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.fcbox{background:var(--paper);border-radius:16px;width:min(440px,100%);padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.fcard{min-height:190px;border:2px solid var(--teal);border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;font-size:18px;font-weight:600;background:var(--tealbg);margin:8px 0;width:100%;color:var(--ink)}
+.fcard.back{background:var(--paper2);font-weight:500}
+.fcnav{display:flex;gap:6px;justify-content:space-between;align-items:center}
+.fcnav button{border:1px solid var(--border);background:var(--paper2);border-radius:10px;padding:6px 12px}
+@media print{#rail,#panel,#fc,.qbar,.star-b,.star-q,.back-q,.cnav,.donebtn,.seg,.legacy-frame{display:none!important}
+ body{background:#fff;color:#000}.topic{box-shadow:none;border:0}.qex[hidden]{display:block!important}.wrap{padding:0;max-width:none}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.flash{animation:none;background:var(--hl)}}
+</style>
+</head>
+<body>
+<main class="wrap" id="main">
+  <header class="apphead"><div class="kick">UKSSSC · Unit V</div><h1>Business Economics</h1><p>31 syllabus topics · 13 chapters · Notes Hinglish mein, MCQs English mein</p></header>
+  <div class="revtag">📖 Revision mode on — sirf definitions, formulas, diagrams aur traps</div>
+{{CHAPTERS}}
+</main>
+
+<nav id="rail" aria-label="Navigation">
+  <div id="mods"></div>
+  <div class="rsep"></div>
+  <button class="rb ctl" id="bQ" type="button" aria-label="Questions and tools" title="Questions &amp; tools">Q</button>
+  <button class="rb ctl" id="bTheme" type="button" aria-label="Toggle theme" title="Theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  <button class="rb ctl" id="bUp" type="button" aria-label="Scroll up" title="Upar"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button>
+  <button class="rb ctl" id="bDown" type="button" aria-label="Scroll down" title="Neeche"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+</nav>
+
+<div id="panel" role="dialog" aria-label="Questions and tools" hidden></div>
+<div id="fc" role="dialog" aria-label="Flashcards" hidden></div>
+
+<script type="application/json" id="meta">{{META}}</script>
+{{DATA}}
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+const META=JSON.parse($('meta').textContent), T=META.topics, C=META.chapters;
+const KEY='uk5-be-master-v3';
+let S={ans:{},bm:{},done:{},theme:null,rev:false,last:1};
+try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&typeof v==='object')S=Object.assign(S,v)}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const chOf=t=>C.find(c=>c.topics.includes(+t));
+let curCh=0,curT=1,returnTo=null;
+
+/* theme */
+function applyTheme(){const r=document.documentElement;if(S.theme)r.dataset.theme=S.theme;else delete r.dataset.theme;r.classList.toggle('rev',!!S.rev)}
+function isDark(){return S.theme?S.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches}
+applyTheme();
+$('bTheme').onclick=()=>{S.theme=isDark()?'light':'dark';applyTheme();save()};
+$('bUp').onclick=()=>scrollBy({top:-innerHeight*.8,behavior:'smooth'});
+$('bDown').onclick=()=>scrollBy({top:innerHeight*.8,behavior:'smooth'});
+
+/* rail */
+const mods=$('mods');
+[1,2,3,4].forEach(m=>{
+  const b=document.createElement('button');b.type='button';b.className='rb mod';b.dataset.mod=m;b.textContent='M'+m;b.title='Module '+m;
+  b.onclick=()=>{const t=Object.keys(T).map(Number).find(n=>T[n].m===m);goTopic(t)};
+  const g=document.createElement('div');g.className='tg';g.dataset.mod=m;
+  Object.keys(T).map(Number).filter(n=>T[n].m===m).forEach(n=>{
+    const x=document.createElement('button');x.type='button';x.className='rb tn'+(T[n].ok?'':' pend');x.dataset.t=n;x.textContent=n;
+    x.title='T'+n+' · '+T[n].name+(T[n].ok?'':' (rework pending)');x.setAttribute('aria-label',x.title);x.onclick=()=>goTopic(n);g.append(x)});
+  mods.append(b,g)});
+function syncRail(){
+  const m=T[curT].m;
+  qa('.rb.mod').forEach(b=>b.classList.toggle('on',+b.dataset.mod===m));
+  qa('.tg').forEach(g=>g.classList.toggle('open',+g.dataset.mod===m));
+  qa('.rb.tn').forEach(b=>{const on=+b.dataset.t===curT;b.classList.toggle('on',on);b.classList.toggle('done',!!S.done[b.dataset.t]);if(on){b.setAttribute('aria-current','true');const g=b.parentElement;const top=b.offsetTop-g.offsetTop;if(top<g.scrollTop||top>g.scrollTop+g.clientHeight-26)g.scrollTop=top-g.clientHeight/2}else b.removeAttribute('aria-current')});
+}
+
+/* chapters */
+function openChapter(n){
+  if(curCh===n)return;curCh=n;
+  qa('.chapter').forEach(c=>c.hidden=+c.dataset.ch!==n);
+  qa('.chapter[data-ch="'+n+'"] .legacy-frame').forEach(loadLegacy);
+}
+function loadLegacy(box){
+  if(box.dataset.loaded)return;box.dataset.loaded=1;
+  const src=$('legacy-'+box.dataset.legacy);if(!src)return;
+  try{const raw=atob(src.textContent.trim());const html=new TextDecoder().decode(Uint8Array.from(raw,c=>c.charCodeAt(0)));
+    const f=document.createElement('iframe');f.title='Purane notes: T'+box.dataset.legacy;f.loading='lazy';f.srcdoc=html;box.append(f)}catch(e){box.textContent='Purane notes load nahi ho paaye.'}
+}
+function scrollToEl(el,inst){if(!el)return;const y=el.getBoundingClientRect().top+scrollY-10;scrollTo({top:y,behavior:inst?'instant':'smooth'})}
+function goTopic(n,inst){n=+n;const c=chOf(n);if(!c)return;openChapter(c.n);curT=n;syncRail();S.last=n;save();requestAnimationFrame(()=>scrollToEl($('t'+n),inst))}
+function goId(id){const el=$(id);if(!el)return false;const ch=el.closest('.chapter');if(ch)openChapter(+ch.dataset.ch);
+  requestAnimationFrame(()=>{scrollToEl(el);el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')});return true}
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);
+  const m=/^t(\d+)$/.exec(id);if(m){e.preventDefault();goTopic(m[1]);return}if($(id)){e.preventDefault();goId(id)}});
+qa('.cnav button').forEach(b=>b.onclick=()=>{const c=C.find(x=>x.n===+b.dataset.go);if(c)goTopic(c.topics[0])});
+/* scroll spy */
+let spy=0;addEventListener('scroll',()=>{if(spy)return;spy=requestAnimationFrame(()=>{spy=0;
+  const arts=qa('.chapter[data-ch="'+curCh+'"] .topic');let t=null;for(const a of arts){if(a.getBoundingClientRect().top<innerHeight*.35)t=+a.dataset.topic}
+  if(t&&t!==curT){curT=t;S.last=t;save();syncRail()}})},{passive:true});
+
+/* bookmarks on concept blocks */
+qa('.topic:not(.legacy) .blk[id], .topic:not(.legacy) .card[id]').forEach(el=>{
+  if(el.classList.contains('quizwrap'))return;
+  const b=document.createElement('button');b.type='button';b.className='star-b';b.dataset.bm='b:'+el.id;b.setAttribute('aria-label','Bookmark');
+  el.prepend(b)});
+function syncStars(){qa('[data-bm]').forEach(b=>{const on=!!S.bm[b.dataset.bm];b.classList.toggle('on',on);b.textContent=on?'★':'☆';b.setAttribute('aria-pressed',on)})}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;const k=b.dataset.bm;if(S.bm[k])delete S.bm[k];else S.bm[k]=1;save();syncStars();if(!$('panel').hidden&&panelView==='saved')renderPanel('saved')});
+
+/* done */
+qa('.donebtn').forEach(b=>{const n=b.dataset.done;const s=()=>{b.classList.toggle('on',!!S.done[n]);b.textContent=S.done[n]?'✓ Topic '+n+' done':'✓ Mark Topic '+n+' as done'};s();
+  b.onclick=()=>{if(S.done[n])delete S.done[n];else S.done[n]=1;save();s();syncRail()}});
+
+/* quiz */
+const QB={};qa('script[id^="q-"]').forEach(s=>QB[s.id.slice(2)]=JSON.parse(s.textContent));
+const filt={};
+const label=id=>{const el=$(id);if(!el)return id;const h=el.querySelector('h3,h4,b,td')||el;return [...h.childNodes].filter(n=>!(n.nodeType===1&&n.matches('.star-b,.back-q'))).map(n=>n.textContent).join('').trim().slice(0,60)};
+function stats(t){const qs=QB[t]||[],a=S.ans[t]||{};let r=0,n=0;const weak={};qs.forEach(q=>{if(a[q.id]==null)return;n++;if(a[q.id]===q.a)r++;else weak[q.c]=(weak[q.c]||0)+1});return{r,n,total:qs.length,weak}}
+function renderQuiz(t){
+  const box=document.querySelector('.quiz[data-topic="'+t+'"]');if(!box)return;const qs=QB[t]||[];const a=S.ans[t]||{};const f=filt[t]||'all';const st=stats(t);
+  let h='<div class="qbar"><span class="score">'+st.r+' / '+st.n+' sahi · '+st.n+' / '+st.total+' attempted</span>'+
+   [['all','Sab'],['wrong','Galat'],['left','Baaki'],['star','⭐']].map(([k,l])=>'<button type="button" data-f="'+k+'" class="'+(f===k?'on':'')+'">'+l+'</button>').join('')+
+   '<button type="button" data-retry>Retry galat</button><button type="button" data-reset>Reset</button></div>';
+  const wk=Object.entries(st.weak).sort((x,y)=>y[1]-x[1]);
+  if(wk.length)h+='<div class="weak"><b>Weak concepts:</b><ul>'+wk.map(([c,k])=>'<li><a href="#'+c+'">'+esc(label(c))+'</a> — '+k+' galat</li>').join('')+'</ul></div>';
+  const list=qs.map((q,i)=>({q,i})).filter(({q})=>f==='all'||(f==='wrong'&&a[q.id]!=null&&a[q.id]!==q.a)||(f==='left'&&a[q.id]==null)||(f==='star'&&S.bm['q:'+t+':'+q.id]));
+  h+=list.length?list.map(({q,i})=>card(t,q,i,a[q.id])).join(''):'<div class="empty">Is filter mein koi question nahi.</div>';
+  box.innerHTML=h;syncStars();
+}
+function card(t,q,i,ch){
+  const done=ch!=null;
+  let h='<div class="qc" id="q-'+t+'-'+q.id+'"><div class="qh"><span class="qn">Q'+(i+1)+'</span><span class="qt">'+esc(q.tag||'')+'</span><button type="button" class="star-q" data-bm="q:'+t+':'+q.id+'" aria-label="Bookmark question"></button></div><div class="qq">'+esc(q.q)+'</div><div class="opts">';
+  q.o.forEach((o,k)=>{let cl='opt';if(done){if(k===q.a)cl+=' right';else if(k===ch)cl+=' wrong'}
+    h+='<button type="button" class="'+cl+'" data-t="'+t+'" data-q="'+q.id+'" data-k="'+k+'"'+(done?' disabled':'')+'><span class="ol">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>'});
+  h+='</div>';
+  if(done){const ok=ch===q.a;h+='<div class="qex"><div class="verdict '+(ok?'ok':'no')+'">'+(ok?'✓ Sahi':'✗ Galat — sahi answer: '+'ABCD'[q.a])+'</div><div>'+esc(q.e)+'</div>';
+    if(q.w)h+='<ul>'+q.w.map((w,k)=>w?'<li><b>'+'ABCD'[k]+':</b> '+esc(w)+'</li>':'').join('')+'</ul>';
+    h+='<button type="button" class="sc" data-sc="'+q.c+'" data-t="'+t+'" data-q="'+q.id+'">Show Concept →</button></div>'}
+  return h+'</div>';
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('.opt[data-q]');
+  if(o&&!o.disabled){const t=o.dataset.t;(S.ans[t]=S.ans[t]||{})[o.dataset.q]=+o.dataset.k;save();
+    const qs=QB[t],i=qs.findIndex(q=>q.id==o.dataset.q),el=$('q-'+t+'-'+o.dataset.q);el.outerHTML=card(t,qs[i],i,+o.dataset.k);syncStars();refreshBar(t);return}
+  const fb=e.target.closest('.qbar [data-f]');if(fb){const t=fb.closest('.quiz').dataset.topic;filt[t]=fb.dataset.f;renderQuiz(t);return}
+  const rs=e.target.closest('.qbar [data-reset]');if(rs){const t=rs.closest('.quiz').dataset.topic;if(confirm('Topic '+t+' ke saare answers reset karein?')){S.ans[t]={};save();filt[t]='all';renderQuiz(t)}return}
+  const rt=e.target.closest('.qbar [data-retry]');if(rt){const t=rt.closest('.quiz').dataset.topic;const a=S.ans[t]||{};const ids=(QB[t]||[]).filter(q=>a[q.id]!=null&&a[q.id]!==q.a).map(q=>q.id);
+    if(!ids.length){alert('Koi galat answer nahi hai.');return}ids.forEach(id=>delete a[id]);save();filt[t]='left';renderQuiz(t);return}
+  const sc=e.target.closest('[data-sc]');if(sc){showConcept(sc.dataset.sc,sc.dataset.t,sc.dataset.q);return}
+  const bq=e.target.closest('.back-q');if(bq){backToQ();return}
+});
+function refreshBar(t){const box=document.querySelector('.quiz[data-topic="'+t+'"]');const st=stats(t);const s=box.querySelector('.score');if(s)s.textContent=st.r+' / '+st.n+' sahi · '+st.n+' / '+st.total+' attempted';
+  const old=box.querySelector('.weak');const wk=Object.entries(st.weak).sort((x,y)=>y[1]-x[1]);
+  const h=wk.length?'<div class="weak"><b>Weak concepts:</b><ul>'+wk.map(([c,k])=>'<li><a href="#'+c+'">'+esc(label(c))+'</a> — '+k+' galat</li>').join('')+'</ul></div>':'';
+  if(old)old.outerHTML=h||'<span></span>';else if(h)box.querySelector('.qbar').insertAdjacentHTML('afterend',h)}
+function showConcept(cid,t,qid){
+  const el=$(cid);if(!el)return;qa('.back-q').forEach(b=>b.remove());returnTo={t,qid};
+  let host=el.querySelector('h3,h4')||el.querySelector('td')||el;
+  const b=document.createElement('button');b.type='button';b.className='back-q';b.innerHTML='↩ Back to Question';b.setAttribute('aria-label','Back to question');
+  host.append(b);goId(cid)}
+function backToQ(){if(!returnTo)return;const {t,qid}=returnTo;qa('.back-q').forEach(b=>b.remove());returnTo=null;
+  let el=$('q-'+t+'-'+qid);if(!el){filt[t]='all';renderQuiz(t);el=$('q-'+t+'-'+qid)}
+  const ch=el.closest('.chapter');if(ch)openChapter(+ch.dataset.ch);requestAnimationFrame(()=>{scrollToEl(el);el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')})}
+Object.keys(QB).forEach(renderQuiz);
+
+/* panel */
+const panel=$('panel');let panelView='home';
+function renderPanel(view){
+  panelView=view||'home';const t=curT,st=stats(t),hasQ=!!QB[t];let h='<div class="ph"><b>Topic '+t+' · '+esc(T[t].name)+'</b><button type="button" class="x" data-close aria-label="Close">×</button></div>';
+  if(panelView==='home'){
+    h+=hasQ?'<button type="button" class="pbtn main" data-go-q>Practice MCQs → '+st.n+'/'+st.total+' attempted · '+st.r+' sahi</button>'
+            :'<button type="button" class="pbtn main" data-go-q>MCQs (purane notes ke andar) →</button>';
+    const wk=Object.entries(st.weak);if(wk.length)h+='<div class="psec"><h5>Weak concepts</h5>'+wk.map(([c,k])=>'<button type="button" class="pbtn" data-goid="'+c+'">'+esc(label(c))+' — '+k+' galat</button>').join('')+'</div>';
+    h+='<input class="psearch" id="pS" type="search" placeholder="Search notes… (e.g. Robbins, PPC)" aria-label="Search"><ul class="res" id="pR"></ul>';
+    h+='<div class="prow"><button type="button" class="pbtn" data-view="saved">⭐ Saved</button><button type="button" class="pbtn" data-fc>🃏 Flashcards</button>'+
+       '<button type="button" class="pbtn'+(S.rev?' on':'')+'" data-rev>📖 Revision '+(S.rev?'ON':'OFF')+'</button><button type="button" class="pbtn" data-print>🖨 Print / PDF</button></div>';
+    const dn=Object.keys(S.done).length,ok=Object.values(T).filter(x=>x.ok).length;
+    h+='<div class="psec"><h5>Progress</h5><div class="mini">'+dn+' / 31 topics done · '+ok+' / 31 topics rebuilt</div></div>';
+  }else if(panelView==='saved'){
+    const ks=Object.keys(S.bm);h+='<button type="button" class="pbtn" data-view="home">← Back</button>';
+    if(!ks.length)h+='<div class="empty">Abhi kuch save nahi kiya. Kisi concept ya question ke ☆ par tap karo.</div>';
+    ks.forEach(k=>{const p=k.split(':');if(p[0]==='b')h+='<button type="button" class="pbtn" data-goid="'+p[1]+'">📌 '+esc(label(p[1]))+'</button>';
+      else{const q=(QB[p[1]]||[]).find(x=>x.id==p[2]);if(q)h+='<button type="button" class="pbtn" data-goq="'+p[1]+':'+p[2]+'">❓ T'+p[1]+': '+esc(q.q.slice(0,70))+'…</button>'}});
+  }
+  panel.innerHTML=h;panel.hidden=false;
+  const inp=$('pS');if(inp)inp.oninput=()=>search(inp.value);
+}
+$('bQ').onclick=()=>{if(!panel.hidden){panel.hidden=true;return}renderPanel('home')};
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.close!=null){panel.hidden=true;return}
+  if(b.dataset.view){renderPanel(b.dataset.view);return}
+  if(b.dataset.goQ!=null){panel.hidden=true;const p=$('t'+curT+'-practice');if(p)goId(p.id);else goTopic(curT);return}
+  if(b.dataset.goid){panel.hidden=true;goId(b.dataset.goid);return}
+  if(b.dataset.goq){panel.hidden=true;const [t,id]=b.dataset.goq.split(':');filt[t]='all';renderQuiz(t);goId('q-'+t+'-'+id);return}
+  if(b.dataset.rev!=null){S.rev=!S.rev;applyTheme();save();renderPanel('home');return}
+  if(b.dataset.print!=null){panel.hidden=true;setTimeout(()=>print(),50);return}
+  if(b.dataset.fc!=null){panel.hidden=true;openFC(curT);return}
+  if(b.dataset.res){panel.hidden=true;goId(b.dataset.res);return}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;$('fc').hidden=true}});
+document.addEventListener('pointerdown',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!e.target.closest('#bQ'))panel.hidden=true});
+
+/* search */
+let IDX=null;
+const txt=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('svg,.star-b,.back-q')?2:1});const o=[];while(w.nextNode())o.push(w.currentNode.nodeValue);return o.join(' ').replace(/\s+/g,' ').trim()};
+function buildIdx(){IDX=[];qa('.topic:not(.legacy)').forEach(a=>{const t=+a.dataset.topic;qa('.blk[id],.card[id]',a).forEach(el=>{if(el.classList.contains('quizwrap'))return;IDX.push({id:el.id,t,title:label(el.id),txt:txt(el)})})});
+  Object.keys(T).forEach(n=>IDX.push({id:'t'+n,t:+n,title:'T'+n+' · '+T[n].name+(T[n].ok?'':' (rework pending)'),txt:T[n].name}))}
+function search(s){const R=$('pR');s=s.trim().toLowerCase();if(s.length<2){R.innerHTML='';return}if(!IDX)buildIdx();
+  const hits=IDX.filter(x=>x.txt.toLowerCase().includes(s)||x.title.toLowerCase().includes(s)).slice(0,25);
+  R.innerHTML=hits.length?hits.map(x=>{const i=x.txt.toLowerCase().indexOf(s);const sn=i<0?'':esc(x.txt.slice(Math.max(0,i-40),i))+'<mark>'+esc(x.txt.slice(i,i+s.length))+'</mark>'+esc(x.txt.slice(i+s.length,i+s.length+50));
+    return '<li><button type="button" data-res="'+x.id+'">'+esc(x.title)+' <small>T'+x.t+(sn?' · …'+sn+'…':'')+'</small></button></li>'}).join(''):'<li class="empty">Kuch nahi mila (sirf rebuilt topics ka text searchable hai).</li>'}
+
+/* flashcards */
+const FC={};qa('script[id^="fc-"]').forEach(s=>FC[s.id.slice(3)]=JSON.parse(s.textContent));
+function openFC(t){const box=$('fc');let cards=(FC[t]||[]).slice(),i=0,back=false;
+  const draw=()=>{if(!cards.length){box.innerHTML='<div class="fcbox"><div class="ph"><b>Flashcards · T'+t+'</b><button type="button" class="x" data-x>×</button></div><div class="empty">Is topic ke flashcards rework ke baad aayenge.</div></div>';return}
+    const c=cards[i];box.innerHTML='<div class="fcbox"><div class="ph"><b>Flashcards · T'+t+' · '+(i+1)+'/'+cards.length+'</b><button type="button" class="x" data-x aria-label="Close">×</button></div>'+
+    '<button type="button" class="fcard'+(back?' back':'')+'" data-flip>'+esc(back?c[1]:c[0])+'</button><div class="mini" style="text-align:center">Card par tap karke palto</div>'+
+    '<div class="fcnav"><button type="button" data-p>← Prev</button><button type="button" data-sh>Shuffle</button><button type="button" data-n>Next →</button></div></div>'};
+  box.onclick=e=>{const b=e.target.closest('button');if(e.target===box||b&&b.dataset.x!=null){box.hidden=true;return}if(!b)return;
+    if(b.dataset.flip!=null)back=!back;if(b.dataset.n!=null){i=(i+1)%cards.length;back=false}if(b.dataset.p!=null){i=(i-1+cards.length)%cards.length;back=false}
+    if(b.dataset.sh!=null){for(let k=cards.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[cards[k],cards[j]]=[cards[j],cards[k]]}i=0;back=false}draw()};
+  draw();box.hidden=false}
+
+/* topic-specific widgets */
+const W={};
+W.timeline=()=>{const info=$('t1-tl-info');if(!info)return;const D=[
+ ['1776 · Adam Smith — Wealth','Wealth of Nations. Focus: wealth ka production aur growth. Economic Man.'],
+ ['1890 · Alfred Marshall — Welfare','Principles of Economics. Focus: man aur material welfare; wealth sirf means.'],
+ ['1932 · Lionel Robbins — Scarcity','Essay on the Nature and Significance of Economic Science. Unlimited ends, scarce means, alternative uses.'],
+ ['1948 · Paul Samuelson — Growth','Economics: An Introductory Analysis. Time dimension, now and in the future, with or without money.'],
+ ['J. K. Mehta — Wantlessness','Indian philosophical approach: wants kam karke satisfaction.']];
+ qa('#t1-evolution .tl').forEach(g=>{const f=()=>{qa('#t1-evolution .tl').forEach(x=>x.classList.remove('sel'));g.classList.add('sel');const d=D[+g.dataset.i];info.innerHTML='<b>'+d[0]+'</b><br>'+d[1]};
+  g.addEventListener('click',f);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}})})};
+W.ppc=()=>{const info=$('t1-ppc-info'),dot=$('t1-pdot'),lab=$('t1-plab'),out=$('t1-pout');if(!info)return;
+ const P={on:[{{PPC_ON}},'A · On PPC — resources ka full aur efficient use. Lekin "socially best" hona alag sawaal hai.'],
+  inside:[{{PPC_IN}},'B · Inside — kuch resources idle/unemployed ya inefficient use. Better use se PPC tak ja sakte hain (PPC shift nahi hoti).'],
+  outside:[{{PPC_OUT}},'C · Outside — abhi ke resources/technology se unattainable. Growth (outward shift) ke baad possible.'],
+  shift:[{{PPC_SH}},'Outward shift — resources badhe ya technology sudhri. Dashed nayi PPC: point C jo pehle unattainable tha, ab attainable hai.']};
+ const set=k=>{const p=P[k];dot.setAttribute('cx',p[0]);dot.setAttribute('cy',p[1]);lab.setAttribute('x',p[0]+8);lab.setAttribute('y',p[1]-8);lab.textContent=k==='inside'?'B':k==='on'?'A':'C';
+  out.style.display=k==='shift'?'':'none';info.textContent=p[2];qa('#t1-ppc [data-ppc]').forEach(b=>b.classList.toggle('on',b.dataset.ppc===k))};
+ qa('#t1-ppc [data-ppc]').forEach(b=>b.onclick=()=>set(b.dataset.ppc));set('on')};
+W.timeline();W.ppc();
+
+/* start */
+syncStars();
+const h=/^#t(\d+)$/.exec(location.hash);const start=h&&T[h[1]]?+h[1]:(T[S.last]?S.last:1);
+openChapter(chOf(start).n);curT=start;syncRail();if(start!==1||h)setTimeout(()=>goTopic(start,true),30);
+})();
+</script>
+</body>
+</html>
