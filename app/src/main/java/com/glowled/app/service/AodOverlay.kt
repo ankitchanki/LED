@@ -72,6 +72,7 @@ object AodOverlay {
             lp.preferredDisplayModeId = it.first
             lp.preferredRefreshRate = it.second
         }
+        lp.windowAnimations = 0 // appear instantly; the LED does its own entrance
         lp.title = "GlowLED AOD"
         try {
             wm.addView(s.root, lp)

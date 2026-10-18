@@ -1,3 +1,29 @@
+# Glow LED v1.5.0
+
+**Install:** download `GlowLED-v1.5.0.apk` below, open it, then follow the in-app *Setup* tab.
+
+## Smooth screen-off
+- **No more flicker when you lock the phone.** The light now prefers a lock-screen window: Android
+  waits for its first (black, dimmed) frame before turning the panel on, so the lock screen never
+  flashes. If your ROM blocks that window, Glow LED notices within ~1 s, switches to the overlay and
+  remembers the choice.
+- New *Screen-off method* option (Auto / Lock-screen window / Overlay) in the Screen off tab.
+- The ring now grows smoothly out of the camera instead of popping in at full size.
+
+## App under the camera (One UI style)
+- A strip of app icons drops in under the ring (up to 4 + "+N"), each in a ring of its LED colour,
+  with the newest app's name and the notification count.
+- Staggered pop-in motion; fades away after 8 s to protect the screen (option to keep it visible).
+- Single tap brings it back; a new notification refreshes it.
+
+## Gestures
+- **Double-tap to wake** (shows the lock screen), with more reliable double-tap detection.
+
+## Fixes
+- Guard against a rare crash when the display isn't available yet.
+
+---
+
 # Glow LED v1.4.0
 
 **Install:** download `GlowLED-v1.4.0.apk` below, open it, then follow the in-app *Setup* tab.

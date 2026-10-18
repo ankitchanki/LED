@@ -135,6 +135,23 @@ class LedView @JvmOverloads constructor(
 
     private fun glowRadius() = if (glow) thickness * 1.6f + 3 * density else 0f
 
+    /** Lowest point of the drawn ring, in the geometry's coordinates (to place content under it). */
+    fun ringBottom(): Float {
+        val g = geometry ?: return 0f
+        val r = if (g.shape == CutoutShape.DOT) max(g.w, g.h) / 2f else g.h / 2f + gap + thickness
+        return g.cy + r + glowRadius()
+    }
+
+    /**
+     * Entrance progress 0..1: the ring grows out of the camera hole and fades in, so it never
+     * pops onto the screen at full size.
+     */
+    var intro = 1f
+        set(v) {
+            field = v.coerceIn(0f, 1f)
+            invalidate()
+        }
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
         dirty = true
@@ -214,10 +231,15 @@ class LedView @JvmOverloads constructor(
         val segmented = multiMode == MultiMode.SEGMENTS && n > 1
         val color = if (multiMode == MultiMode.LATEST) colors[0] else colors[(cycle % n).toInt()]
 
-        if (shiftX != 0f || shiftY != 0f) {
-            // Burn-in protection: move the whole drawing by a few pixels.
+        val transformed = shiftX != 0f || shiftY != 0f || intro < 1f
+        if (transformed) {
             canvas.save()
+            // Burn-in protection: move the whole drawing by a few pixels.
             canvas.translate(shiftX, shiftY)
+            if (intro < 1f && !style.isEdge) {
+                val s = 0.6f + 0.4f * intro
+                canvas.scale(s, s, cx, cy)
+            }
         }
 
         when (style) {
@@ -235,7 +257,7 @@ class LedView @JvmOverloads constructor(
             LedStyle.RAINBOW -> rainbow(canvas, p)
         }
 
-        if (shiftX != 0f || shiftY != 0f) canvas.restore()
+        if (transformed) canvas.restore()
         scheduleNext(period, inPeriod, n, segmented)
     }
 
@@ -270,7 +292,7 @@ class LedView @JvmOverloads constructor(
         val paint = if (filled) fill else stroke
         paint.shader = null
         paint.color = color
-        paint.alpha = (255 * (a * alphaMul).coerceIn(0f, 1f)).toInt()
+        paint.alpha = (255 * (a * alphaMul * intro).coerceIn(0f, 1f)).toInt()
         stroke.strokeWidth = thickness
         if (glow && paint.alpha > 8) paint.setShadowLayer(glowRadius(), 0f, 0f, paint.color)
         else paint.clearShadowLayer()
@@ -336,7 +358,7 @@ class LedView @JvmOverloads constructor(
         val paint = if (isFilled) fill else stroke
         paint.clearShadowLayer()
         paint.color = Color.WHITE
-        paint.alpha = (255 * alphaMul).toInt()
+        paint.alpha = (255 * alphaMul * intro).toInt()
         stroke.strokeWidth = thickness
         paint.shader = s
         c.drawPath(shapePath, paint)

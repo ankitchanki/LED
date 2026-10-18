@@ -30,6 +30,18 @@ class NotificationStoreTest {
     }
 
     @Test
+    fun appsAreGroupedNewestFirstWithCounts() {
+        NotificationStore.put(NotificationStore.Entry("a1", "chat", 1, 1))
+        NotificationStore.put(NotificationStore.Entry("b1", "mail", 2, 2))
+        NotificationStore.put(NotificationStore.Entry("a2", "chat", 1, 3))
+        val apps = NotificationStore.apps()
+        org.junit.Assert.assertEquals(listOf("chat", "mail"), apps.map { it.pkg })
+        org.junit.Assert.assertEquals(listOf(2, 1), apps.map { it.count })
+        NotificationStore.markAllSeen()
+        assertTrue(NotificationStore.apps().isEmpty())
+    }
+
+    @Test
     fun replaceAllReportsChangesOnly() {
         val list = listOf(NotificationStore.Entry("a", "p", 1, 1))
         assertTrue(NotificationStore.replaceAll(list))

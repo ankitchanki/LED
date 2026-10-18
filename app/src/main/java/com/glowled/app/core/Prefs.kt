@@ -43,8 +43,12 @@ class Prefs(context: Context) {
     val pulseDurationSec get() = int("pulse_duration", 10).coerceIn(3, 120)
     val aodBrightness get() = int("aod_brightness", 3).coerceIn(1, 100)
     val proximity get() = bool("proximity", true)
-    val tapToDismiss get() = bool("tap_dismiss", true)
-    val doubleTapOff get() = bool("double_tap_off", true)
+    val doubleTapWake get() = bool("double_tap_wake", true)
+    val showAppInfo get() = bool("show_app_info", true)
+    val appInfoAlways get() = bool("app_info_always", false)
+
+    /** "auto", "activity" (lock-screen window) or "overlay" (accessibility overlay). */
+    val aodMethod get() = str("aod_method", "auto")
     val burnIn get() = bool("burn_in", true)
     val lowRefresh get() = bool("low_refresh", true)
     val fpsCap get() = strInt("fps_cap", 30)

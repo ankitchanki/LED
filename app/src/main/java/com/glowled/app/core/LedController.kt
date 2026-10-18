@@ -26,6 +26,7 @@ import com.glowled.app.service.NotifyListenerService
 import com.glowled.app.service.OverlayHost
 import com.glowled.app.service.PulseReceiver
 import com.glowled.app.ui.AodActivity
+import com.glowled.app.util.OemHelper
 import com.glowled.app.util.Privileged
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -43,6 +44,9 @@ object LedController {
     private const val FSI_CHANNEL = "aod_launcher"
     const val FSI_ID = 4201
     private const val LAUNCH_WINDOW_MS = 4000L
+
+    /** Set when the ROM blocked the lock-screen window once, so Auto goes straight to the overlay. */
+    const val PREF_WINDOW_BLOCKED = "aod_window_blocked"
 
     lateinit var app: Context
         private set
@@ -177,21 +181,38 @@ object LedController {
             PowerGuard.blockReason(app, prefs)?.let { return DebugLog.add("Skipped: $it") }
         }
         val duration = if (pulse) prefs.pulseDurationSec else prefs.aodTimeoutSec
+        val overlayAvailable = LedAccessibilityService.instance != null
 
-        // Preferred path: accessibility overlay. Not an activity start, so ROMs that block
-        // background activities (HyperOS/MIUI, ColorOS, OriginOS...) can't stop it.
-        if (LedAccessibilityService.instance != null) {
-            ourWakeUntil = SystemClock.uptimeMillis() + LAUNCH_WINDOW_MS
-            if (AodOverlay.show(duration, preview)) {
-                if (!preview) wakeBriefly()
-                DebugLog.add("Light started (overlay)")
-                return
-            }
+        // Two ways to show the black screen:
+        //  - lock-screen window (AodActivity): Android waits for its first frame before turning the
+        //    panel on, so it comes up already black and dim - no flicker. Some ROMs block it.
+        //  - accessibility overlay: can't be blocked, but the panel is woken first, so the lock
+        //    screen can flash for a few ms before the overlay draws.
+        // Auto prefers the window and falls back to the overlay if the ROM blocks it.
+        val useOverlay = overlayAvailable && !preview && when (prefs.aodMethod) {
+            "overlay" -> true
+            "activity" -> false
+            else -> !canLaunchFromBackground() || OemHelper.miuiLockScreenAllowed(app) == false ||
+                prefs.sp.getBoolean(PREF_WINDOW_BLOCKED, false)
+        }
+        if (useOverlay) {
+            startOverlay(duration, preview)
+            return
         }
         DebugLog.add(
-            if (canLaunchFromBackground()) "Light starting (activity)"
-            else "Light starting (full-screen alert) - enable Accessibility for reliability",
+            if (canLaunchFromBackground()) "Light starting (lock-screen window)"
+            else "Light starting (full-screen alert) - allow Display over other apps",
         )
+        if (!preview && overlayAvailable && prefs.aodMethod == "auto") {
+            // Watchdog: if the ROM silently blocked the window, use the overlay and remember it.
+            main.postDelayed({
+                if (!aodVisible && !AodOverlay.isShowing && !NotificationStore.isEmpty()) {
+                    DebugLog.add("Lock-screen window was blocked by the system - switching to overlay")
+                    prefs.sp.edit().putBoolean(PREF_WINDOW_BLOCKED, true).apply()
+                    startOverlay(duration, false)
+                }
+            }, 1300)
+        }
         val intent = Intent(app, AodActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION or
@@ -215,7 +236,16 @@ object LedController {
         if (!launched) launchViaFullScreenIntent(intent)
         // Only force the panel on if turnScreenOn didn't (some OEM ROMs ignore it); doing it
         // first would flash the lock screen before the black AOD appears.
-        if (!preview) main.postDelayed({ if (!isInteractive()) wakeBriefly() }, 450)
+        if (!preview) main.postDelayed({ if (aodVisible && !isInteractive()) wakeBriefly() }, 600)
+    }
+
+    private fun startOverlay(duration: Int, preview: Boolean) {
+        ourWakeUntil = SystemClock.uptimeMillis() + LAUNCH_WINDOW_MS
+        if (AodOverlay.show(duration, preview)) {
+            // The overlay is added (black, dim) before the panel wakes, keeping any flash minimal.
+            if (!preview && !isInteractive()) main.postDelayed({ wakeBriefly() }, 60)
+            DebugLog.add("Light started (overlay)")
+        }
     }
 
     @Suppress("DEPRECATION")

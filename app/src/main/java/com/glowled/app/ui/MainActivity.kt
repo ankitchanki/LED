@@ -98,6 +98,8 @@ class MainActivity : AppCompatActivity() {
     // Any setting change re-renders the preview immediately.
     private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == "style") styleAdapter.notifyItemRangeChanged(0, styleAdapter.itemCount)
+        // A new method choice gets a fresh chance to use the flicker-free lock-screen window.
+        if (key == "aod_method") prefs.sp.edit().remove(LedController.PREF_WINDOW_BLOCKED).apply()
         configureHero()
         if (key == "style" || key == Prefs.K_ENABLED) ui.refresh()
     }
@@ -327,11 +329,14 @@ class MainActivity : AppCompatActivity() {
             Toggle("When I turn screen off", "aod_on_screen_off", true, aodOn),
             Toggle("When a notification arrives", "aod_on_new", true, aodOn),
             Toggle("Pocket detection", "proximity", true, aodOn),
-            Toggle("Tap: show lock screen", "tap_dismiss", true, aodOn),
-            Toggle("Double-tap: screen off", "double_tap_off", true, aodOn),
+            Toggle("Double-tap to wake", "double_tap_wake", true, aodOn),
             Toggle("Burn-in protection", "burn_in", true, aodOn),
+            Toggle("Show app under camera", "show_app_info", true, aodOn),
+            Toggle("Keep app icons visible", "app_info_always", false) { prefs.aodEnabled && prefs.showAppInfo },
         ))
         val c = ui.card(col)
+        ui.chips(c, "Screen-off method", "aod_method",
+            listOf("Auto", "Lock-screen window", "Overlay"), listOf("auto", "activity", "overlay"), "auto", aodOn)
         ui.chips(c, "Keep the light on for", "aod_timeout",
             listOf("30 s", "1 min", "2 min", "5 min", "15 min", "1 hour", "Until cleared"),
             listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
@@ -658,6 +663,7 @@ class MainActivity : AppCompatActivity() {
     private fun runShellSetup() {
         Toast.makeText(this, R.string.shell_running, Toast.LENGTH_SHORT).show()
         Privileged.setup(this) { summary ->
+            prefs.sp.edit().remove(LedController.PREF_WINDOW_BLOCKED).apply()
             Toast.makeText(this, summary, Toast.LENGTH_LONG).show()
             buildSetup()
             refreshLive()

@@ -28,6 +28,7 @@ are switched off, so only the light itself uses power.
 | **9 animations** | Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static ring, Edge lighting, Edge pulse. Adjustable speed, thickness, gap, intensity and glow. |
 | **Colours** | Per-app colour you pick, or the app's own notification colour, or a colour taken from its icon. Several notifications can take turns, split the ring into colour segments, or show only the newest. |
 | **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate. Timeout, optional reminder pulses, pocket detection, burn-in protection. Tap to show the lock screen, double-tap to turn the screen off. |
+| **App under the camera** | One UI-style strip of app icons (in each app's LED colour) with the app name and count, dropping in under the ring with a smooth motion. Double-tap to wake. |
 | **Screen on** | A small light around the camera, also over the lock screen. |
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. Low-battery cut-off, quiet hours, pause during calls. |

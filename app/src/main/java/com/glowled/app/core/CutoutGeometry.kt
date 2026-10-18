@@ -21,8 +21,10 @@ data class Geometry(
 
 object CutoutGeometry {
 
+    /** Default display; DisplayManager can return null briefly (e.g. during display changes). */
     fun display(context: Context): Display =
-        context.getSystemService(DisplayManager::class.java).getDisplay(Display.DEFAULT_DISPLAY)
+        context.getSystemService(DisplayManager::class.java)?.getDisplay(Display.DEFAULT_DISPLAY)
+            ?: @Suppress("DEPRECATION") context.getSystemService(android.view.WindowManager::class.java).defaultDisplay
 
     /** Real (full) display size in the natural orientation. */
     fun naturalSize(context: Context): Point {

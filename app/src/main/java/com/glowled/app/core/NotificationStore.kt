@@ -61,6 +61,20 @@ object NotificationStore {
     @Synchronized
     fun isEmpty(): Boolean = entries.keys.all { it in seen }
 
+    data class AppInfo(val pkg: String, val color: Int, val count: Int)
+
+    /** Apps with unseen notifications, newest first, with how many each has. */
+    @Synchronized
+    fun apps(): List<AppInfo> {
+        val out = LinkedHashMap<String, AppInfo>()
+        entries.values.sortedByDescending { it.time }.forEach {
+            if (it.key in seen) return@forEach
+            val prev = out[it.pkg]
+            out[it.pkg] = if (prev == null) AppInfo(it.pkg, it.color, 1) else prev.copy(count = prev.count + 1)
+        }
+        return out.values.toList()
+    }
+
     /** Distinct colors of unseen notifications, newest first (max [limit]). */
     @Synchronized
     fun colors(limit: Int = 6): IntArray {
