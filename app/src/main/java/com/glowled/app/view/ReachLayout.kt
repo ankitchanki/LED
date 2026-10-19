@@ -30,6 +30,9 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     var onReachChanged: ((Boolean) -> Unit)? = null
 
+    /** Every height change of [spacer] (0 = fully closed), e.g. to pause what's inside it. */
+    var onReachHeight: ((Int) -> Unit)? = null
+
     var isOpen = false
         private set
 
@@ -121,6 +124,7 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
         if (s.layoutParams.height == h) return
         s.layoutParams = s.layoutParams.apply { height = h }
         s.alpha = if (maxReach > 0) (h / maxReach.toFloat()).coerceIn(0f, 1f) else 0f
+        onReachHeight?.invoke(h)
     }
 
     companion object {

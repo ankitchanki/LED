@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Large collapsing header shared by sub-screens; black so it merges with the status bar. -->
+<!-- Large collapsing header shared by sub-screens: see-through over the glass backdrop, frosted once collapsed. -->
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/appBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black"
+    android:background="@android:color/transparent"
     android:fitsSystemWindows="true"
     app:elevation="0dp"
     app:liftOnScroll="false">
@@ -16,12 +16,12 @@
         android:layout_height="200dp"
         android:fitsSystemWindows="true"
         app:collapsedTitleTextAppearance="@style/GlowHeaderTitle.Collapsed"
-        app:contentScrim="@color/black"
+        app:contentScrim="@color/dialog_surface"
         app:expandedTitleMarginBottom="24dp"
         app:expandedTitleMarginStart="24dp"
         app:expandedTitleTextAppearance="@style/GlowHeaderTitle.Expanded"
         app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-        app:statusBarScrim="@color/black">
+        app:statusBarScrim="@color/dialog_surface">
 
         <View
             android:layout_width="match_parent"

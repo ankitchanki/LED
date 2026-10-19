@@ -79,7 +79,7 @@ class ReplyActivity : AppCompatActivity() {
             isClickable = true // don't let taps on the sheet close it
             setPadding(dp(20), dp(18), dp(20), dp(16))
             background = GradientDrawable().apply {
-                setColor(getColor(R.color.surface))
+                setColor(getColor(R.color.dialog_surface))
                 cornerRadii = floatArrayOf(28f, 28f, 28f, 28f, 0f, 0f, 0f, 0f).map { it * resources.displayMetrics.density }.toFloatArray()
             }
         }

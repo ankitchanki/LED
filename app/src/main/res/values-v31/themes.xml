@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+: real frosted glass, the app is blurred behind dialogs. -->
+    <style name="ThemeOverlay.GlowLED.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_surface</item>
+        <item name="android:backgroundDimAmount">0.25</item>
+        <item name="android:windowBlurBehindEnabled">true</item>
+        <item name="android:windowBlurBehindRadius">28dp</item>
+    </style>
+</resources>

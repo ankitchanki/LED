@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:orientation="vertical">
+    <!-- Background: GlassBackdrop (soft colour glows behind the frosted cards), set in code. -->
 
     <!-- Header: sits under the transparent status bar (top inset added in code). -->
     <LinearLayout
@@ -58,16 +59,16 @@
         android:alpha="0"
         android:gravity="bottom|center_horizontal"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp"
-        android:paddingBottom="18dp">
+        android:paddingBottom="12dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textAppearance="?attr/textAppearanceDisplaySmall"
-            android:textColor="@color/text_primary"
-            android:textStyle="bold" />
+        <!-- Live preview of the screen-off light (filled in code), updates as settings change. -->
+        <FrameLayout
+            android:id="@+id/reachPreview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="8dp" />
 
         <TextView
             android:id="@+id/reachHint"
@@ -84,7 +85,7 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/black"
+        android:background="@android:color/transparent"
         app:tabGravity="start"
         app:tabIndicator="@drawable/tab_indicator"
         app:tabIndicatorColor="@color/accent"
@@ -109,7 +110,7 @@
         android:id="@+id/dock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
+        android:background="@android:color/transparent"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:paddingTop="8dp"

@@ -498,19 +498,7 @@ class AodSession(
      * Preview without real notifications: messaging apps that are actually installed, so the
      * preview looks like the real thing (instead of Glow LED's own icon).
      */
-    private val sampleApps: List<NotificationStore.AppInfo> by lazy {
-        val pm = context.packageManager
-        SAMPLE_PACKAGES.mapNotNull { pkg ->
-            try {
-                pm.getApplicationInfo(pkg, 0)
-                NotificationStore.AppInfo(pkg, LedController.colors.colorFor(pkg, null), 1)
-            } catch (_: Exception) {
-                null
-            }
-        }.distinctBy { it.color }.take(3).ifEmpty {
-            listOf(NotificationStore.AppInfo(context.packageName, prefs.defaultColor, 1))
-        }
-    }
+    private val sampleApps: List<NotificationStore.AppInfo> by lazy { sampleApps(context) }
 
     private fun onStoreChanged() {
         if (ended) return
@@ -654,6 +642,24 @@ class AodSession(
             "com.whatsapp.w4b", "com.android.mms", "com.samsung.android.messaging",
         )
         private const val PEEK_MS = 12_000L
+
+        /**
+         * Preview without real notifications: messaging apps that are actually installed, so the
+         * preview looks like the real thing (instead of Glow LED's own icon).
+         */
+        fun sampleApps(context: Context): List<NotificationStore.AppInfo> {
+            val pm = context.packageManager
+            return SAMPLE_PACKAGES.mapNotNull { pkg ->
+                try {
+                    pm.getApplicationInfo(pkg, 0)
+                    NotificationStore.AppInfo(pkg, LedController.colors.colorFor(pkg, null), 1)
+                } catch (_: Exception) {
+                    null
+                }
+            }.distinctBy { it.color }.take(3).ifEmpty {
+                listOf(NotificationStore.AppInfo(context.packageName, LedController.prefs.defaultColor, 1))
+            }
+        }
         private const val DOUBLE_TAP_MS = 350L
         private const val TAP_MAX_MS = 300L
 

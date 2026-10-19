@@ -1,3 +1,26 @@
+# Glow LED v2.1.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## New
+- **Frosted glass design:** see-through glass cards, tiles, chips and buttons over soft colour glows
+  that follow your LED colour; dialogs are frosted and blur the app behind them (Android 12+). The
+  always-on screen stays pure black, so it still costs almost nothing on AMOLED.
+- **Colour wheel:** every colour picker (LED colour, per-app colours, charging and download ring) now
+  has a ring of all colours: put your finger on it and turn. Saturation and brightness sliders,
+  presets and the hex field are still there.
+- **Live preview in one-handed mode:** the big "Glow LED" title is gone (it's already in the header).
+  Instead the space shows a small black screen with your ring and app icons, drawn by the same code
+  as the real light and updated as you change style, colours, speed or size. Test is still the way to
+  check the real lock-screen flow.
+
+## Note for Xiaomi / HyperOS
+- Keep *Screen off → Screen-off method* on **Auto** (or Overlay). *Lock-screen window* sits under the
+  HyperOS lock screen, which flashes for an instant before the light.
+
+---
+
 # Glow LED v2.0.3
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

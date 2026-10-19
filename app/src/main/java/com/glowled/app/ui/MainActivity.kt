@@ -67,6 +67,8 @@ import com.glowled.app.ui.SettingsUi.Toggle
 import com.glowled.app.ui.SettingsUi.ColorItem
 import com.glowled.app.ui.SettingsUi.GridItem
 import com.glowled.app.view.ReachLayout
+import com.glowled.app.view.GlassBackdrop
+import com.glowled.app.view.AppInfoView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.activity.result.contract.ActivityResultContracts
 import com.glowled.app.util.AppSignature
@@ -103,7 +105,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var setupBar: LinearProgressIndicator
     private lateinit var reach: ReachLayout
     private var pageViews: List<View> = emptyList()
-    private val meterPreviewEnd = Runnable { cameraLed.setMeter(null, 0) }
+    private val meterPreviewEnd = Runnable { setMeters(null, 0) }
+    /** Frosted-glass background (soft colour glows); follows the chosen LED colour. */
+    private lateinit var backdrop: GlassBackdrop
+    /** Live preview of the screen-off light in the one-handed space. */
+    private var previewLed: LedView? = null
+    private var previewIcons: AppInfoView? = null
+    private val previewApps by lazy { AodSession.sampleApps(this) }
     private var quietSub: TextView? = null
     private var setupIncomplete = false
 
@@ -118,6 +126,9 @@ class MainActivity : AppCompatActivity() {
         // A new method choice gets a fresh chance to use the flicker-free lock-screen window.
         if (key == "aod_method") prefs.sp.edit().remove(LedController.PREF_WINDOW_BLOCKED).apply()
         configureCameraLed()
+        configurePreviewRing()
+        if (key in PREVIEW_ICON_KEYS) bindPreviewIcons()
+        if (key == "default_color" && ::backdrop.isInitialized) backdrop.setGlows(glowColors())
         // Visual feedback right on the camera when the look changes.
         if (key in REPLAY_KEYS) playCameraIntro()
         if (key != null && (key.startsWith("charge_") || key.startsWith("progress_"))) previewMeter(key)
@@ -132,6 +143,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         LedController.init(this)
         setContentView(R.layout.activity_main)
+        backdrop = GlassBackdrop(glowColors())
+        findViewById<View>(R.id.root).background = backdrop
         // Draw into the camera cutout area so the ring can surround the real camera.
         window.attributes = window.attributes.apply {
             layoutInDisplayCutoutMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -188,12 +201,76 @@ class MainActivity : AppCompatActivity() {
         }
         onBackPressedDispatcher.addCallback(this, back)
         val state = getSharedPreferences(UI_STATE, MODE_PRIVATE)
+        buildReachPreview(findViewById(R.id.reachPreview))
+        // Only animate the preview while it can be seen.
+        reach.onReachHeight = { h -> previewLed?.visibility = if (h > 0) View.VISIBLE else View.INVISIBLE }
         reach.onReachChanged = { open ->
             back.isEnabled = open
             state.edit().putBoolean(KEY_REACH_OPEN, open).apply()
         }
         // Stay in one-handed mode if that's how the app was left.
         if (state.getBoolean(KEY_REACH_OPEN, false)) reach.post { reach.open() }
+    }
+
+    private fun glowColors() = intArrayOf(getColor(R.color.accent), prefs.defaultColor, 0xFF7C4DFF.toInt())
+
+    /**
+     * The one-handed space shows a small black "screen" with the ring around a camera dot and the
+     * app icons, drawn by the same code as the real always-on light and updated with every change.
+     */
+    private fun buildReachPreview(host: FrameLayout) {
+        val card = MaterialCardView(this).apply {
+            setCardBackgroundColor(Color.BLACK)
+            radius = 28 * density
+            strokeWidth = dp(1)
+            strokeColor = getColor(R.color.glass_stroke)
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+        }
+        val inner = FrameLayout(this)
+        inner.addView(View(this).apply {
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0xFF101014.toInt()) }
+        }, FrameLayout.LayoutParams(dp(PREVIEW_HOLE_DP), dp(PREVIEW_HOLE_DP), Gravity.CENTER_HORIZONTAL or Gravity.TOP).apply {
+            topMargin = dp(PREVIEW_CAM_DP - PREVIEW_HOLE_DP / 2)
+        })
+        val led = LedView(this).apply {
+            useScreenCoords = false
+            visibility = View.INVISIBLE
+        }
+        inner.addView(led, FrameLayout.LayoutParams(-1, -1))
+        val icons = AppInfoView(this)
+        inner.addView(icons, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER_HORIZONTAL or Gravity.TOP).apply {
+            topMargin = dp(PREVIEW_CAM_DP + 30)
+        })
+        card.addView(inner, ViewGroup.LayoutParams(-1, -1))
+        host.addView(card, FrameLayout.LayoutParams(-1, -1))
+        previewLed = led
+        previewIcons = icons
+        bindPreviewIcons()
+        // The ring is centred on the card's width: re-centre when that changes, after the layout
+        // pass (configuring inside it would only take effect a frame later).
+        led.addOnLayoutChangeListener { _, l, _, r, _, ol, _, or, _ -> if (r - l != or - ol) led.post { configurePreviewRing() } }
+    }
+
+    private fun configurePreviewRing() {
+        val led = previewLed ?: return
+        if (led.width == 0) return
+        val hole = dp(PREVIEW_HOLE_DP).toFloat()
+        led.configure(prefs, Geometry(CutoutShape.CIRCLE, led.width / 2f, dp(PREVIEW_CAM_DP).toFloat(), hole, hole), previewColors())
+    }
+
+    /** Sample app icons in the AOD style chosen; only re-bound when a setting changes. */
+    private fun bindPreviewIcons() {
+        previewIcons?.apply {
+            monochrome = prefs.aodIcons
+            bind(previewApps)
+            alpha = 1f
+            visibility = if (prefs.aodEnabled && prefs.showAppInfo) View.VISIBLE else View.INVISIBLE
+        }
+    }
+
+    private fun setMeters(fraction: Float?, color: Int) {
+        if (::cameraLed.isInitialized) cameraLed.setMeter(fraction, color)
+        previewLed?.setMeter(fraction, color)
     }
 
     private fun applyInsets() {
@@ -267,6 +344,7 @@ class MainActivity : AppCompatActivity() {
             start()
         }
         cameraLed.restartAnimation()
+        previewLed?.restartAnimation()
     }
 
     /** Shows the charging / download ring on the real camera for a moment while it's being set up. */
@@ -275,14 +353,14 @@ class MainActivity : AppCompatActivity() {
         val on = if (key.startsWith("charge_")) prefs.chargeLed else prefs.progressLed
         cameraLed.removeCallbacks(meterPreviewEnd)
         if (!on) {
-            cameraLed.setMeter(null, 0)
+            setMeters(null, 0)
             return
         }
         if (key.startsWith("charge_")) {
             val level = PowerGuard.batteryLevel(this)
-            cameraLed.setMeter(level / 100f, prefs.chargeColor(level))
+            setMeters(level / 100f, prefs.chargeColor(level))
         } else {
-            cameraLed.setMeter(0.62f, prefs.progressColor.takeIf { it != 0 } ?: prefs.defaultColor)
+            setMeters(0.62f, prefs.progressColor.takeIf { it != 0 } ?: prefs.defaultColor)
         }
         cameraLed.postDelayed(meterPreviewEnd, METER_PREVIEW_MS)
     }
@@ -677,7 +755,8 @@ class MainActivity : AppCompatActivity() {
             val style = styles[position]
             val selected = style == prefs.style
             h.name.text = names[position]
-            h.card.strokeWidth = if (selected) dp(2) else 0
+            h.card.strokeWidth = if (selected) dp(2) else dp(1)
+            h.card.strokeColor = getColor(if (selected) R.color.accent else R.color.glass_stroke)
             h.card.setCardBackgroundColor(getColor(if (selected) R.color.surface_high else R.color.surface))
             h.lens.visibility = if (style.isEdge) View.INVISIBLE else View.VISIBLE
             h.led.post {
@@ -947,6 +1026,9 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TEST_CHANNEL = "test"
         private const val METER_PREVIEW_MS = 3500L
+        private const val PREVIEW_CAM_DP = 30
+        private const val PREVIEW_HOLE_DP = 14
+        private val PREVIEW_ICON_KEYS = setOf("aod_icons", "show_app_info", "aod_enabled")
         private const val UI_STATE = "ui_state"
         private const val KEY_REACH_OPEN = "reach_open"
         // Discrete changes replay the entrance; sliders just update the ring live while dragging.

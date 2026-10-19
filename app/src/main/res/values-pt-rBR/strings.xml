@@ -214,6 +214,9 @@
 
     <!-- Colour picker -->
     <string name="color_title">Escolher cor</string>
+    <string name="color_wheel">Roda de cores: gire para escolher uma cor</string>
+    <string name="color_saturation">Saturação</string>
+    <string name="color_brightness">Brilho</string>
     <string name="color_auto">Automática</string>
     <string name="color_hex">Hex (#RRGGBB)</string>
     <string name="ok">OK</string>

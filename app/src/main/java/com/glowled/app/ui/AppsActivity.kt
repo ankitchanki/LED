@@ -42,6 +42,9 @@ class AppsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         LedController.init(this)
         setContentView(R.layout.activity_apps)
+        // Same frosted-glass backdrop as the home screen.
+        window.decorView.findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0).background =
+            com.glowled.app.view.GlassBackdrop(intArrayOf(getColor(R.color.accent), LedController.prefs.defaultColor, 0xFF7C4DFF.toInt()))
         setupHeader(getString(R.string.title_apps))
         val list = findViewById<RecyclerView>(R.id.list)
         list.layoutManager = LinearLayoutManager(this)

@@ -14,9 +14,11 @@
         <item name="colorOnSurface">@color/text_primary</item>
         <item name="colorOnSurfaceVariant">@color/text_secondary</item>
         <item name="colorSurfaceContainerHighest">@color/outline</item>
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorSurfaceContainer">@color/surface_high</item>
-        <item name="colorSurfaceContainerHigh">@color/surface_high</item>
+        <!-- Dialogs, menus and pickers draw on these: keep them readable (not see-through). -->
+        <item name="colorSurface">@color/dialog_surface</item>
+        <item name="colorSurfaceContainer">@color/dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_surface</item>
+        <item name="colorSurfaceContainerLow">@color/dialog_surface</item>
         <item name="colorOutline">@color/outline</item>
         <item name="android:colorBackground">@color/black</item>
         <item name="android:windowBackground">@color/black</item>
@@ -28,12 +30,21 @@
         <item name="android:windowLightNavigationBar">false</item>
         <item name="materialCardViewStyle">@style/GlowCard</item>
         <item name="shapeAppearanceCornerLarge">@style/GlowShapeLarge</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.GlowLED.Dialog</item>
+    </style>
+
+    <!-- Frosted dialogs: blur behind is added on Android 12+ (values-v31). -->
+    <style name="ThemeOverlay.GlowLED.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_surface</item>
+        <item name="android:backgroundDimAmount">0.35</item>
     </style>
 
     <style name="GlowCard" parent="Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">@color/surface</item>
         <item name="cardCornerRadius">24dp</item>
-        <item name="strokeWidth">0dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/glass_stroke</item>
     </style>
 
     <style name="GlowShapeLarge" parent="">
@@ -49,7 +60,7 @@
         <item name="iconGravity">textStart</item>
         <item name="cornerRadius">28dp</item>
         <item name="android:textAppearance">?attr/textAppearanceTitleSmall</item>
-        <item name="strokeColor">@color/outline</item>
+        <item name="strokeColor">@color/glass_stroke</item>
         <item name="strokeWidth">1dp</item>
     </style>
 

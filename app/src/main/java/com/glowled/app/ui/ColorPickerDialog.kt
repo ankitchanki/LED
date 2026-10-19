@@ -12,11 +12,18 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.GridLayout
 import android.widget.LinearLayout
-import android.widget.SeekBar
+import android.widget.ScrollView
+import android.widget.TextView
 import com.glowled.app.R
+import com.glowled.app.view.ColorWheelView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.LabelFormatter
+import com.google.android.material.slider.Slider
 
-/** Small colour picker: AMOLED-friendly presets, a hue slider and a hex field. */
+/**
+ * Colour picker: a ring of every hue you turn with a finger, saturation and brightness sliders,
+ * AMOLED-friendly presets and a hex field.
+ */
 object ColorPickerDialog {
 
     private val presets = longArrayOf(
@@ -28,16 +35,41 @@ object ColorPickerDialog {
     /** [onPick] receives the chosen colour, or 0 when "Automatic" is chosen (if [allowAuto]). */
     fun show(context: Context, initial: Int, allowAuto: Boolean, onPick: (Int) -> Unit) {
         val dp = context.resources.displayMetrics.density
-        var current = if (initial == 0) presets[0] else initial
+        fun px(v: Int) = (v * dp).toInt()
+        var current = if (initial == 0) presets[0] else initial or 0xFF000000.toInt()
+        val hsv = FloatArray(3).also { Color.colorToHSV(current, it) }
 
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding((20 * dp).toInt(), (12 * dp).toInt(), (20 * dp).toInt(), 0)
+            setPadding(px(20), px(8), px(20), 0)
         }
-        val preview = View(context).apply {
-            background = GradientDrawable().apply { cornerRadius = 16 * dp }
+
+        val wheel = ColorWheelView(context)
+        root.addView(wheel, LinearLayout.LayoutParams(px(220), px(220)).apply { gravity = android.view.Gravity.CENTER_HORIZONTAL })
+
+        fun slider(label: Int): Pair<View, Slider> {
+            val box = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
+            box.addView(TextView(context).apply {
+                setText(label)
+                setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium)
+                setTextColor(context.getColor(R.color.text_secondary))
+            })
+            val s = Slider(context).apply {
+                valueFrom = 0f
+                valueTo = 100f
+                labelBehavior = LabelFormatter.LABEL_GONE
+                trackActiveTintList = ColorStateList.valueOf(context.getColor(R.color.accent))
+                trackInactiveTintList = ColorStateList.valueOf(context.getColor(R.color.surface_high))
+                thumbTintList = ColorStateList.valueOf(context.getColor(R.color.accent))
+                contentDescription = context.getString(label)
+            }
+            box.addView(s, LinearLayout.LayoutParams(-1, px(36)))
+            return box to s
         }
-        root.addView(preview, LinearLayout.LayoutParams(-1, (40 * dp).toInt()))
+        val (satBox, sat) = slider(R.string.color_saturation)
+        val (valBox, value) = slider(R.string.color_brightness)
+        root.addView(satBox, LinearLayout.LayoutParams(-1, -2).apply { topMargin = px(8) })
+        root.addView(valBox, LinearLayout.LayoutParams(-1, -2))
 
         val hex = EditText(context).apply {
             hint = context.getString(R.string.color_hex)
@@ -45,50 +77,51 @@ object ColorPickerDialog {
             isSingleLine = true
         }
         var updating = false
-        fun apply(c: Int, fromHex: Boolean = false) {
+        fun apply(c: Int, fromHex: Boolean = false, fromControls: Boolean = false) {
             current = c or 0xFF000000.toInt()
-            (preview.background as GradientDrawable).setColor(current)
+            if (!fromControls) {
+                Color.colorToHSV(current, hsv)
+                updating = true
+                wheel.hue = hsv[0]
+                sat.value = (hsv[1] * 100f).coerceIn(0f, 100f)
+                value.value = (hsv[2] * 100f).coerceIn(0f, 100f)
+                updating = false
+            }
+            wheel.centerColor = current
             if (!fromHex) {
                 updating = true
                 hex.setText(String.format("#%06X", current and 0xFFFFFF))
                 updating = false
             }
         }
+        fun fromControls() {
+            if (updating) return
+            apply(Color.HSVToColor(floatArrayOf(wheel.hue, sat.value / 100f, value.value / 100f)), fromControls = true)
+        }
+        wheel.onHueChanged = { fromControls() }
+        sat.addOnChangeListener { _, _, fromUser -> if (fromUser) fromControls() }
+        value.addOnChangeListener { _, _, fromUser -> if (fromUser) fromControls() }
 
-        val grid = GridLayout(context).apply { columnCount = 6 }
-        val size = (40 * dp).toInt()
+        // Presets: two rows of nine.
+        val grid = GridLayout(context).apply { columnCount = 9 }
+        val size = px(28)
         presets.forEach { c ->
             val v = View(context).apply {
                 background = GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
                     setColor(c)
-                    setStroke((1 * dp).toInt(), 0x33FFFFFF)
+                    setStroke(px(1), 0x33FFFFFF)
                 }
                 contentDescription = String.format("#%06X", c and 0xFFFFFF)
                 setOnClickListener { apply(c) }
             }
             grid.addView(v, GridLayout.LayoutParams().apply {
                 width = size; height = size
-                setMargins((4 * dp).toInt(), (4 * dp).toInt(), (4 * dp).toInt(), (4 * dp).toInt())
+                setMargins(px(3), px(3), px(3), px(3))
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             })
         }
-        root.addView(grid, LinearLayout.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-            topMargin = (12 * dp).toInt()
-        })
-
-        val hue = SeekBar(context).apply {
-            max = 360
-            progressTintList = ColorStateList.valueOf(Color.WHITE)
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(s: SeekBar?, p: Int, fromUser: Boolean) {
-                    if (fromUser) apply(Color.HSVToColor(floatArrayOf(p.toFloat(), 1f, 1f)))
-                }
-                override fun onStartTrackingTouch(s: SeekBar?) = Unit
-                override fun onStopTrackingTouch(s: SeekBar?) = Unit
-            })
-        }
-        root.addView(hue, LinearLayout.LayoutParams(-1, (48 * dp).toInt()))
+        root.addView(grid, LinearLayout.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = px(6) })
 
         hex.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -104,7 +137,7 @@ object ColorPickerDialog {
 
         val b = MaterialAlertDialogBuilder(context)
             .setTitle(R.string.color_title)
-            .setView(root)
+            .setView(ScrollView(context).apply { addView(root) })
             .setPositiveButton(R.string.ok) { _, _ -> onPick(current) }
             .setNegativeButton(R.string.cancel, null)
         if (allowAuto) b.setNeutralButton(R.string.color_auto) { _, _ -> onPick(0) }

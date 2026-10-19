@@ -85,7 +85,8 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         val card = MaterialCardView(context).apply {
             setCardBackgroundColor(context.getColor(R.color.surface))
             radius = 22 * d
-            strokeWidth = 0
+            strokeWidth = dp(1)
+            strokeColor = context.getColor(R.color.glass_stroke)
         }
         val col = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -182,7 +183,8 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         val card = MaterialCardView(context).apply {
             setCardBackgroundColor(context.getColor(R.color.surface))
             radius = 18 * d
-            strokeWidth = 0
+            strokeWidth = dp(1)
+            strokeColor = context.getColor(R.color.glass_stroke)
             isClickable = true
             isFocusable = true
         }
@@ -249,7 +251,8 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
                 val card = MaterialCardView(context).apply {
                     setCardBackgroundColor(context.getColor(R.color.surface))
                     radius = 20 * d
-                    strokeWidth = 0
+                    strokeWidth = dp(1)
+                    strokeColor = context.getColor(R.color.glass_stroke)
                     isClickable = true
                     isFocusable = true
                     contentDescription = item.title

@@ -39,7 +39,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:cardBackgroundColor="@color/surface_high"
+            app:cardBackgroundColor="@color/dialog_surface"
             app:cardCornerRadius="28dp">
 
             <LinearLayout
