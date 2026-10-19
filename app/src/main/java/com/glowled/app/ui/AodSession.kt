@@ -71,13 +71,24 @@ class AodSession(
     }
     var ended = false
         private set
-    private var proximityLock: PowerManager.WakeLock? = null
     private var sensorManager: SensorManager? = null
     private var receiverRegistered = false
 
     private val storeListener: () -> Unit = { handler.post { onStoreChanged() } }
     private val timeout = Runnable { end(EndReason.TIMEOUT, lock = true) }
     private val pocketEnd = Runnable { end(EndReason.POCKET, lock = true) }
+    /** Covered for a moment longer than a false reading: hide the light, end after [POCKET_MS]. */
+    private val coverConfirmed = Runnable {
+        DebugLog.add("Covered (pocket detection): light hidden")
+        led.visibility = View.INVISIBLE // nothing to draw while covered
+        info.visibility = View.INVISIBLE
+        peek.visibility = View.INVISIBLE
+        handler.removeCallbacks(pocketEnd)
+        handler.postDelayed(pocketEnd, POCKET_MS)
+    }
+    /** When the panel last came on, to tell the system switching it off from the user doing it. */
+    private var panelOnAt = 0L
+    private var rewoken = false
     /** Eco: once the entrance and droplet have played, hold a still ring (no more redraws). */
     private val settle = Runnable { led.settle() }
     /** Re-dims the ring as the notifications get older. */
@@ -101,10 +112,13 @@ class AodSession(
         override fun onReceive(c: Context, i: Intent) {
             when (i.action) {
                 // Power button while showing: the user wants the screen off.
-                Intent.ACTION_SCREEN_OFF -> end(EndReason.SCREEN_OFF, lock = false)
+                Intent.ACTION_SCREEN_OFF -> onScreenOff()
                 Intent.ACTION_USER_PRESENT -> end(EndReason.UNLOCK, lock = false)
                 // Panel just came on: now the entrance is actually visible.
-                Intent.ACTION_SCREEN_ON -> playEntrance()
+                Intent.ACTION_SCREEN_ON -> {
+                    panelOnAt = android.os.SystemClock.uptimeMillis()
+                    playEntrance()
+                }
             }
         }
     }
@@ -360,11 +374,28 @@ class AodSession(
         // If the panel is already on (preview, or the activity woke it) animate now; otherwise
         // wait for ACTION_SCREEN_ON so the motion isn't wasted on a dark panel. Fallback after 1.5 s.
         if (context.getSystemService(PowerManager::class.java).isInteractive) {
+            panelOnAt = android.os.SystemClock.uptimeMillis()
             root.post { playEntrance() }
         } else {
             handler.postDelayed({ playEntrance() }, 1500)
         }
         DebugLog.add(if (preview) "Preview shown" else "Always-on light shown")
+    }
+
+    /**
+     * The panel went off. Normally that's the power button: end. But if it happens a moment after
+     * the panel came on, nobody could have pressed it that fast: the ROM switched the screen off
+     * on its own (some do right after a notification wake). Wake it again, once.
+     */
+    private fun onScreenOff() {
+        val sinceOn = android.os.SystemClock.uptimeMillis() - panelOnAt
+        if (!preview && !rewoken && panelOnAt > 0 && sinceOn < EARLY_OFF_MS) {
+            rewoken = true
+            DebugLog.add("System switched the screen off ${sinceOn} ms after it woke - waking it again")
+            LedController.wakeForLight()
+            return
+        }
+        end(EndReason.SCREEN_OFF, lock = false)
     }
 
     fun restartAnimation() {
@@ -495,12 +526,12 @@ class AodSession(
         override fun onSensorChanged(e: SensorEvent) {
             val near = e.values[0] < e.sensor.maximumRange.coerceAtMost(5f)
             if (near) {
-                led.visibility = View.INVISIBLE // nothing to draw while covered
-                info.visibility = View.INVISIBLE
-                peek.visibility = View.INVISIBLE
-                handler.removeCallbacks(pocketEnd)
-                handler.postDelayed(pocketEnd, POCKET_MS)
+                // Virtual proximity sensors (many Xiaomi/Redmi phones) report a false "near" right
+                // after the screen wakes: only treat it as a pocket if it lasts.
+                handler.removeCallbacks(coverConfirmed)
+                handler.postDelayed(coverConfirmed, COVER_CONFIRM_MS)
             } else {
+                handler.removeCallbacks(coverConfirmed)
                 handler.removeCallbacks(pocketEnd)
                 led.visibility = View.VISIBLE
                 info.visibility = View.VISIBLE
@@ -535,15 +566,10 @@ class AodSession(
         val sm = context.getSystemService(SensorManager::class.java) ?: return
         val sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY) ?: return
         sensorManager = sm
+        // No PROXIMITY_SCREEN_OFF_WAKE_LOCK: with it the hardware cuts the panel the instant the
+        // sensor says "near", so a false reading right after waking turned the screen straight back
+        // off. The black screen at minimum brightness costs next to nothing while covered anyway.
         sm.registerListener(proximityListener, sensor, SensorManager.SENSOR_DELAY_NORMAL)
-        // Lets the hardware switch the panel off while covered, where supported.
-        val pm = context.getSystemService(PowerManager::class.java)
-        if (pm.isWakeLockLevelSupported(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK)) {
-            proximityLock = pm.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "GlowLED:proximity").apply {
-                setReferenceCounted(false)
-                acquire(30 * 60 * 1000L)
-            }
-        }
     }
 
     // ---- teardown -------------------------------------------------------------------------------
@@ -592,13 +618,14 @@ class AodSession(
         }
         sensorManager?.unregisterListener(proximityListener)
         sensorManager = null
-        proximityLock?.let { if (it.isHeld) it.release() }
-        proximityLock = null
     }
 
     companion object {
         private const val BURN_IN_MS = 60_000L
         private const val POCKET_MS = 10_000L
+        private const val COVER_CONFIRM_MS = 1_200L
+        /** A screen-off this soon after the panel came on can't be the user's power button. */
+        private const val EARLY_OFF_MS = 1_200L
         private const val PREVIEW_MS = 15_000L
         private const val INFO_MS = 8_000L
         private const val ECO_MS = 12_000L

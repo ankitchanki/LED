@@ -328,6 +328,12 @@ object LedController {
         }
     }
 
+    /** The ROM switched the screen off right after the light woke it: turn it back on. */
+    fun wakeForLight() {
+        ourWakeUntil = SystemClock.uptimeMillis() + LAUNCH_WINDOW_MS
+        wakeBriefly()
+    }
+
     @Suppress("DEPRECATION")
     private fun wakeBriefly() {
         // Helps OEM ROMs that ignore turnScreenOn on the activity alone.

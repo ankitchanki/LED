@@ -1,3 +1,20 @@
+# Glow LED v2.0.1
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **Screen no longer wakes and goes straight back off when a notification arrives.** Pocket detection
+  held a "proximity screen-off" lock: the hardware cut the panel the instant the proximity sensor said
+  "near". Many Xiaomi/Redmi phones use a virtual proximity sensor that reports a false "near" right
+  after the screen wakes, so the light died within milliseconds. Pocket detection now only reacts when
+  the phone stays covered for over a second (then hides the light and ends after 10 s, as before).
+- If the system itself switches the screen off a moment after the light woke it (some ROMs do after a
+  notification wake), Glow LED wakes it again once instead of treating it as a power-button press.
+  Both cases are written to the event log.
+
+---
+
 # Glow LED v2.0.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
