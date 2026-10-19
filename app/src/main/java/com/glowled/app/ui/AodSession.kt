@@ -112,22 +112,6 @@ class AodSession(
     private var newestTime = NotificationStore.newestTime()
     private var offsetReported = false
 
-    init {
-        led.useScreenCoords = true
-        led.configure(prefs, geometry(), currentColors())
-        led.intro = 0f
-        root.addView(info, FrameLayout.LayoutParams(-2, -2))
-        val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
-        root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
-        info.onAppTap = { pkg -> onAppTapped(pkg) }
-        peek.onOpen = { e -> openNotification(e) }
-        bindInfo()
-        installGestures()
-        if (durationSec > 0) handler.postDelayed(timeout, durationSec * 1000L)
-        if (preview) handler.postDelayed(timeout, PREVIEW_MS)
-    }
-
-    /** Centres the strip (and the peek card under it) below the ring, in this window's coordinates. */
     /**
      * Ring geometry for this window. Normally the real camera position; if the window starts below
      * the camera (some HyperOS lock screens) the ring is moved just under the window's top edge so
@@ -468,6 +452,23 @@ class AodSession(
         }
 
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
+    }
+
+    // Kept after every property declaration: Kotlin runs initialisers top to bottom, and this block
+    // reads several of them (sampleApps, yShift, ...). Above them they would still be null.
+    init {
+        led.useScreenCoords = true
+        led.configure(prefs, geometry(), currentColors())
+        led.intro = 0f
+        root.addView(info, FrameLayout.LayoutParams(-2, -2))
+        val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
+        root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
+        info.onAppTap = { pkg -> onAppTapped(pkg) }
+        peek.onOpen = { e -> openNotification(e) }
+        bindInfo()
+        installGestures()
+        if (durationSec > 0) handler.postDelayed(timeout, durationSec * 1000L)
+        if (preview) handler.postDelayed(timeout, PREVIEW_MS)
     }
 
     private fun startProximity() {

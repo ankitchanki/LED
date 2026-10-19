@@ -796,6 +796,14 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             return
         }
+        if (NotifyListenerService.instance == null) {
+            // Access is granted but the system dropped the connection (e.g. after a crash or an
+            // OEM task killer): ask it to bind again, otherwise the test would never be seen.
+            android.service.notification.NotificationListenerService.requestRebind(
+                android.content.ComponentName(this, NotifyListenerService::class.java),
+            )
+            com.glowled.app.core.DebugLog.add("Test: notification access was disconnected - reconnecting")
+        }
         val nm = getSystemService(NotificationManager::class.java)
         if (nm.getNotificationChannel(TEST_CHANNEL) == null) {
             nm.createNotificationChannel(

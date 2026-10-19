@@ -19,13 +19,18 @@ object AodOverlay {
     private var session: AodSession? = null
     private val main = Handler(Looper.getMainLooper())
 
-    val isShowing get() = session != null
+    /** An ended session whose window is still being removed doesn't count. */
+    val isShowing get() = session?.ended == false
 
     fun show(durationSec: Int, preview: Boolean): Boolean {
         val service = LedAccessibilityService.instance ?: return false
         session?.let {
-            it.restartAnimation()
-            return true
+            if (!it.ended) {
+                it.restartAnimation()
+                return true
+            }
+            // Left over from a session that already ended: drop it and start fresh.
+            remove(it)
         }
         val wm = service.getSystemService(WindowManager::class.java)
         lateinit var s: AodSession

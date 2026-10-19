@@ -1,3 +1,22 @@
+# Glow LED v1.9.1
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **Preview no longer force-closes.** With no notifications waiting, the preview crashed while it was
+  setting up the sample app icons. It now opens every time.
+- **Test works every time:**
+  - If the light was still shutting down from an earlier run, a new test was ignored. The new test now
+    starts straight away.
+  - Some phones still report the screen as on for a moment after you lock it, which made Glow LED skip
+    the light. It now checks again a little later.
+  - If the system had dropped Glow LED's notification access (for example after a crash), Test now
+    reconnects it.
+- The *More → event log* now says why a light was skipped ("already showing", "screen came back on").
+
+---
+
 # Glow LED v1.9.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

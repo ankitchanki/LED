@@ -156,7 +156,7 @@ object LedController {
                         else -> {
                             DebugLog.add("Screen off: ${NotificationStore.colors().size} unread")
                             // Give the system a moment to finish its own screen-off transition.
-                            main.postDelayed({ if (!isInteractive()) startAod(pulse = false) }, 800)
+                            main.postDelayed({ startAfterScreenOff(retries = 2) }, 800)
                         }
                     }
                 }
@@ -182,6 +182,15 @@ object LedController {
         }
     }
 
+    /** Some ROMs report the screen as on for a moment after it went off; try again a bit later. */
+    private fun startAfterScreenOff(retries: Int) {
+        when {
+            !isInteractive() -> startAod(pulse = false)
+            retries > 0 -> main.postDelayed({ startAfterScreenOff(retries - 1) }, 700)
+            else -> DebugLog.add("Skipped: screen came back on")
+        }
+    }
+
     // ---- screen-off AOD ---------------------------------------------------------------------------
 
     fun isInteractive(): Boolean = app.getSystemService(PowerManager::class.java).isInteractive
@@ -198,7 +207,7 @@ object LedController {
         if (!preview) {
             if (!prefs.enabled) return DebugLog.add("Skipped: Glow LED is off")
             if (!prefs.aodEnabled) return DebugLog.add("Skipped: screen-off light is off")
-            if (aodVisible || AodOverlay.isShowing) return
+            if (aodVisible || AodOverlay.isShowing) return DebugLog.add("Skipped: light already showing")
             if (NotificationStore.isEmpty()) return DebugLog.add("Skipped: no notifications to show")
             PowerGuard.blockReason(app, prefs)?.let { return DebugLog.add("Skipped: $it") }
         }
