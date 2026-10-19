@@ -1,3 +1,24 @@
+# Glow LED v2.0.3
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fix: bright flash before the light on HyperOS / MIUI
+The event log from a Xiaomi phone showed the display turning on only once, but the light's lock-screen
+window being covered at that moment: HyperOS draws its own lock screen on top for an instant when the
+display wakes, and that was the flash before the black screen and the ring.
+
+- On Xiaomi / Redmi / POCO, *Screen-off method: Auto* now uses the **overlay**, which is drawn above the
+  lock screen (needs Accessibility, which is how it already works on these phones).
+- The overlay now **wakes the screen only after its black frame is drawn**, so the first thing the display
+  shows is black, not the lock screen (before, it woke after a fixed 60 ms).
+- The event log notes when the lock-screen window is covered ("paused").
+
+If you picked *Lock-screen window* by hand, switch *Screen off → Screen-off method* to **Auto** (or
+**Overlay**).
+
+---
+
 # Glow LED v2.0.2 (diagnostic build)
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

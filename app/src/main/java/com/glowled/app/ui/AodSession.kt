@@ -73,6 +73,7 @@ class AodSession(
             if (!drawn) {
                 drawn = true
                 DebugLog.add("Light window drew its first frame, ${LedController.state()}")
+                onFirstDraw?.invoke()
             }
         }
     }.apply {
@@ -81,6 +82,9 @@ class AodSession(
     }
     var ended = false
         private set
+
+    /** Called once, when the black window has drawn its first frame. */
+    var onFirstDraw: (() -> Unit)? = null
     private var sensorManager: SensorManager? = null
     private var receiverRegistered = false
 

@@ -22,7 +22,8 @@ object AodOverlay {
     /** An ended session whose window is still being removed doesn't count. */
     val isShowing get() = session?.ended == false
 
-    fun show(durationSec: Int, preview: Boolean): Boolean {
+    /** [onDrawn] runs once the black window has drawn its first frame (not for a reused window). */
+    fun show(durationSec: Int, preview: Boolean, onDrawn: () -> Unit = {}): Boolean {
         val service = LedAccessibilityService.instance ?: return false
         session?.let {
             if (!it.ended) {
@@ -86,6 +87,7 @@ object AodOverlay {
             return false
         }
         session = s
+        s.onFirstDraw = onDrawn
         DebugLog.add("Overlay window added, ${LedController.state()}")
         s.start()
         return true

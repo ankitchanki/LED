@@ -131,6 +131,12 @@ class AodActivity : Activity() {
         if (resumedAt == 0L) resumedAt = System.currentTimeMillis()
     }
 
+    override fun onPause() {
+        super.onPause()
+        // Paused while still showing = something (usually the lock screen) is drawn over it.
+        com.glowled.app.core.DebugLog.add("Lock-screen window paused (covered), ${LedController.state()}")
+    }
+
     override fun onStop() {
         super.onStop()
         com.glowled.app.core.DebugLog.add("Lock-screen window stopped, ${LedController.state()}")

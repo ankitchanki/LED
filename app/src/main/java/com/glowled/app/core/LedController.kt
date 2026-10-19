@@ -53,6 +53,8 @@ object LedController {
     private const val LAUNCH_WINDOW_MS = 4000L
     private const val MOTION_MIN_GAP_MS = 2 * 60_000L
     private const val CHARGE_FLASH_MS = 4000L
+    private const val OVERLAY_FRAME_MS = 24L
+    private const val OVERLAY_DRAW_TIMEOUT_MS = 400L
     private const val PROGRESS_RECHECK_MS = 3 * 60_000L + 1000L
 
     /** Set when the ROM blocked the lock-screen window once, so Auto goes straight to the overlay. */
@@ -255,7 +257,9 @@ object LedController {
         val useOverlay = overlayAvailable && !preview && when (prefs.aodMethod) {
             "overlay" -> true
             "activity" -> false
-            else -> !canLaunchFromBackground() || OemHelper.miuiLockScreenAllowed(app) == false ||
+            // HyperOS/MIUI draw their lock screen over the lock-screen window for a moment when the
+            // display wakes (a bright flash before the black screen), so use the overlay there.
+            else -> !canLaunchFromBackground() || OemHelper.isXiaomi || OemHelper.miuiLockScreenAllowed(app) == false ||
                 prefs.sp.getBoolean(PREF_WINDOW_BLOCKED, false)
         }
         DebugLog.add("Method: ${if (useOverlay) "overlay" else "lock-screen window"} (setting: ${prefs.aodMethod}" +
@@ -331,9 +335,20 @@ object LedController {
 
     private fun startOverlay(duration: Int, preview: Boolean) {
         ourWakeUntil = SystemClock.uptimeMillis() + LAUNCH_WINDOW_MS
-        if (AodOverlay.show(duration, preview)) {
-            // The overlay is added (black, dim) before the panel wakes, keeping any flash minimal.
-            if (!preview && !isInteractive()) main.postDelayed({ wakeBriefly("overlay added") }, 60)
+        // Wake the panel only once the black overlay is on screen. It sits above the lock screen,
+        // so the first thing the display shows is black: no flash of the lock screen first.
+        var woke = false
+        fun wake(why: String) {
+            if (woke) return
+            woke = true
+            if (!preview && !isInteractive()) wakeBriefly(why)
+        }
+        val shown = AodOverlay.show(duration, preview) {
+            // One more frame for the drawn buffer to reach the display.
+            main.postDelayed({ wake("the overlay is drawn") }, OVERLAY_FRAME_MS)
+        }
+        if (shown) {
+            main.postDelayed({ wake("the overlay didn't draw within $OVERLAY_DRAW_TIMEOUT_MS ms") }, OVERLAY_DRAW_TIMEOUT_MS)
             DebugLog.add("Light started (overlay)")
         }
     }
