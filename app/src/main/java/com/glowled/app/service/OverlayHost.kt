@@ -62,6 +62,8 @@ object OverlayHost {
         val prefs = LedController.prefs
         val g = CutoutGeometry.resolve(ctx, prefs)
         v.configure(prefs, g, NotificationStore.colors())
+        val m = LedController.overlayMeter
+        v.setMeter(m?.fraction, m?.color ?: 0)
         val flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -97,13 +99,17 @@ object OverlayHost {
         return p
     }
 
-    /** Re-applies settings/colors; repositions the window if geometry or style changed. */
+    /** Re-applies settings, colours and the gauge; repositions the window if geometry or style changed. */
     fun refresh() {
         val v = view ?: return
         val manager = wm ?: return
         val type = (v.layoutParams as? WindowManager.LayoutParams)?.type ?: return
+        val old = v.layoutParams as? WindowManager.LayoutParams ?: return
+        val p = buildParams(v.context, v, type)
+        // Colours and the gauge are applied to the view directly; only move the window if needed.
+        if (p.x == old.x && p.y == old.y && p.width == old.width && p.height == old.height) return
         try {
-            manager.updateViewLayout(v, buildParams(v.context, v, type))
+            manager.updateViewLayout(v, p)
         } catch (e: Exception) {
             Log.w("GlowLED", "overlay update failed", e)
         }

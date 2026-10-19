@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Compact single screen: header, live preview, swipeable sections, thumb dock. No page scroll. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Compact single screen: header, swipeable sections, thumb dock. Pull down for one-handed mode. -->
+<com.glowled.app.view.ReachLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
@@ -50,24 +50,35 @@
             android:contentDescription="@string/master_on" />
     </LinearLayout>
 
-    <!-- The live preview runs on the phone's real camera cutout (drawn by MainActivity). -->
-    <TextView
-        android:id="@+id/previewHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/hint_pill"
-        android:drawablePadding="6dp"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="6dp"
-        android:text="@string/preview_on_camera"
-        android:textAppearance="?attr/textAppearanceLabelMedium"
-        android:textColor="@color/accent"
-        app:drawableStartCompat="@drawable/ic_camera_ring"
-        app:drawableTint="@color/accent" />
+    <!-- One-handed mode: grows when you pull the settings down, pushing them into thumb reach. -->
+    <LinearLayout
+        android:id="@+id/reachSpace"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:gravity="bottom|center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textAppearance="?attr/textAppearanceDisplaySmall"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/reachHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="@string/reach_hint"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/text_secondary" />
+    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
@@ -124,4 +135,4 @@
             android:text="@string/action_preview"
             app:icon="@drawable/ic_play" />
     </LinearLayout>
-</LinearLayout>
+</com.glowled.app.view.ReachLayout>

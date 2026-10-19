@@ -11,7 +11,7 @@
         <item>Edge lighting</item>
         <item>Edge pulse</item>
     </string-array>
-    <string-array name="style_values">
+    <string-array name="style_values" translatable="false">
         <item>pulse</item>
         <item>breathe</item>
         <item>blink</item>
@@ -23,4 +23,42 @@
         <item>edge_pulse</item>
     </string-array>
 
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>Split ring by app</item>
+        <item>Cycle colours</item>
+        <item>Newest only</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>Auto</item>
+        <item>Lock-screen window</item>
+        <item>Overlay</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 s</item>
+        <item>1 min</item>
+        <item>2 min</item>
+        <item>5 min</item>
+        <item>15 min</item>
+        <item>1 hour</item>
+        <item>Until cleared</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>Off</item>
+        <item>Every 2 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>30 min</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>All apps</item>
+        <item>Only apps I choose</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>Max</item>
+    </string-array>
 </resources>

@@ -274,6 +274,7 @@ class AodSession(
             return
         }
         peekPkg = pkg
+        peek.actionsEnabled = prefs.peekActions
         peek.bind(entries)
         peek.show()
         handler.removeCallbacks(hidePeekRunnable)
@@ -311,6 +312,31 @@ class AodSession(
             // End only after unlocking succeeded, so the PIN prompt isn't cancelled by finishing.
             end(EndReason.USER, lock = false)
         }
+    }
+
+    /** Reply sheet over the lock screen (it asks to unlock), using the app's own reply action. */
+    private fun replyTo(e: NotificationStore.Entry) {
+        root.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+        if (ReplyActivity.start(context, e.key)) end(EndReason.USER, lock = false)
+    }
+
+    /** The app's own "Mark as read"; without one, the notification is dismissed. */
+    private fun markRead(e: NotificationStore.Entry) {
+        root.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+        val action = e.readAction
+        if (action != null) {
+            try {
+                action.actionIntent.send()
+            } catch (ex: Exception) {
+                DebugLog.add("Mark as read failed: ${ex.javaClass.simpleName}")
+            }
+            // Some apps leave the notification up for a moment: treat it as read right away.
+            NotificationStore.markSeen(e.key)
+            LedController.refreshAll()
+        } else {
+            com.glowled.app.service.NotifyListenerService.instance?.cancelNotification(e.key)
+        }
+        DebugLog.add("Marked as read from the always-on screen")
     }
 
     /** Call once the host window is visible. */
@@ -497,6 +523,8 @@ class AodSession(
         root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
         info.onAppTap = { pkg -> onAppTapped(pkg) }
         peek.onOpen = { e -> openNotification(e) }
+        peek.onReply = { e -> replyTo(e) }
+        peek.onMarkRead = { e -> markRead(e) }
         bindInfo()
         installGestures()
         if (durationSec > 0) handler.postDelayed(timeout, durationSec * 1000L)

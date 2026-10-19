@@ -71,6 +71,13 @@
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 
+    <!-- Quick-reply sheet: transparent window, the activity draws its own dim and sheet. -->
+    <style name="Theme.GlowLED.Reply" parent="Theme.GlowLED">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
     <!-- Plain platform theme: the AOD screen loads as fast as possible with no preview flash. -->
     <style name="Theme.GlowLED.Aod" parent="android:Theme.DeviceDefault.NoActionBar.Fullscreen">
         <item name="android:windowBackground">@color/black</item>

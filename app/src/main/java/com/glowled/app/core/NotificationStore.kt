@@ -22,6 +22,12 @@ object NotificationStore {
         val intent: android.app.PendingIntent? = null,
         /** The notification's status-bar icon: fallback when the app icon can't be loaded. */
         val smallIcon: android.graphics.drawable.Icon? = null,
+        /** The app's own "Reply" action (with a text field), if it has one. */
+        val replyAction: android.app.Notification.Action? = null,
+        /** The app's own "Mark as read" action, if it has one. */
+        val readAction: android.app.Notification.Action? = null,
+        /** Can be swiped away (used for "Dismiss" when the app has no mark-as-read action). */
+        val clearable: Boolean = true,
     ) {
         /** Same LED/peek appearance (ignores the PendingIntent identity). */
         fun sameLook(o: Entry?) = o != null && o.color == color && o.title == title && o.lines == lines && o.kind == kind
@@ -84,6 +90,15 @@ object NotificationStore {
         seen.addAll(entries.keys)
         version++
     }
+
+    /** Marks one notification as read here (when the app doesn't remove it by itself). */
+    @Synchronized
+    fun markSeen(key: String) {
+        if (entries.containsKey(key) && seen.add(key)) version++
+    }
+
+    @Synchronized
+    fun get(key: String): Entry? = entries[key]
 
     @Synchronized
     fun isEmpty(): Boolean = entries.keys.all { it in seen }

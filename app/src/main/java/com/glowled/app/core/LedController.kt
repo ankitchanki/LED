@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.BatteryManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.TriggerEvent
@@ -49,6 +50,8 @@ object LedController {
     const val FSI_ID = 4201
     private const val LAUNCH_WINDOW_MS = 4000L
     private const val MOTION_MIN_GAP_MS = 2 * 60_000L
+    private const val CHARGE_FLASH_MS = 4000L
+    private const val PROGRESS_RECHECK_MS = 3 * 60_000L + 1000L
 
     /** Set when the ROM blocked the lock-screen window once, so Auto goes straight to the overlay. */
     const val PREF_WINDOW_BLOCKED = "aod_window_blocked"
@@ -87,9 +90,12 @@ object LedController {
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_USER_PRESENT)
             addAction(Intent.ACTION_CONFIGURATION_CHANGED)
+            addAction(Intent.ACTION_POWER_CONNECTED)
+            addAction(Intent.ACTION_POWER_DISCONNECTED)
         }
         ContextCompat.registerReceiver(app, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         migrate()
+        syncBatteryWatch()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
         // Root managers remember the grant, so re-use it after a restart without prompting.
         if (prefs.sp.getBoolean(Privileged.PREF_ROOT_OK, false)) Privileged.markRootGranted()
@@ -98,6 +104,7 @@ object LedController {
     // SharedPreferences keeps only a weak reference, so hold the listener in a field.
     private val prefsChanged = Runnable {
         NotifyListenerService.instance?.rebuild()
+        syncBatteryWatch()
         refreshAll()
     }
     private val prefListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
@@ -186,6 +193,17 @@ object LedController {
                     updateOverlay()
                 }
                 Intent.ACTION_CONFIGURATION_CHANGED -> updateOverlay()
+                Intent.ACTION_POWER_CONNECTED -> {
+                    // Show the charging ring for a moment even over the notification light.
+                    chargeFlashUntil = SystemClock.uptimeMillis() + CHARGE_FLASH_MS
+                    main.postDelayed({ updateOverlay() }, CHARGE_FLASH_MS + 50)
+                    syncBatteryWatch(pluggedHint = true)
+                    updateOverlay()
+                }
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    syncBatteryWatch(pluggedHint = false)
+                    updateOverlay()
+                }
             }
         }
     }
@@ -451,9 +469,88 @@ object LedController {
     fun updateOverlay() {
         if (!initialized) return
         val launching = SystemClock.uptimeMillis() < ourWakeUntil
-        val want = prefs.enabled && prefs.overlayEnabled && !aodVisible && !launching && !appInForeground && isInteractive() &&
-            !NotificationStore.isEmpty() && (!prefs.overlayLockOnly || isLocked()) &&
+        val canShow = prefs.enabled && !aodVisible && !launching && !appInForeground && isInteractive() &&
             (prefs.style.isEdge || CutoutGeometry.isPortrait(app))
-        if (want) OverlayHost.show(app) else OverlayHost.hide()
+        val notifRing = prefs.overlayEnabled && !NotificationStore.isEmpty() && (!prefs.overlayLockOnly || isLocked())
+        overlayMeter = if (canShow) computeMeter(notifRing) else null
+        if (canShow && (notifRing || overlayMeter != null)) OverlayHost.show(app) else OverlayHost.hide()
+    }
+
+    // ---- charging ring and download ring (screen on) ----------------------------------------------
+
+    /** A gauge the screen-on ring shows instead of the notification light. */
+    data class Meter(val fraction: Float, val color: Int)
+
+    /** What the screen-on ring currently shows as a gauge (null = the notification light). */
+    var overlayMeter: Meter? = null
+        private set
+
+    private var plugged = false
+    private var batteryPct = 0
+    private var chargeFlashUntil = 0L
+    private var batteryWatching = false
+
+    /** Download progress first (it's short-lived), then charging when no notification is waiting. */
+    private fun computeMeter(notifRing: Boolean): Meter? {
+        if (prefs.progressLed) ProgressStore.current()?.let {
+            return Meter(it.fraction, if (prefs.progressColor != 0) prefs.progressColor else it.color)
+        }
+        if (prefs.chargeLed && plugged && (!notifRing || SystemClock.uptimeMillis() < chargeFlashUntil)) {
+            return Meter(batteryPct / 100f, prefs.chargeColor(batteryPct))
+        }
+        return null
+    }
+
+    fun onProgressChanged() = main.post {
+        updateOverlay()
+        // A transfer that stalls stops showing after a while; re-check then.
+        main.removeCallbacks(progressRecheck)
+        main.postDelayed(progressRecheck, PROGRESS_RECHECK_MS)
+    }
+
+    private val progressRecheck = Runnable { updateOverlay() }
+
+    private val batteryReceiver = object : BroadcastReceiver() {
+        override fun onReceive(c: Context, i: Intent) = onBatteryChanged(i)
+    }
+
+    /**
+     * Listens to battery-level changes only while plugged in and the charging ring is on, so the
+     * frequent battery broadcasts never wake Glow LED on battery power.
+     */
+    private fun syncBatteryWatch(pluggedHint: Boolean? = null) {
+        val sticky = app.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val isPlugged = pluggedHint ?: ((sticky?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: 0) != 0)
+        plugged = isPlugged
+        sticky?.let { batteryPct = levelOf(it) ?: batteryPct }
+        val want = isPlugged && prefs.enabled && prefs.chargeLed
+        if (want && !batteryWatching) {
+            ContextCompat.registerReceiver(
+                app, batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED,
+            )?.let { onBatteryChanged(it) }
+            batteryWatching = true
+        } else if (!want && batteryWatching) {
+            try {
+                app.unregisterReceiver(batteryReceiver)
+            } catch (_: Exception) {
+            }
+            batteryWatching = false
+        }
+    }
+
+    private fun levelOf(i: Intent): Int? {
+        val level = i.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+        val scale = i.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+        return if (level < 0 || scale <= 0) null else (level * 100 / scale).coerceIn(0, 100)
+    }
+
+    private fun onBatteryChanged(i: Intent) {
+        val p = i.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0
+        val pct = levelOf(i) ?: batteryPct
+        if (p == plugged && pct == batteryPct) return
+        plugged = p
+        batteryPct = pct
+        if (!p) syncBatteryWatch(pluggedHint = false)
+        updateOverlay()
     }
 }

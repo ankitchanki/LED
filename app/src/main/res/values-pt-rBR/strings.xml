@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Indicador Glow LED</string>
+    <string name="accessibility_desc">Desenha a luz de notificação ao redor da câmera na tela de bloqueio e desliga a tela de novo quando a luz sempre ativa termina. O Glow LED não lê o conteúdo da tela nem observa suas ações.</string>
+    <string name="channel_launcher">Iniciador da tela sempre ativa</string>
+    <string name="channel_test">Notificações de teste</string>
+    <string name="title_apps">Apps e cores</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED ativado</string>
+    <string name="master_off">Glow LED desativado</string>
+    <string name="status_waiting">Aguardando notificações</string>
+    <string name="status_active">Acendendo para %d notificação(ões)</string>
+    <string name="status_blocked">Pausado: %s</string>
+    <string name="status_need_listener">Permita o acesso às notificações para começar</string>
+    <string name="block_quiet">horário silencioso</string>
+    <string name="block_battery">bateria fraca</string>
+    <string name="block_call">em uma chamada</string>
+    <string name="reach_hint">Deslize para cima ou toque em voltar para retornar</string>
+    <string name="reach_tip">Dica: puxe as configurações para baixo para alcançá-las com o polegar (modo uma mão).</string>
+
+    <!-- Setup -->
+    <string name="perm_listener">Acesso às notificações</string>
+    <string name="perm_listener_desc">Obrigatório. Avisa o Glow LED quando chega uma notificação. Nada sai do seu celular.</string>
+    <string name="perm_a11y">Acessibilidade (opcional, mais confiável)</string>
+    <string name="perm_a11y_desc">Não é obrigatório. Adiciona: tela desligada na hora quando a luz termina, e uma luz que nenhuma marca de celular consegue bloquear. Pode pular se preferir.</string>
+    <string name="perm_overlay">Sobrepor a outros apps</string>
+    <string name="perm_overlay_desc">Permite que a luz apareça com a tela desligada. Basta isso - não precisa de Acessibilidade.</string>
+    <string name="perm_post">Notificações</string>
+    <string name="perm_post_desc">Necessário para a notificação de teste e o iniciador alternativo.</string>
+    <string name="perm_battery">Bateria sem restrições</string>
+    <string name="perm_battery_desc">Impede que o sistema feche o Glow LED. O app quase não gasta energia em segundo plano.</string>
+    <string name="perm_oem">Início automático (%s)</string>
+    <string name="perm_oem_desc">A marca do seu celular tem um fechador de apps extra. Permita que o Glow LED inicie automaticamente e rode em segundo plano.</string>
+    <string name="perm_miui">Permissões de tela de bloqueio da Xiaomi</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: ative \"Mostrar na tela de bloqueio\" e \"Exibir janelas pop-up em segundo plano\".</string>
+    <string name="restricted_hint">Android 13+: apps instalados por arquivo APK recebem \"configurações restritas\" para Acesso às notificações e Acessibilidade. É uma regra do Android, não um erro. Se uma opção estiver cinza: Informações do app → ⋮ (canto superior direito) → Permitir configurações restritas, e tente de novo.</string>
+    <string name="shell_shizuku">Configurar com um toque (Shizuku)</string>
+    <string name="shell_root">Configurar com um toque (root)</string>
+    <string name="shell_desc">Concede tudo acima automaticamente: sem procurar nas Configurações, sem a etapa de \"configurações restritas\".</string>
+    <string name="shell_connected">%s conectado</string>
+    <string name="shell_connected_desc">A tela desliga na hora mesmo sem Acessibilidade. Toque para configurar de novo.</string>
+    <string name="shell_get">Tem Shizuku? Configure com um toque</string>
+    <string name="shell_get_desc">Opcional. Instale e inicie o Shizuku (funciona sem root) e depois volte aqui.</string>
+    <string name="shell_denied">A permissão não foi concedida</string>
+    <string name="shell_running">Configurando…</string>
+    <string name="shell_summary">Configuração via %1$s: %2$d de %3$d permissões</string>
+    <string name="shell_summary_a11y">+ acessibilidade.</string>
+    <string name="shell_summary_no_a11y">(a acessibilidade falhou - ative manualmente).</string>
+    <string name="setup_intro">Conceda uma vez. Sem isso a luz não aparece.</string>
+    <string name="setup_progress">%1$d de %2$d</string>
+    <string name="setup_all_done">Tudo pronto</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_preview">Prévia</string>
+    <string name="action_test_short">Testar</string>
+    <string name="tab_setup">Configurar</string>
+    <string name="tab_style">Estilo</string>
+    <string name="tab_off">Tela desligada</string>
+    <string name="tab_on">Tela ligada</string>
+    <string name="tab_alerts">Alertas</string>
+    <string name="tab_battery">Bateria</string>
+    <string name="tab_log">Mais</string>
+
+    <!-- Style -->
+    <string name="action_cutout">Posição da câmera</string>
+    <string name="tile_cutout_sub">Alinhar o anel</string>
+    <string name="custom_colour">Cor personalizada</string>
+    <string name="chips_multi">Várias notificações</string>
+    <string name="s_speed">Velocidade</string>
+    <string name="s_intensity">Intensidade</string>
+    <string name="s_thickness">Espessura</string>
+    <string name="s_gap">Espaço</string>
+    <string name="s_edge">Cantos da borda</string>
+    <string name="t_glow">Brilho suave</string>
+    <string name="t_rotate">Girar anel</string>
+    <string name="t_notif_colour">Cor da notificação</string>
+    <string name="t_icon_colour">Cor do ícone</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">Luz tela desligada</string>
+    <string name="t_on_screen_off">Ao desligar tela</string>
+    <string name="t_on_new">Nova notificação</string>
+    <string name="t_pocket">Modo bolso</string>
+    <string name="t_double_tap">Toque duplo</string>
+    <string name="t_burn_in">Anti burn-in</string>
+    <string name="t_app_icons">Ícones dos apps</string>
+    <string name="t_keep_icons">Manter ícones</string>
+    <string name="t_aod_icons">Ícones estilo AOD</string>
+    <string name="t_tap_read">Tocar para ler</string>
+    <string name="t_peek_actions">Botões responder</string>
+    <string name="t_droplet">Gota</string>
+    <string name="chips_method">Método com tela desligada</string>
+    <string name="chips_timeout">Manter a luz acesa por</string>
+    <string name="chips_remind">Lembrar depois</string>
+    <string name="s_brightness">Brilho</string>
+    <string name="s_reminder">Lembrete</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">Anel tela ligada</string>
+    <string name="t_lock_only">Só no bloqueio</string>
+    <string name="t_charge">Anel de carga</string>
+    <string name="t_progress">Anel de download</string>
+    <string name="charge_colours">Cor do anel de carga por nível de bateria</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">Cor do anel de download</string>
+    <string name="c_progress">Cor do download (Auto = cor do app)</string>
+    <string name="screen_on_hint">Anel tela ligada: um pequeno anel ao redor da câmera enquanto você usa o celular. Anel de carga: enche com o nível da bateria durante a carga. Anel de download: mostra o progresso de um download. Os dois também funcionam na tela de bloqueio; ocultos na horizontal (exceto luz de borda).</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">Apps e cores</string>
+    <string name="apps_sub">Ativar/desativar apps, escolher cores</string>
+    <string name="chips_which_apps">Quais apps</string>
+    <string name="t_ignore_silent">Ignorar silenciosas</string>
+    <string name="t_dnd">Seguir Não perturbe</string>
+    <string name="t_clear_unlock">Ler ao desbloquear</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">Taxa de quadros da animação</string>
+    <string name="s_min_battery">Pausar abaixo de</string>
+    <string name="t_low_refresh">Taxa mínima (Hz)</string>
+    <string name="t_eco">Parar após 12 s</string>
+    <string name="t_age_fade">Esmaecer antigas</string>
+    <string name="t_motion">Acender ao mover</string>
+    <string name="t_quiet">Horário silencioso</string>
+    <string name="quiet_time">Horário silencioso</string>
+    <string name="quiet_start">Início do horário silencioso</string>
+    <string name="quiet_end">Fim do horário silencioso</string>
+    <string name="battery_hint">Parar após 12 s: a luz anima ao aparecer e depois fica parada, então nada é redesenhado. Esmaecer antigas: uma notificação nova brilha forte e vai esmaecendo ao longo de uma hora. Acender ao mover: depois que a luz termina, ela volta quando você mexe no celular, usando o sensor de movimento (sem gastar tela ou CPU enquanto espera).</string>
+
+    <!-- More -->
+    <string name="g_official">Versão oficial</string>
+    <string name="g_unofficial">Outra versão</string>
+    <string name="g_version">Versão %s</string>
+    <string name="g_download">Baixar última</string>
+    <string name="g_download_sub">APK mais novo</string>
+    <string name="g_language">Idioma</string>
+    <string name="g_backup">Backup</string>
+    <string name="g_backup_sub">Salvar em arquivo</string>
+    <string name="g_restore">Restaurar</string>
+    <string name="g_restore_sub">De um backup</string>
+    <string name="g_log">Registro</string>
+    <string name="g_log_sub">Ver e copiar</string>
+    <string name="sig_key">Chave %s</string>
+    <string name="log_copy">Copiar</string>
+    <string name="log_copied">Copiado</string>
+    <string name="state_on">Ativado</string>
+    <string name="state_off">Desativado</string>
+    <string name="close">Fechar</string>
+    <string name="lang_system">Padrão do sistema</string>
+    <string name="backup_done">Configurações salvas</string>
+    <string name="backup_failed">Não foi possível salvar o backup</string>
+    <string name="restore_done">%d configurações restauradas</string>
+    <string name="restore_failed">Esse arquivo não é um backup do Glow LED</string>
+
+    <!-- Test -->
+    <string name="test_title">Teste do Glow LED</string>
+    <string name="test_text">Desligue a tela para ver a luz. Deslize esta notificação para limpá-la.</string>
+    <string name="test_sent">Teste enviado. Desligue a tela agora.</string>
+    <string name="need_listener_first">Permita o acesso às notificações primeiro</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">Nova notificação</string>
+    <string name="peek_hidden">Conteúdo oculto</string>
+    <string name="peek_more">+%d mais</string>
+    <string name="peek_reply">Responder</string>
+    <string name="peek_mark_read">Marcar como lida</string>
+    <string name="peek_dismiss">Dispensar</string>
+    <string name="kind_photo">📷 Foto</string>
+    <string name="kind_video">🎥 Vídeo</string>
+    <string name="kind_voice">🎤 Mensagem de voz</string>
+    <string name="kind_document">📄 Documento</string>
+    <string name="reply_to">Responder a %s</string>
+    <string name="reply_hint">Mensagem</string>
+    <string name="reply_send">Enviar</string>
+    <string name="reply_sent">Enviada</string>
+    <string name="reply_failed">Não foi possível enviar a resposta</string>
+    <string name="reply_unavailable">Esta notificação não pode mais ser respondida daqui</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">Detectar</string>
+    <string name="cut_save">Salvar</string>
+    <string name="cut_reset">Redefinir</string>
+    <string name="cut_hint">Arraste na tela para mover. Use as setas para passos de um pixel.</string>
+    <string name="cut_none">Este celular não informa recorte de câmera. Usando um ponto de LED clássico.</string>
+    <string name="cut_detected">Recorte detectado: %s</string>
+    <string name="cut_saved">Posição da câmera salva</string>
+    <string name="cut_rotate">Segure o celular na vertical para detectar o recorte</string>
+    <string name="cd_left">Mover para a esquerda</string>
+    <string name="cd_up">Mover para cima</string>
+    <string name="cd_down">Mover para baixo</string>
+    <string name="cd_right">Mover para a direita</string>
+    <string name="shape_circle">Furo</string>
+    <string name="shape_pill">Pílula</string>
+    <string name="shape_notch">Entalhe</string>
+    <string name="shape_dot">Ponto LED</string>
+    <string name="label_x">Horizontal</string>
+    <string name="label_y">Vertical</string>
+    <string name="label_w">Largura</string>
+    <string name="label_h">Altura</string>
+    <string name="label_gap">Distância da câmera</string>
+    <string name="label_thickness">Espessura do anel</string>
+    <string name="label_animate">Animar</string>
+
+    <!-- Apps -->
+    <string name="apps_search">Pesquisar apps</string>
+    <string name="apps_auto">Auto</string>
+    <string name="apps_loading">Carregando apps…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">Escolher cor</string>
+    <string name="color_auto">Automática</string>
+    <string name="color_hex">Hex (#RRGGBB)</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+</resources>

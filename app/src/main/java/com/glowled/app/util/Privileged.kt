@@ -164,8 +164,9 @@ object Privileged {
             exec("settings put secure enabled_accessibility_services '$list'").first == 0 &&
                 exec("settings put secure accessibility_enabled 1").first == 0
         }
-        val summary = "One-tap setup via ${backend().name.lowercase()}: $ok of ${steps.size} permissions" +
-            if (a11yOk) " + accessibility" else " (accessibility failed - enable it manually)"
+        val via = backend().name.lowercase().replaceFirstChar { it.uppercase() }
+        val summary = context.getString(com.glowled.app.R.string.shell_summary, via, ok, steps.size) + " " +
+            context.getString(if (a11yOk) com.glowled.app.R.string.shell_summary_a11y else com.glowled.app.R.string.shell_summary_no_a11y)
         DebugLog.add(summary)
         main.post { done(summary) }
     }

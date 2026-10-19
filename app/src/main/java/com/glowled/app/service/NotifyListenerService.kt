@@ -10,6 +10,7 @@ import android.util.Log
 import com.glowled.app.core.LedController
 import com.glowled.app.core.NotificationContent
 import com.glowled.app.core.NotificationStore
+import com.glowled.app.core.ProgressStore
 
 /** Tracks which notifications should light the LED. Bound by the system, so no foreground service is needed. */
 class NotifyListenerService : NotificationListenerService() {
@@ -28,6 +29,7 @@ class NotifyListenerService : NotificationListenerService() {
         if (instance === this) instance = null
         com.glowled.app.core.DebugLog.add("Notification access disconnected - rebinding")
         NotificationStore.clear()
+        ProgressStore.clear()
         LedController.onNotificationsChanged(false)
         // Ask the system to bind us again (OEM task killers often drop the binding).
         requestRebind(ComponentName(this, NotifyListenerService::class.java))
@@ -35,6 +37,7 @@ class NotifyListenerService : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification, rankingMap: RankingMap?) {
+        trackProgress(sbn)
         val entry = toEntry(sbn, rankingMap)
         val existed = NotificationStore.contains(sbn.key)
         // A brand-new notification, or an update that alerts again (e.g. a new chat message), wakes the LED.
@@ -44,6 +47,7 @@ class NotifyListenerService : NotificationListenerService() {
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification, rankingMap: RankingMap?) {
+        if (ProgressStore.remove(sbn.key)) LedController.onProgressChanged()
         if (NotificationStore.remove(sbn.key)) LedController.onNotificationsChanged(false)
     }
 
@@ -54,6 +58,15 @@ class NotifyListenerService : NotificationListenerService() {
 
     override fun onInterruptionFilterChanged(interruptionFilter: Int) {
         rebuild()
+    }
+
+    /** Download / upload progress bars feed the download ring around the camera. */
+    private fun trackProgress(sbn: StatusBarNotification) {
+        val n = sbn.notification ?: return
+        val pkg = sbn.packageName
+        val fraction = if (pkg != packageName && LedController.prefs.appEnabled(pkg)) ProgressStore.fractionOf(n) else null
+        val color = if (fraction != null) LedController.colors.colorFor(pkg, n) else 0
+        if (ProgressStore.update(sbn.key, pkg, fraction, color)) LedController.onProgressChanged()
     }
 
     /** Re-evaluates every active notification (after settings change or reconnect). */
@@ -109,7 +122,24 @@ class NotifyListenerService : NotificationListenerService() {
             hidden = hidden,
             intent = n.contentIntent,
             smallIcon = n.smallIcon,
+            replyAction = replyActionOf(n),
+            readAction = readActionOf(n),
+            clearable = sbn.isClearable,
         )
+    }
+
+    /** The app's reply action: one that takes free-form text. */
+    private fun replyActionOf(n: Notification): Notification.Action? =
+        n.actions?.firstOrNull { a -> a.remoteInputs?.any { it.allowFreeFormInput } == true }
+
+    /** The app's mark-as-read action (declared semantically, or recognisable by its title). */
+    private fun readActionOf(n: Notification): Notification.Action? {
+        val actions = n.actions ?: return null
+        return actions.firstOrNull { it.semanticAction == Notification.Action.SEMANTIC_ACTION_MARK_AS_READ }
+            ?: actions.firstOrNull { a ->
+                val t = a.title?.toString()?.lowercase().orEmpty()
+                (READ_WORDS.containsMatchIn(t)) && "unread" !in t && a.remoteInputs.isNullOrEmpty()
+            }
     }
 
     private fun hasChildren(summary: StatusBarNotification): Boolean {
@@ -123,6 +153,7 @@ class NotifyListenerService : NotificationListenerService() {
 
     companion object {
         const val TEST_TAG = "glowled_test"
+        private val READ_WORDS = Regex("\\bread\\b|\\blida\\b|\\blido\\b")
 
         @Volatile
         var instance: NotifyListenerService? = null

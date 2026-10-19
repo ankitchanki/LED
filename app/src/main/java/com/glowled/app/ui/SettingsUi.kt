@@ -27,11 +27,20 @@ import com.google.android.material.slider.Slider
  */
 class SettingsUi(private val context: Context, private val sp: SharedPreferences) {
 
+    companion object {
+        private const val GRID_TILE_DP = 104
+    }
+
     data class Toggle(val title: String, val key: String, val def: Boolean, val dependsOn: (() -> Boolean)? = null)
     data class Range(val title: String, val key: String, val min: Int, val max: Int, val def: Int, val unit: String)
+    /** A colour setting; with [allowAuto], 0 means "automatic". */
+    data class ColorItem(val title: String, val key: String, val def: Int, val allowAuto: Boolean = false)
+    data class GridItem(val icon: Int, val title: String, val sub: String, val onClick: () -> Unit)
 
     private val d = context.resources.displayMetrics.density
     private fun dp(v: Int) = (v * d).toInt()
+    /** Every toggle and colour tile has this height, so the grid lines up. */
+    private val tileHeight = context.resources.getDimensionPixelSize(R.dimen.tile_height)
     private val dependents = mutableListOf<Pair<View, () -> Boolean>>()
     private val refreshers = mutableListOf<() -> Unit>()
 
@@ -123,7 +132,7 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
                 isBaselineAligned = false
             }
             pair.forEach {
-                line.addView(toggleTile(line, it), LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(dp(4), dp(4), dp(4), dp(4)) })
+                line.addView(toggleTile(line, it), LinearLayout.LayoutParams(0, tileHeight, 1f).apply { setMargins(dp(4), dp(4), dp(4), dp(4)) })
             }
             // Keep a lone last tile at half width.
             if (pair.size == 1) line.addView(View(context), LinearLayout.LayoutParams(0, 1, 1f).apply { setMargins(dp(4), 0, dp(4), 0) })
@@ -143,7 +152,8 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
             state.setImageResource(if (on) R.drawable.ic_check else 0)
             state.imageTintList = ColorStateList.valueOf(context.getColor(R.color.black))
             tile.isChecked = on
-            tile.contentDescription = "${t.title}: ${if (on) "on" else "off"}"
+            tile.contentDescription = t.title
+            androidx.core.view.ViewCompat.setStateDescription(tile, context.getString(if (on) R.string.state_on else R.string.state_off))
         }
         read()
         tile.setOnClickListener {
@@ -154,6 +164,118 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         refreshers += read
         t.dependsOn?.let { dependents += tile to it }
         return tile
+    }
+
+    // ---- colour tiles: same size as the toggle tiles, a swatch and a one-line label ---------------
+
+    fun colorTiles(parent: LinearLayout, items: List<ColorItem>, dependsOn: (() -> Boolean)? = null) {
+        val line = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            isBaselineAligned = false
+        }
+        items.forEach { line.addView(colorTile(it), LinearLayout.LayoutParams(0, tileHeight, 1f).apply { setMargins(dp(4), dp(4), dp(4), dp(4)) }) }
+        parent.addView(line, LinearLayout.LayoutParams(-1, -2))
+        dependsOn?.let { dependents += line to it }
+    }
+
+    private fun colorTile(item: ColorItem): View {
+        val card = MaterialCardView(context).apply {
+            setCardBackgroundColor(context.getColor(R.color.surface))
+            radius = 18 * d
+            strokeWidth = 0
+            isClickable = true
+            isFocusable = true
+        }
+        val row = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(10), 0, dp(8), 0)
+        }
+        val swatch = View(context)
+        row.addView(swatch, LinearLayout.LayoutParams(dp(22), dp(22)).apply { marginEnd = dp(8) })
+        row.addView(oneLine(item.title, 13f), LinearLayout.LayoutParams(0, -1, 1f))
+        card.addView(row, ViewGroup.LayoutParams(-1, -1))
+        val read = {
+            val c = sp.getInt(item.key, item.def)
+            swatch.background = android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.OVAL
+                if (c == 0) {
+                    setColor(context.getColor(R.color.surface_high))
+                    setStroke(dp(2), context.getColor(R.color.accent))
+                } else {
+                    setColor(c)
+                }
+            }
+        }
+        read()
+        card.setOnClickListener {
+            haptic(it)
+            ColorPickerDialog.show(context, sp.getInt(item.key, item.def), item.allowAuto) { picked ->
+                sp.edit().putInt(item.key, picked).apply()
+                refresh()
+            }
+        }
+        refreshers += read
+        return card
+    }
+
+    /** Single-line label that shrinks a little to fit instead of wrapping. */
+    private fun oneLine(text: String, maxSp: Float, secondary: Boolean = false): TextView =
+        androidx.appcompat.widget.AppCompatTextView(context).apply {
+        this.text = text
+        maxLines = 1
+        gravity = Gravity.CENTER_VERTICAL or Gravity.START
+        setTextAppearance(
+            if (secondary) com.google.android.material.R.style.TextAppearance_Material3_BodySmall
+            else com.google.android.material.R.style.TextAppearance_Material3_LabelLarge,
+        )
+        setTextColor(context.getColor(if (secondary) R.color.text_secondary else R.color.text_primary))
+        androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+            this, 9, maxSp.toInt(), 1, android.util.TypedValue.COMPLEX_UNIT_SP,
+        )
+    }
+
+    // ---- grid of action tiles (no scrolling, everything side by side) --------------------------
+
+    /** Square-ish tiles, [columns] per row. Returns each tile's subtitle so callers can update it. */
+    fun grid(parent: LinearLayout, items: List<GridItem>, columns: Int = 3): List<TextView> {
+        val subs = mutableListOf<TextView>()
+        items.chunked(columns).forEach { chunk ->
+            val line = LinearLayout(context).apply {
+                orientation = LinearLayout.HORIZONTAL
+                isBaselineAligned = false
+            }
+            chunk.forEach { item ->
+                val card = MaterialCardView(context).apply {
+                    setCardBackgroundColor(context.getColor(R.color.surface))
+                    radius = 20 * d
+                    strokeWidth = 0
+                    isClickable = true
+                    isFocusable = true
+                    contentDescription = item.title
+                    setOnClickListener { haptic(it); item.onClick() }
+                }
+                val col = LinearLayout(context).apply {
+                    orientation = LinearLayout.VERTICAL
+                    gravity = Gravity.CENTER
+                    setPadding(dp(8), dp(12), dp(8), dp(10))
+                }
+                col.addView(ImageView(context).apply {
+                    setImageResource(item.icon)
+                    imageTintList = ColorStateList.valueOf(context.getColor(R.color.accent))
+                }, LinearLayout.LayoutParams(dp(26), dp(26)))
+                col.addView(oneLine(item.title, 14f).apply { gravity = Gravity.CENTER },
+                    LinearLayout.LayoutParams(-1, dp(22)).apply { topMargin = dp(8) })
+                val sub = oneLine(item.sub, 11f, secondary = true).apply { gravity = Gravity.CENTER }
+                col.addView(sub, LinearLayout.LayoutParams(-1, dp(18)))
+                subs += sub
+                card.addView(col, ViewGroup.LayoutParams(-1, -1))
+                line.addView(card, LinearLayout.LayoutParams(0, dp(GRID_TILE_DP), 1f).apply { setMargins(dp(4), dp(4), dp(4), dp(4)) })
+            }
+            repeat(columns - chunk.size) { line.addView(View(context), LinearLayout.LayoutParams(0, 1, 1f).apply { setMargins(dp(4), 0, dp(4), 0) }) }
+            parent.addView(line, LinearLayout.LayoutParams(-1, -2))
+        }
+        return subs
     }
 
     // ---- sliders -------------------------------------------------------------------------------

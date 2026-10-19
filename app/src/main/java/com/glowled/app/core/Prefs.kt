@@ -52,6 +52,8 @@ class Prefs(context: Context) {
     val showContent get() = bool("show_content", true)
     /** Liquid droplet from the camera when a notification arrives. */
     val droplet get() = bool("droplet", true)
+    /** Reply / Mark as read buttons on the message peek. */
+    val peekActions get() = bool("peek_actions", true)
     /** Always-on icons as monochrome glyphs (One UI AOD style) instead of full-colour app icons. */
     val aodIcons get() = bool("aod_icons", true)
 
@@ -70,6 +72,22 @@ class Prefs(context: Context) {
     // Screen-on overlay
     val overlayEnabled get() = bool("overlay_enabled", true)
     val overlayLockOnly get() = bool("overlay_lock_only", false)
+
+    // Charging and download rings (screen on, also over the lock screen)
+    val chargeLed get() = bool("charge_led", true)
+    val chargeColorLow get() = int("charge_color_low", 0xFFFF1744.toInt())
+    val chargeColorMid get() = int("charge_color_mid", 0xFFFFC400.toInt())
+    val chargeColorHigh get() = int("charge_color_high", 0xFF00E676.toInt())
+    val progressLed get() = bool("progress_led", true)
+    /** 0 = the downloading app's colour. */
+    val progressColor get() = int("progress_color", 0)
+
+    /** Battery-level colour: below 20 %, 20-79 %, 80 % and up. */
+    fun chargeColor(level: Int) = when {
+        level < CHARGE_LOW -> chargeColorLow
+        level < CHARGE_HIGH -> chargeColorMid
+        else -> chargeColorHigh
+    }
 
     // Filters
     val appMode get() = str("app_mode", "all")
@@ -120,6 +138,8 @@ class Prefs(context: Context) {
     companion object {
         const val K_ENABLED = "enabled"
         const val DEFAULT_COLOR = 0xFF00E5FF.toInt()
+        const val CHARGE_LOW = 20
+        const val CHARGE_HIGH = 80
     }
 }
 

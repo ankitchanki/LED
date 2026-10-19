@@ -25,6 +25,7 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:localeConfig="@xml/locales_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.GlowLED"
         tools:targetApi="35">
@@ -67,6 +68,17 @@
             android:theme="@style/Theme.GlowLED.Aod"
             android:turnScreenOn="true"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <!-- Quick reply from the always-on screen (asks to unlock first). -->
+        <activity
+            android:name=".ui.ReplyActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:showWhenLocked="true"
+            android:taskAffinity="com.glowled.app.reply"
+            android:theme="@style/Theme.GlowLED.Reply"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
 
         <service
             android:name=".service.NotifyListenerService"
@@ -118,6 +130,16 @@
         <receiver
             android:name=".service.PulseReceiver"
             android:exported="false" />
+
+        <!-- In-app language choice on Android 12 and older (AppCompat stores it). -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
 
         <!-- Optional Shizuku support (user-approved shell access, no root needed). -->
         <provider

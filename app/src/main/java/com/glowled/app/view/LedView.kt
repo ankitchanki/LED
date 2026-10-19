@@ -123,6 +123,67 @@ class LedView @JvmOverloads constructor(
         invalidate()
     }
 
+    // ---- gauge: battery level while charging, or download progress -----------------------------
+
+    /** Fill level 0..1 of the gauge, or -1 for the normal notification light. */
+    private var meterFrac = -1f
+    private var meterColor = 0
+    private var meterStart = 0L
+    /** Where on the outline its top-centre point is (0..1), so the gauge fills from 12 o'clock. */
+    private var topFrac = 0f
+    private val posTmp = FloatArray(2)
+
+    /**
+     * Shows the ring as a gauge filled clockwise from the top: [fraction] 0..1 in [color], over a
+     * faint full track. Null goes back to the normal light. The fill sweeps in when it appears and a
+     * soft highlight flows along it, so it reads as "in progress".
+     */
+    fun setMeter(fraction: Float?, color: Int) {
+        val f = fraction?.coerceIn(0f, 1f) ?: -1f
+        if (f == meterFrac && color == meterColor) return
+        if (f >= 0f && meterFrac < 0f) meterStart = SystemClock.uptimeMillis()
+        meterFrac = f
+        meterColor = color
+        invalidate()
+    }
+
+    private fun findTopFraction(): Float {
+        if (pathLength <= 0f) return 0f
+        var best = Float.MAX_VALUE
+        var bestFrac = 0f
+        for (i in 0 until TOP_SAMPLES) {
+            val f = i / TOP_SAMPLES.toFloat()
+            measure.getPosTan(f * pathLength, posTmp, null)
+            // Highest point; on a flat top edge, the one closest to the centre.
+            val score = posTmp[1] * 1000f + kotlin.math.abs(posTmp[0] - cx)
+            if (score < best) {
+                best = score
+                bestFrac = f
+            }
+        }
+        return bestFrac
+    }
+
+    private fun drawMeter(c: Canvas, now: Long) {
+        val t = now - meterStart
+        val frac = meterFrac * easeOut((t / METER_SWEEP_MS.toFloat()).coerceIn(0f, 1f))
+        if (isFilled) {
+            val g = geometry ?: return
+            val r = max(g.w, g.h) / 2f
+            rect.set(cx - r, cy - r, cx + r, cy + r)
+            c.drawArc(rect, 0f, 360f, true, paintFor(meterColor, METER_TRACK, true).also { it.clearShadowLayer() })
+            c.drawArc(rect, -90f, 360f * frac, true, paintFor(meterColor, 1f, true))
+            return
+        }
+        c.drawPath(shapePath, paintFor(meterColor, METER_TRACK, false).also { it.clearShadowLayer() })
+        if (frac > 0.002f) segment(c, topFrac, topFrac + frac, paintFor(meterColor, 1f, false))
+        if (frac > 0.05f) {
+            val p = (t % METER_FLOW_MS) / METER_FLOW_MS.toFloat()
+            val head = topFrac + frac * p
+            segment(c, head - 0.04f, head, paintFor(Color.WHITE, 0.5f, false).also { it.clearShadowLayer() })
+        }
+    }
+
     /** 1 = full intensity; lower for notifications that have been waiting a while. */
     var ageFade = 1f
         set(v) {
@@ -359,6 +420,7 @@ class LedView @JvmOverloads constructor(
         }
         measure.setPath(shapePath, true)
         pathLength = measure.length
+        topFrac = findTopFraction()
         if (style == LedStyle.RAINBOW) {
             sweep = SweepGradient(
                 cx, cy,
@@ -423,7 +485,7 @@ class LedView @JvmOverloads constructor(
             }
         }
 
-        when (style) {
+        if (meterFrac >= 0f) drawMeter(canvas, now) else when (style) {
             LedStyle.STATIC -> ring(canvas, color, 1f, segmented, rot)
             LedStyle.BREATHE -> ring(canvas, color, 0.12f + 0.88f * wave(p), segmented, rot)
             LedStyle.EDGE_PULSE -> ring(canvas, color, 0.1f + 0.9f * wave(p), segmented, rot)
@@ -465,6 +527,10 @@ class LedView @JvmOverloads constructor(
 
     private fun scheduleNext(period: Long, inPeriod: Long, n: Int, segmented: Boolean) {
         if (!isShown || windowVisibility != VISIBLE) return
+        if (meterFrac >= 0f) {
+            postInvalidateDelayed(METER_FRAME_MS)
+            return
+        }
         val cycling = n > 1 && !segmented && multiMode != MultiMode.LATEST
         when (style) {
             LedStyle.STATIC -> when {
@@ -597,6 +663,11 @@ class LedView @JvmOverloads constructor(
     }
 
     companion object {
+        private const val TOP_SAMPLES = 180
+        private const val METER_TRACK = 0.16f
+        private const val METER_SWEEP_MS = 700L
+        private const val METER_FLOW_MS = 2400L
+        private const val METER_FRAME_MS = 50L
         private const val BLINK_ON = 0.12f
         private const val ROTATE_MS = 9_000L
         private const val DETACH_AT = 0.42f

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>Pulso (anel + onda)</item>
+        <item>Respirar</item>
+        <item>Piscar (menor consumo)</item>
+        <item>Batimento</item>
+        <item>Giro</item>
+        <item>Arco-íris</item>
+        <item>Anel fixo</item>
+        <item>Luz de borda</item>
+        <item>Pulso de borda</item>
+    </string-array>
+
+    <string-array name="multi_labels">
+        <item>Dividir anel por app</item>
+        <item>Alternar cores</item>
+        <item>Só a mais nova</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>Auto</item>
+        <item>Janela na tela de bloqueio</item>
+        <item>Sobreposição</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 s</item>
+        <item>1 min</item>
+        <item>2 min</item>
+        <item>5 min</item>
+        <item>15 min</item>
+        <item>1 hora</item>
+        <item>Até limpar</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>Desligado</item>
+        <item>A cada 2 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>30 min</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>Todos os apps</item>
+        <item>Só os que eu escolher</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>Máx.</item>
+    </string-array>
+</resources>

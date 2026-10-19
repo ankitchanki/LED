@@ -6,7 +6,7 @@
 
 <p align="center">
   A notification light for AMOLED phones. It glows around your camera hole, works on any brand, and uses very little battery.<br/>
-  Android 10 and up.
+  Android 10 and up · English and Português (Brasil).
 </p>
 
 <p align="center">
@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/v1.9/overview.png" alt="Glow LED screenshots: tap to read, droplet from the camera, styles, settings" />
+  <img src="docs/screenshots/v2/overview.png" alt="Glow LED screenshots: always-on icons, message peek with Reply and Mark as read, charging and download ring, one-handed mode, More tab" />
 </p>
 
 ---
@@ -35,31 +35,38 @@ are switched off, so only the light itself uses power.
 | **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate, flicker-free. Timeout, optional reminder pulses, pocket detection, burn-in protection. Double-tap to wake, tap to show the app. |
 | **App under the camera** | One UI AOD-style monochrome glyphs under the ring (grey; the newest in its notification colour), or full-colour app icons; tap one to read who sent what (text, or 📷 Photo / 🎥 Video / 🎤 Voice / 📄 Document) and tap the card to open the chat. A liquid droplet drips from the camera when a notification arrives. Double-tap to wake. |
 | **Screen on** | A small light around the camera, also over the lock screen. |
+| **Charging ring** | While charging, the ring fills with your battery level from the top, in your own colour per level (0–19 %, 20–79 %, 80–100 %). Shows for a few seconds when you plug in, then whenever no notification is waiting. Switch it off any time. |
+| **Download ring** | A download, upload or install with a progress bar shows its progress around the camera, in the app's colour (or yours). |
+| **Reply & Mark as read** | Tap an app icon on the always-on screen, then **Reply** (type and send without opening the app; asks to unlock first) or **Mark as read**, using the app's own notification buttons. |
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
-| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, More) - no menus, almost no scrolling, controls in thumb reach. |
-| **Easy updates** | Signed builds that install over each other, settings backup/restore to a file, a signature check and a "Check for updates" link in the More tab. |
+| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, More) - no menus, equal-size one-line tiles, the More tab is a grid with no scrolling. |
+| **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). Swipe up or press back to return. |
+| **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *More → Language*. |
+| **Easy updates** | Signed builds that install over each other. *More → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
 | **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Quick Settings tile, preview, test notification, themed (monochrome) icon. |
 
 ## Screenshots
 
-| Always-on light | Tap an icon to read | Styles & colours |
+| Always-on light | Tap an icon: Reply / Mark as read | Charging & download ring |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v1.9/1-always-on.png" width="220" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.9/2-tap-to-read.png" width="220" alt="Peek card under the app icons showing the sender and the latest messages" /> | <img src="docs/screenshots/v1.9/4-style.png" width="220" alt="Style tab with animation cards, colour row and sliders, ring shown on the real camera" /> |
-| Ring split into each app's colour and slowly rotating; app icons (no text) below it, newest in the middle. Everything else stays black, so AMOLED pixels stay off. | Tap an app icon: who sent it and the latest messages in dim text on pure black (Samsung AOD style), with 📷 Photo / 🎥 Video / 🎤 Voice labels. Tap to open the chat. | Live preview on your real camera. Tap an animation, pick a colour, tune speed, size and gap. |
+| <img src="docs/screenshots/v2/1-always-on.png" width="220" alt="Black always-on screen with a split colour ring around the camera and grey AOD-style app glyphs below it, the newest in green" /> | <img src="docs/screenshots/v2/2-tap-to-read.png" width="220" alt="Message peek under the icons, left-aligned, with Reply and Mark as read buttons" /> | <img src="docs/screenshots/v2/4-charging-download.png" width="220" alt="Screen on tab with charging ring and download ring switches and colour tiles per battery level" /> |
+| Ring split into each app's colour; grey AOD-style glyphs below it, the newest in its notification colour. Everything else stays black. | Who sent what, left-aligned on pure black. **Reply** right there or **Mark as read**. | The ring fills with the battery level while charging, or with a download's progress. |
 
-| Screen-off options | One-tap setup |
-|:---:|:---:|
-| <img src="docs/screenshots/v1.9/5-screen-off.png" width="220" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.9/6-setup.png" width="220" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
-| Every option on one screen: when to show, how long, pocket detection, double-tap to wake, droplet. | Shizuku/root grants everything in one tap, or follow the checklist. |
+| One-handed mode | More (no scrolling) | Português (Brasil) |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/v2/6-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a large Glow LED title above" /> | <img src="docs/screenshots/v2/5-more.png" width="220" alt="More tab as a grid of six tiles: official build, get latest, language, back up, restore, event log" /> | <img src="docs/screenshots/v2/7-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
+| Pull down: tabs and tiles come into thumb reach. | Build check, direct download of the latest APK, language, backup, restore, event log. | The whole app in Brazilian Portuguese. |
+
+<img src="docs/screenshots/v2/8-gauges.png" width="540" alt="Charging ring at 12 % in red, 64 % in amber and 90 % in green, filling clockwise from the top" />
 
 **Droplet:** when a notification arrives, a liquid drop in the app's colour stretches out of the camera,
 breaks off, falls straight down into the middle of the icon row and turns into the app's icon.
 
-<img src="docs/screenshots/v1.9/droplet.gif" width="450" alt="Animation: the ring grows out of the camera, a green drop stretches out, falls into the middle of the icon row and turns into that app's glyph in the same colour; older apps are grey AOD-style glyphs" />
+<img src="docs/screenshots/v2/droplet.gif" width="450" alt="Animation: the ring grows out of the camera, a green drop stretches out, falls into the middle of the icon row and turns into that app's glyph in the same colour; older apps are grey AOD-style glyphs" />
 
 ## How it works (for users)
 

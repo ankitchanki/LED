@@ -46,7 +46,8 @@ object NotificationContent {
         style?.messages.orEmpty().map { m ->
             val text = m.text?.toString()?.trim().orEmpty()
             val kind = guessKind(text, m.dataMimeType)
-            val body = if (text.isEmpty()) label(kind) else text
+            // Media without a caption: a language-neutral emoji (the peek adds the full label).
+            val body = if (text.isEmpty()) emoji(kind) else text
             val who = m.person?.name?.toString()
             (if (group && !who.isNullOrBlank()) "$who: $body" else body) to kind
         }
@@ -74,11 +75,19 @@ object NotificationContent {
         }
     }
 
-    fun label(kind: Kind): String = when (kind) {
-        Kind.IMAGE -> "📷 Photo"
-        Kind.VIDEO -> "🎥 Video"
-        Kind.AUDIO -> "🎤 Voice message"
-        Kind.FILE -> "📄 Document"
+    private fun emoji(kind: Kind): String = when (kind) {
+        Kind.IMAGE -> "📷"
+        Kind.VIDEO -> "🎥"
+        Kind.AUDIO -> "🎤"
+        Kind.FILE -> "📄"
+        Kind.TEXT, Kind.OTHER -> ""
+    }
+
+    fun label(context: android.content.Context, kind: Kind): String = when (kind) {
+        Kind.IMAGE -> context.getString(com.glowled.app.R.string.kind_photo)
+        Kind.VIDEO -> context.getString(com.glowled.app.R.string.kind_video)
+        Kind.AUDIO -> context.getString(com.glowled.app.R.string.kind_voice)
+        Kind.FILE -> context.getString(com.glowled.app.R.string.kind_document)
         Kind.TEXT, Kind.OTHER -> ""
     }
 }

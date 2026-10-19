@@ -45,9 +45,9 @@ object PowerGuard {
 
     /** Returns null if allowed, otherwise a short reason (shown on the dashboard). */
     fun blockReason(context: Context, prefs: Prefs): String? = when {
-        inQuietHours(prefs) -> "quiet hours"
-        !isCharging(context) && batteryLevel(context) < prefs.minBattery -> "low battery"
-        inCall(context) -> "in a call"
+        inQuietHours(prefs) -> context.getString(com.glowled.app.R.string.block_quiet)
+        !isCharging(context) && batteryLevel(context) < prefs.minBattery -> context.getString(com.glowled.app.R.string.block_battery)
+        inCall(context) -> context.getString(com.glowled.app.R.string.block_call)
         else -> null
     }
 }

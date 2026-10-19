@@ -86,7 +86,7 @@
                 style="@style/Widget.Material3.Button.IconButton.Outlined"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:contentDescription="Left"
+                android:contentDescription="@string/cd_left"
                 android:text="◀" />
 
             <com.google.android.material.button.MaterialButton
@@ -94,7 +94,7 @@
                 style="@style/Widget.Material3.Button.IconButton.Outlined"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:contentDescription="Up"
+                android:contentDescription="@string/cd_up"
                 android:text="▲" />
 
             <com.google.android.material.button.MaterialButton
@@ -102,7 +102,7 @@
                 style="@style/Widget.Material3.Button.IconButton.Outlined"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:contentDescription="Down"
+                android:contentDescription="@string/cd_down"
                 android:text="▼" />
 
             <com.google.android.material.button.MaterialButton
@@ -110,7 +110,7 @@
                 style="@style/Widget.Material3.Button.IconButton.Outlined"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:contentDescription="Right"
+                android:contentDescription="@string/cd_right"
                 android:text="▶" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -129,18 +129,32 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAuto"
+                android:maxLines="1"
+                android:paddingHorizontal="6dp"
+                android:gravity="center"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeStepGranularity="0.5sp"
+                app:autoSizeTextType="uniform"
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:text="@string/cut_auto" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReset"
+                android:maxLines="1"
+                android:paddingHorizontal="6dp"
+                android:gravity="center"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeStepGranularity="0.5sp"
+                app:autoSizeTextType="uniform"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
@@ -148,9 +162,16 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
+                android:maxLines="1"
+                android:paddingHorizontal="6dp"
+                android:gravity="center"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeStepGranularity="0.5sp"
+                app:autoSizeTextType="uniform"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:text="@string/cut_save" />

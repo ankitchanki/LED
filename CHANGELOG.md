@@ -1,3 +1,42 @@
+# Glow LED v2.0.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## New
+- **Português (Brasil):** the whole app is translated. It follows the phone's language, or choose one
+  in *More → Language* (also in Android 13+ *Settings → Apps → Glow LED → Language*).
+- **Charging ring:** while charging, the ring around the camera fills with your battery level, clockwise
+  from the top. Pick a colour for each level (0–19 %, 20–79 %, 80–100 %). It shows for a few seconds
+  when you plug in, then whenever no notification is waiting; works with the screen on and on the lock
+  screen. Switch: *Screen on → Charging ring*.
+- **Download ring:** a download, upload or install with a progress bar shows its progress around the
+  camera (app colour, or your own). Switch: *Screen on → Download ring*.
+- **Reply and Mark as read** on the always-on screen: tap an app icon, then **Reply** (a small sheet
+  opens, Android asks to unlock, the message is sent through the app's own reply button) or
+  **Mark as read** (the app's own action; **Dismiss** if it has none). Switch: *Screen off → Reply buttons*.
+- **One-handed mode:** pull the settings down and the tabs and tiles slide into thumb reach, like
+  One UI. Swipe up or press back to return; it remembers your choice.
+- **More tab without scrolling:** a grid of tiles side by side - build check, **Get latest** (downloads
+  the newest signed APK directly), Language, Back up, Restore, Event log.
+
+## Design
+- Every switch tile has the **same size** and a **single line** of text.
+- **Setup** lists the important steps first (Notification access, Display over other apps, …);
+  Autostart and the Shizuku/root one-tap setup are now last.
+- The message peek is **left-aligned** like a notification: app and time, sender, messages, media label,
+  buttons - no more centred, scattered text.
+- Removed the "Live preview on your camera" label (the preview is still on the camera), so the tabs
+  get that space.
+- *Camera position:* **Auto-detect**, Reset and Save stay on one line and line up.
+
+## Under the hood
+- The battery level is only watched while plugged in and the charging ring is on, so it costs nothing
+  on battery.
+- The screen-on window is only moved when its position really changes (gauge updates are drawn in place).
+
+---
+
 # Glow LED v1.10.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

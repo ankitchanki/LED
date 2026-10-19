@@ -31,11 +31,15 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -60,6 +64,10 @@ import com.glowled.app.service.LedAccessibilityService
 import com.glowled.app.service.NotifyListenerService
 import com.glowled.app.ui.SettingsUi.Range
 import com.glowled.app.ui.SettingsUi.Toggle
+import com.glowled.app.ui.SettingsUi.ColorItem
+import com.glowled.app.ui.SettingsUi.GridItem
+import com.glowled.app.view.ReachLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.activity.result.contract.ActivityResultContracts
 import com.glowled.app.util.AppSignature
 import com.glowled.app.util.OemHelper
@@ -93,7 +101,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var setupList: LinearLayout
     private lateinit var setupProgress: TextView
     private lateinit var setupBar: LinearProgressIndicator
-    private var logText: TextView? = null
+    private lateinit var reach: ReachLayout
+    private var pageViews: List<View> = emptyList()
+    private val meterPreviewEnd = Runnable { cameraLed.setMeter(null, 0) }
     private var quietSub: TextView? = null
     private var setupIncomplete = false
 
@@ -110,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         configureCameraLed()
         // Visual feedback right on the camera when the look changes.
         if (key in REPLAY_KEYS) playCameraIntro()
+        if (key != null && (key.startsWith("charge_") || key.startsWith("progress_"))) previewMeter(key)
         if (key == "style" || key == Prefs.K_ENABLED) ui.refresh()
     }
 
@@ -156,6 +167,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.btnTest).setOnClickListener { sendTest() }
 
         buildPages()
+        setupReach()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
         // Shizuku's binder arrives asynchronously; refresh the setup card when it does.
         Shizuku.addBinderReceivedListenerSticky(shizukuListener)
@@ -163,6 +175,25 @@ class MainActivity : AppCompatActivity() {
         // First run / something missing: open on Setup so the user sees what to do.
         if (savedInstanceState == null && setupIncomplete) pager.setCurrentItem(0, false)
         else if (savedInstanceState == null) pager.setCurrentItem(1, false)
+    }
+
+    /** One-handed mode: pull the settings down into thumb reach; back or a swipe up returns. */
+    private fun setupReach() {
+        reach = findViewById(R.id.root)
+        reach.spacer = findViewById(R.id.reachSpace)
+        reach.canContentScrollUp = { pageViews.getOrNull(pager.currentItem)?.canScrollVertically(-1) == true }
+        reach.dragZoneBottom = { findViewById<View>(R.id.dock).top }
+        val back = object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() = reach.close()
+        }
+        onBackPressedDispatcher.addCallback(this, back)
+        val state = getSharedPreferences(UI_STATE, MODE_PRIVATE)
+        reach.onReachChanged = { open ->
+            back.isEnabled = open
+            state.edit().putBoolean(KEY_REACH_OPEN, open).apply()
+        }
+        // Stay in one-handed mode if that's how the app was left.
+        if (state.getBoolean(KEY_REACH_OPEN, false)) reach.post { reach.open() }
     }
 
     private fun applyInsets() {
@@ -238,6 +269,24 @@ class MainActivity : AppCompatActivity() {
         cameraLed.restartAnimation()
     }
 
+    /** Shows the charging / download ring on the real camera for a moment while it's being set up. */
+    private fun previewMeter(key: String) {
+        if (!::cameraLed.isInitialized || cameraLed.visibility != View.VISIBLE) return
+        val on = if (key.startsWith("charge_")) prefs.chargeLed else prefs.progressLed
+        cameraLed.removeCallbacks(meterPreviewEnd)
+        if (!on) {
+            cameraLed.setMeter(null, 0)
+            return
+        }
+        if (key.startsWith("charge_")) {
+            val level = PowerGuard.batteryLevel(this)
+            cameraLed.setMeter(level / 100f, prefs.chargeColor(level))
+        } else {
+            cameraLed.setMeter(0.62f, prefs.progressColor.takeIf { it != 0 } ?: prefs.defaultColor)
+        }
+        cameraLed.postDelayed(meterPreviewEnd, METER_PREVIEW_MS)
+    }
+
     private fun refreshLive() {
         val on = prefs.enabled
         val count = NotificationStore.colors().size
@@ -252,7 +301,6 @@ class MainActivity : AppCompatActivity() {
         configureCameraLed()
         ui.refresh()
         updateSwatchSelection()
-        logText?.text = DebugLog.text()
     }
 
     // ---- pages -------------------------------------------------------------------------------
@@ -265,9 +313,10 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.tab_on) to pageScreenOn(),
             getString(R.string.tab_alerts) to pageAlerts(),
             getString(R.string.tab_battery) to pageBattery(),
-            getString(R.string.tab_log) to pageLog(),
+            getString(R.string.tab_log) to pageMore(),
         )
-        pager.adapter = PagesAdapter(pages.map { it.second })
+        pageViews = pages.map { it.second }
+        pager.adapter = PagesAdapter(pageViews)
         pager.offscreenPageLimit = pages.size
         TabLayoutMediator(tabs, pager) { tab, i -> tab.text = pages[i].first }.attach()
         ui.refresh()
@@ -311,10 +360,12 @@ class MainActivity : AppCompatActivity() {
             trackThickness = dp(6)
         }
         col.addView(setupBar, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(8), 0, dp(8), dp(10)) })
-        shellBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        col.addView(shellBox)
+        // Most important first (notification access, display over apps); autostart and the
+        // optional Shizuku/root one-tap setup come last.
         setupList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(setupList)
+        shellBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(shellBox)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             col.addView(TextView(this).apply {
                 setText(R.string.restricted_hint)
@@ -358,16 +409,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, CutoutActivity::class.java))
         }
         ui.divider(c)
-        ui.chips(c, "Several notifications", "multi_mode",
-            listOf("Split ring by app", "Cycle colours", "Newest only"), listOf("segments", "cycle", "latest"), "segments")
-        ui.sliders(c, Range("Speed", "speed", 1, 10, 5, ""), Range("Intensity", "led_alpha", 10, 100, 100, "%"))
-        ui.sliders(c, Range("Thickness", "thickness", 1, 16, 3, "dp"), Range("Gap", "gap", 0, 20, 2, "dp"))
-        ui.sliders(c, Range("Edge corners", "edge_radius", 0, 120, 40, "dp"), dependsOn = { prefs.style.isEdge })
+        ui.chips(c, getString(R.string.chips_multi), "multi_mode",
+            labels(R.array.multi_labels), listOf("segments", "cycle", "latest"), "segments")
+        ui.sliders(c, Range(getString(R.string.s_speed), "speed", 1, 10, 5, ""),
+            Range(getString(R.string.s_intensity), "led_alpha", 10, 100, 100, "%"))
+        ui.sliders(c, Range(getString(R.string.s_thickness), "thickness", 1, 16, 3, "dp"),
+            Range(getString(R.string.s_gap), "gap", 0, 20, 2, "dp"))
+        ui.sliders(c, Range(getString(R.string.s_edge), "edge_radius", 0, 120, 40, "dp"), dependsOn = { prefs.style.isEdge })
         ui.toggles(col, listOf(
-            Toggle("Soft glow", "glow", true),
-            Toggle("Rotate the colour ring", "rotate_ring", true),
-            Toggle("App's notification colour", "use_notif_color", true),
-            Toggle("App icon colour", "use_icon_color", true),
+            Toggle(getString(R.string.t_glow), "glow", true),
+            Toggle(getString(R.string.t_rotate), "rotate_ring", true),
+            Toggle(getString(R.string.t_notif_colour), "use_notif_color", true),
+            Toggle(getString(R.string.t_icon_colour), "use_icon_color", true),
         ))
         return page
     }
@@ -375,38 +428,51 @@ class MainActivity : AppCompatActivity() {
     private fun pageScreenOff(): View {
         val (page, col) = ui.page()
         val aodOn = { prefs.aodEnabled }
+        val iconsOn = { prefs.aodEnabled && prefs.showAppInfo }
         ui.toggles(col, listOf(
-            Toggle("Light while screen is off", "aod_enabled", true),
-            Toggle("When I turn screen off", "aod_on_screen_off", true, aodOn),
-            Toggle("When a notification arrives", "aod_on_new", true, aodOn),
-            Toggle("Pocket detection", "proximity", true, aodOn),
-            Toggle("Double-tap to wake", "double_tap_wake", true, aodOn),
-            Toggle("Burn-in protection", "burn_in", true, aodOn),
-            Toggle("Show app under camera", "show_app_info", true, aodOn),
-            Toggle("Keep app icons visible", "app_info_always", false) { prefs.aodEnabled && prefs.showAppInfo },
-            Toggle("Tap icon to read message", "show_content", true) { prefs.aodEnabled && prefs.showAppInfo },
-            Toggle("Droplet animation", "droplet", true),
-            Toggle("AOD-style icons", "aod_icons", true) { prefs.aodEnabled && prefs.showAppInfo },
+            Toggle(getString(R.string.t_aod), "aod_enabled", true),
+            Toggle(getString(R.string.t_on_screen_off), "aod_on_screen_off", true, aodOn),
+            Toggle(getString(R.string.t_on_new), "aod_on_new", true, aodOn),
+            Toggle(getString(R.string.t_pocket), "proximity", true, aodOn),
+            Toggle(getString(R.string.t_double_tap), "double_tap_wake", true, aodOn),
+            Toggle(getString(R.string.t_burn_in), "burn_in", true, aodOn),
+            Toggle(getString(R.string.t_app_icons), "show_app_info", true, aodOn),
+            Toggle(getString(R.string.t_keep_icons), "app_info_always", false, iconsOn),
+            Toggle(getString(R.string.t_aod_icons), "aod_icons", true, iconsOn),
+            Toggle(getString(R.string.t_tap_read), "show_content", true, iconsOn),
+            Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { iconsOn() && prefs.showContent },
+            Toggle(getString(R.string.t_droplet), "droplet", true),
         ))
         val c = ui.card(col)
-        ui.chips(c, "Screen-off method", "aod_method",
-            listOf("Auto", "Lock-screen window", "Overlay"), listOf("auto", "activity", "overlay"), "auto", aodOn)
-        ui.chips(c, "Keep the light on for", "aod_timeout",
-            listOf("30 s", "1 min", "2 min", "5 min", "15 min", "1 hour", "Until cleared"),
-            listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
-        ui.chips(c, "Remind me afterwards", "pulse_interval",
-            listOf("Off", "Every 2 min", "5 min", "10 min", "30 min"), listOf("0", "2", "5", "10", "30"), "0", aodOn)
-        ui.sliders(c, Range("Brightness", "aod_brightness", 1, 100, 3, "%"),
-            Range("Reminder", "pulse_duration", 3, 60, 10, "s"), dependsOn = aodOn)
+        ui.chips(c, getString(R.string.chips_method), "aod_method",
+            labels(R.array.method_labels), listOf("auto", "activity", "overlay"), "auto", aodOn)
+        ui.chips(c, getString(R.string.chips_timeout), "aod_timeout",
+            labels(R.array.timeout_labels), listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
+        ui.chips(c, getString(R.string.chips_remind), "pulse_interval",
+            labels(R.array.remind_labels), listOf("0", "2", "5", "10", "30"), "0", aodOn)
+        ui.sliders(c, Range(getString(R.string.s_brightness), "aod_brightness", 1, 100, 3, "%"),
+            Range(getString(R.string.s_reminder), "pulse_duration", 3, 60, 10, "s"), dependsOn = aodOn)
         return page
     }
 
     private fun pageScreenOn(): View {
         val (page, col) = ui.page()
         ui.toggles(col, listOf(
-            Toggle("Light while using the phone", "overlay_enabled", true),
-            Toggle("Only on the lock screen", "overlay_lock_only", false) { prefs.overlayEnabled },
+            Toggle(getString(R.string.t_ring_on), "overlay_enabled", true),
+            Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false) { prefs.overlayEnabled },
+            Toggle(getString(R.string.t_charge), "charge_led", true),
+            Toggle(getString(R.string.t_progress), "progress_led", true),
         ))
+        col.addView(label(getString(R.string.charge_colours)))
+        ui.colorTiles(col, listOf(
+            ColorItem(getString(R.string.c_low), "charge_color_low", 0xFFFF1744.toInt()),
+            ColorItem(getString(R.string.c_mid), "charge_color_mid", 0xFFFFC400.toInt()),
+            ColorItem(getString(R.string.c_high), "charge_color_high", 0xFF00E676.toInt()),
+        ), dependsOn = { prefs.chargeLed })
+        col.addView(label(getString(R.string.progress_colour)))
+        ui.colorTiles(col, listOf(
+            ColorItem(getString(R.string.c_progress), "progress_color", 0, allowAuto = true),
+        ), dependsOn = { prefs.progressLed })
         col.addView(hint(getString(R.string.screen_on_hint)))
         return page
     }
@@ -414,15 +480,15 @@ class MainActivity : AppCompatActivity() {
     private fun pageAlerts(): View {
         val (page, col) = ui.page()
         val c = ui.card(col)
-        ui.link(c, R.drawable.ic_apps, getString(R.string.action_apps), "Turn apps on/off, pick colours") {
+        ui.link(c, R.drawable.ic_apps, getString(R.string.action_apps), getString(R.string.apps_sub)) {
             startActivity(Intent(this, AppsActivity::class.java))
         }
         ui.divider(c)
-        ui.chips(c, "Which apps", "app_mode", listOf("All apps", "Only apps I choose"), listOf("all", "selected"), "all")
+        ui.chips(c, getString(R.string.chips_which_apps), "app_mode", labels(R.array.appmode_labels), listOf("all", "selected"), "all")
         ui.toggles(col, listOf(
-            Toggle("Ignore silent notifications", "ignore_low", true),
-            Toggle("Respect Do Not Disturb", "respect_dnd", true),
-            Toggle("Clear after I unlock", "clear_on_unlock", false),
+            Toggle(getString(R.string.t_ignore_silent), "ignore_low", true),
+            Toggle(getString(R.string.t_dnd), "respect_dnd", true),
+            Toggle(getString(R.string.t_clear_unlock), "clear_on_unlock", false),
         ))
         return page
     }
@@ -430,19 +496,19 @@ class MainActivity : AppCompatActivity() {
     private fun pageBattery(): View {
         val (page, col) = ui.page()
         val c = ui.card(col)
-        ui.chips(c, "Animation frame rate", "fps_cap",
-            listOf("15 fps", "24 fps", "30 fps", "60 fps", "Max"), listOf("15", "24", "30", "60", "0"), "30")
-        ui.sliders(c, Range("Pause below battery", "min_battery", 0, 50, 10, "%"))
+        ui.chips(c, getString(R.string.chips_fps), "fps_cap",
+            labels(R.array.fps_labels), listOf("15", "24", "30", "60", "0"), "30")
+        ui.sliders(c, Range(getString(R.string.s_min_battery), "min_battery", 0, 50, 10, "%"))
         ui.toggles(col, listOf(
-            Toggle("Lowest refresh rate when off", "low_refresh", true),
-            Toggle("Still ring after 12 s", "eco_anim", true),
-            Toggle("Dim older notifications", "age_fade", true),
-            Toggle("Light up when phone moves", "motion_glance", true),
-            Toggle("Quiet hours", "quiet_enabled", false),
+            Toggle(getString(R.string.t_low_refresh), "low_refresh", true),
+            Toggle(getString(R.string.t_eco), "eco_anim", true),
+            Toggle(getString(R.string.t_age_fade), "age_fade", true),
+            Toggle(getString(R.string.t_motion), "motion_glance", true),
+            Toggle(getString(R.string.t_quiet), "quiet_enabled", false),
         ))
-        col.addView(hint(getString(R.string.battery_hint)))
         val q = ui.card(col)
-        quietSub = ui.link(q, R.drawable.ic_moon, "Quiet hours time", quietText()) { pickQuietHours() }
+        quietSub = ui.link(q, R.drawable.ic_moon, getString(R.string.quiet_time), quietText()) { pickQuietHours() }
+        col.addView(hint(getString(R.string.battery_hint)))
         return page
     }
 
@@ -463,47 +529,93 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun pageLog(): View {
+    /** More: everything as a grid of tiles side by side, so the page never needs scrolling. */
+    private fun pageMore(): View {
         val (page, col) = ui.page()
-
-        // Install / update: whether this is the signed release (updates install over it).
         val official = AppSignature.isOfficial(this)
-        val u = ui.card(col)
-        ui.link(u, if (official) R.drawable.ic_check else R.drawable.ic_bell,
-            getString(if (official) R.string.sig_official else R.string.sig_other),
-            getString(R.string.sig_desc, BuildConfig.VERSION_NAME, AppSignature.short(AppSignature.sha256(this)))) {
-            open(Intent(Intent.ACTION_VIEW, Uri.parse(DOWNLOAD_URL)))
-        }
-        ui.divider(u)
-        ui.link(u, R.drawable.ic_play, getString(R.string.check_updates), getString(R.string.check_updates_desc)) {
-            open(Intent(Intent.ACTION_VIEW, Uri.parse(DOWNLOAD_URL)))
-        }
-        ui.divider(u)
-        ui.link(u, R.drawable.ic_apps, getString(R.string.backup), getString(R.string.backup_desc)) {
-            backupLauncher.launch("glowled-settings.json")
-        }
-        ui.divider(u)
-        ui.link(u, R.drawable.ic_add, getString(R.string.restore), getString(R.string.restore_desc)) {
-            restoreLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
-        }
+        ui.grid(col, listOf(
+            GridItem(if (official) R.drawable.ic_verified else R.drawable.ic_bell,
+                getString(if (official) R.string.g_official else R.string.g_unofficial),
+                getString(R.string.g_version, BuildConfig.VERSION_NAME)) {
+                open(Intent(Intent.ACTION_VIEW, Uri.parse(RELEASES_URL)))
+            },
+            GridItem(R.drawable.ic_download, getString(R.string.g_download), getString(R.string.g_download_sub)) {
+                open(Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_APK_URL)))
+            },
+            GridItem(R.drawable.ic_language, getString(R.string.g_language), currentLanguageName()) { pickLanguage() },
+            GridItem(R.drawable.ic_save, getString(R.string.g_backup), getString(R.string.g_backup_sub)) {
+                backupLauncher.launch("glowled-settings.json")
+            },
+            GridItem(R.drawable.ic_restore, getString(R.string.g_restore), getString(R.string.g_restore_sub)) {
+                restoreLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
+            },
+            GridItem(R.drawable.ic_log, getString(R.string.g_log), getString(R.string.g_log_sub)) { showLog() },
+        ))
+        col.addView(hint(getString(R.string.reach_tip)))
+        col.addView(hint(getString(R.string.sig_key, AppSignature.short(AppSignature.sha256(this))) +
+            " · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"))
+        return page
+    }
 
-        val c = ui.card(col)
-        ui.link(c, R.drawable.ic_bell, "Copy event log", "Send this to the developer if something fails") {
-            getSystemService(ClipboardManager::class.java)
-                .setPrimaryClip(ClipData.newPlainText("Glow LED log", deviceInfo() + "\n\n" + DebugLog.text()))
-            Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
-        }
-        logText = TextView(this).apply {
+    private fun labels(array: Int) = resources.getStringArray(array).toList()
+
+    /** Small section label above a row of tiles. */
+    private fun label(text: String) = TextView(this).apply {
+        this.text = text
+        setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge)
+        setTextColor(getColor(R.color.text_secondary))
+        setPadding(dp(12), dp(10), dp(12), dp(2))
+    }
+
+    private fun showLog() {
+        val text = deviceInfo() + "\n\n" + DebugLog.text()
+        val tv = TextView(this).apply {
+            this.text = text
             typeface = Typeface.MONOSPACE
             textSize = 11f
             setTextColor(getColor(R.color.text_secondary))
-            setPadding(dp(18), dp(4), dp(18), dp(12))
+            setPadding(dp(22), dp(8), dp(22), dp(8))
             setTextIsSelectable(true)
-            text = DebugLog.text()
         }
-        c.addView(logText)
-        col.addView(hint("Glow LED ${BuildConfig.VERSION_NAME} · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"))
-        return page
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.g_log)
+            .setView(ScrollView(this).apply { addView(tv) })
+            .setPositiveButton(R.string.log_copy) { _, _ ->
+                getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("Glow LED log", text))
+                Toast.makeText(this, R.string.log_copied, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(R.string.close, null)
+            .show()
+    }
+
+    // ---- language -----------------------------------------------------------------------------
+
+    private val languageTags = arrayOf("", "en", "pt-BR")
+
+    private fun languageNames() = arrayOf(getString(R.string.lang_system), "English", "Português (Brasil)")
+
+    private fun currentLanguageName(): String {
+        val cur = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+        val i = languageTags.indexOfFirst { it.equals(cur, ignoreCase = true) }
+        return languageNames()[if (i < 0) 0 else i]
+    }
+
+    private fun pickLanguage() {
+        val cur = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+        val selected = languageTags.indexOfFirst { it.equals(cur, ignoreCase = true) }.coerceAtLeast(0)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.g_language)
+            .setSingleChoiceItems(languageNames(), selected) { d, i ->
+                d.dismiss()
+                if (i != selected) {
+                    AppCompatDelegate.setApplicationLocales(
+                        if (languageTags[i].isEmpty()) LocaleListCompat.getEmptyLocaleList()
+                        else LocaleListCompat.forLanguageTags(languageTags[i]),
+                    )
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun hint(text: String) = TextView(this).apply {
@@ -531,8 +643,8 @@ class MainActivity : AppCompatActivity() {
             TimePickerDialog(this, { _, h2, m2 ->
                 prefs.sp.edit().putInt("quiet_end", h2 * 60 + m2).apply()
                 quietSub?.text = quietText()
-            }, prefs.quietEnd / 60, prefs.quietEnd % 60, is24).apply { setTitle("Quiet hours end") }.show()
-        }, prefs.quietStart / 60, prefs.quietStart % 60, is24).apply { setTitle("Quiet hours start") }.show()
+            }, prefs.quietEnd / 60, prefs.quietEnd % 60, is24).apply { setTitle(R.string.quiet_end) }.show()
+        }, prefs.quietStart / 60, prefs.quietStart % 60, is24).apply { setTitle(R.string.quiet_start) }.show()
     }
 
     // ---- animation carousel --------------------------------------------------------------------
@@ -651,14 +763,6 @@ class MainActivity : AppCompatActivity() {
         steps += Step(getString(R.string.perm_overlay), getString(R.string.perm_overlay_desc), overlay || a11y) {
             open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
         }
-        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_desc), a11y, counts = false) {
-            open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-        }
-        if (OemHelper.isXiaomi) {
-            val ok = OemHelper.miuiLockScreenAllowed(this)
-            steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_desc), ok == true,
-                counts = ok != null, isLink = ok == null) { OemHelper.openMiuiPermissions(this) }
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
@@ -666,9 +770,17 @@ class MainActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             }
         }
+        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_desc), a11y, counts = false) {
+            open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        }
         val pm = getSystemService(PowerManager::class.java)
         steps += Step(getString(R.string.perm_battery), getString(R.string.perm_battery_desc),
             pm.isIgnoringBatteryOptimizations(packageName)) { requestBatteryExemption() }
+        if (OemHelper.isXiaomi) {
+            val ok = OemHelper.miuiLockScreenAllowed(this)
+            steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_desc), ok == true,
+                counts = ok != null, isLink = ok == null) { OemHelper.openMiuiPermissions(this) }
+        }
         OemHelper.brand?.let { b ->
             steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_desc), false, counts = false, isLink = true) {
                 OemHelper.openAutostart(this)
@@ -691,7 +803,7 @@ class MainActivity : AppCompatActivity() {
 
         setupList.removeAllViews()
         val inflater = LayoutInflater.from(this)
-        steps.sortedBy { if (it.done && !it.isLink) 1 else 0 }.forEach { s ->
+        steps.forEach { s ->
             val row = inflater.inflate(R.layout.item_setup, setupList, false) as MaterialCardView
             row.findViewById<TextView>(R.id.title).text = s.title
             val desc = row.findViewById<TextView>(R.id.desc)
@@ -828,8 +940,13 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TEST_CHANNEL = "test"
+        private const val METER_PREVIEW_MS = 3500L
+        private const val UI_STATE = "ui_state"
+        private const val KEY_REACH_OPEN = "reach_open"
         // Discrete changes replay the entrance; sliders just update the ring live while dragging.
         private val REPLAY_KEYS = setOf("style", "default_color", "multi_mode", "glow", "enabled", "rotate_ring")
-        private const val DOWNLOAD_URL = "https://github.com/ankitchanki/LED/tree/main/releases"
+        private const val RELEASES_URL = "https://github.com/ankitchanki/LED/tree/main/releases"
+        /** Always the newest signed APK (updated with every release). */
+        private const val LATEST_APK_URL = "https://github.com/ankitchanki/LED/raw/main/releases/GlowLED-latest.apk"
     }
 }

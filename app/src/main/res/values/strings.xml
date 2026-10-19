@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Glow LED</string>
+    <string name="app_name" translatable="false">Glow LED</string>
     <string name="accessibility_label">Glow LED indicator</string>
     <string name="accessibility_desc">Draws the notification light around your camera on the lock screen and turns the screen back off after the always-on light times out. Glow LED does not read screen content or observe your actions.</string>
     <string name="channel_launcher">Always-on launcher</string>
     <string name="channel_test">Test notifications</string>
     <string name="title_apps">Apps &amp; colours</string>
 
+    <!-- Header and status -->
     <string name="master_on">Glow LED is on</string>
     <string name="master_off">Glow LED is off</string>
     <string name="status_waiting">Waiting for notifications</string>
     <string name="status_active">Lighting for %d notification(s)</string>
     <string name="status_blocked">Paused: %s</string>
     <string name="status_need_listener">Grant notification access to start</string>
+    <string name="block_quiet">quiet hours</string>
+    <string name="block_battery">low battery</string>
+    <string name="block_call">in a call</string>
+    <string name="reach_hint">Swipe up or press back to return</string>
+    <string name="reach_tip">Tip: pull the settings down to reach them with your thumb (one-handed mode).</string>
 
+    <!-- Setup -->
     <string name="perm_listener">Notification access</string>
     <string name="perm_listener_desc">Required. Lets Glow LED know when a notification arrives. Nothing leaves your phone.</string>
     <string name="perm_a11y">Accessibility (optional, most reliable)</string>
@@ -26,23 +33,28 @@
     <string name="perm_battery_desc">Stops the system from killing Glow LED. The app itself uses almost no power in the background.</string>
     <string name="perm_oem">Autostart (%s)</string>
     <string name="perm_oem_desc">Your phone brand has an extra app killer. Allow Glow LED to autostart and run in the background.</string>
+    <string name="perm_miui">Xiaomi lock-screen permissions</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: turn on \"Show on lock screen\" and \"Display pop-up windows while running in background\".</string>
     <string name="restricted_hint">Android 13+: apps installed from an APK file get \"restricted settings\" for Notification access and Accessibility. This is an Android rule, not a bug. If a switch is greyed out: App info → ⋮ (top right) → Allow restricted settings, then try again.</string>
     <string name="shell_shizuku">One-tap setup with Shizuku</string>
     <string name="shell_root">One-tap setup with root</string>
-    <string name="shell_desc">Grants everything below automatically: no Settings hunting, no \"restricted settings\" step.</string>
+    <string name="shell_desc">Grants everything above automatically: no Settings hunting, no \"restricted settings\" step.</string>
     <string name="shell_connected">%s connected</string>
     <string name="shell_connected_desc">Screen turns off instantly even without Accessibility. Tap to run setup again.</string>
     <string name="shell_get">Have Shizuku? Set up in one tap</string>
     <string name="shell_get_desc">Optional. Install and start Shizuku (works without root), then come back here.</string>
     <string name="shell_denied">Permission was not given</string>
     <string name="shell_running">Setting up…</string>
+    <string name="shell_summary">One-tap setup via %1$s: %2$d of %3$d permissions</string>
+    <string name="shell_summary_a11y">+ accessibility.</string>
+    <string name="shell_summary_no_a11y">(accessibility failed - turn it on manually).</string>
     <string name="setup_intro">Grant these once. Without them the light can\'t appear.</string>
-    <string name="screen_on_hint">Shows a small ring around the camera while you use the phone. Hidden in landscape (except edge lighting).</string>
-    <string name="battery_hint">Still ring: the light animates when it appears, then holds still, so nothing is redrawn. Dim older: a new notification glows at full strength and fades over an hour, so you can tell new from old at a glance. Phone moves: after the light times out, it shows again when you pick up or move the phone, using the motion chip (no screen or CPU time while waiting).</string>
+    <string name="setup_progress">%1$d of %2$d</string>
+    <string name="setup_all_done">All set</string>
 
+    <!-- Tabs and dock -->
     <string name="action_preview">Preview</string>
     <string name="action_test_short">Test</string>
-    <string name="preview_on_camera">Live preview on your camera ↑</string>
     <string name="tab_setup">Setup</string>
     <string name="tab_style">Style</string>
     <string name="tab_off">Screen off</string>
@@ -50,32 +62,126 @@
     <string name="tab_alerts">Alerts</string>
     <string name="tab_battery">Battery</string>
     <string name="tab_log">More</string>
-    <string name="sig_official">Official signed build</string>
-    <string name="sig_other">Not the official signed build</string>
-    <string name="sig_desc">v%1$s · key %2$s. New versions from the releases folder install over this one.</string>
-    <string name="check_updates">Check for updates</string>
-    <string name="check_updates_desc">Opens the download page in your browser</string>
-    <string name="backup">Back up settings</string>
-    <string name="backup_desc">Save all settings, colours and camera position to a file</string>
-    <string name="restore">Restore settings</string>
-    <string name="restore_desc">Load a backup, e.g. after reinstalling</string>
+
+    <!-- Style -->
+    <string name="action_cutout">Camera position</string>
+    <string name="tile_cutout_sub">Align the ring</string>
+    <string name="custom_colour">Custom colour</string>
+    <string name="chips_multi">Several notifications</string>
+    <string name="s_speed">Speed</string>
+    <string name="s_intensity">Intensity</string>
+    <string name="s_thickness">Thickness</string>
+    <string name="s_gap">Gap</string>
+    <string name="s_edge">Edge corners</string>
+    <string name="t_glow">Soft glow</string>
+    <string name="t_rotate">Rotate ring</string>
+    <string name="t_notif_colour">Notification colour</string>
+    <string name="t_icon_colour">App icon colour</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">Screen-off light</string>
+    <string name="t_on_screen_off">On screen off</string>
+    <string name="t_on_new">On new alert</string>
+    <string name="t_pocket">Pocket detection</string>
+    <string name="t_double_tap">Double-tap wake</string>
+    <string name="t_burn_in">Burn-in guard</string>
+    <string name="t_app_icons">App icons</string>
+    <string name="t_keep_icons">Keep icons on</string>
+    <string name="t_aod_icons">AOD-style icons</string>
+    <string name="t_tap_read">Tap to read</string>
+    <string name="t_peek_actions">Reply buttons</string>
+    <string name="t_droplet">Droplet</string>
+    <string name="chips_method">Screen-off method</string>
+    <string name="chips_timeout">Keep the light on for</string>
+    <string name="chips_remind">Remind me afterwards</string>
+    <string name="s_brightness">Brightness</string>
+    <string name="s_reminder">Reminder</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">Ring while on</string>
+    <string name="t_lock_only">Lock screen only</string>
+    <string name="t_charge">Charging ring</string>
+    <string name="t_progress">Download ring</string>
+    <string name="charge_colours">Charging ring colour by battery level</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">Download ring colour</string>
+    <string name="c_progress">Download colour (Auto = app colour)</string>
+    <string name="screen_on_hint">Ring while on: a small ring around the camera while you use the phone. Charging ring: fills with your battery level while charging. Download ring: shows how far a download has got. Both also work on the lock screen; hidden in landscape (except edge lighting).</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">Apps &amp; colours</string>
+    <string name="apps_sub">Turn apps on/off, pick colours</string>
+    <string name="chips_which_apps">Which apps</string>
+    <string name="t_ignore_silent">Ignore silent</string>
+    <string name="t_dnd">Respect DND</string>
+    <string name="t_clear_unlock">Clear on unlock</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">Animation frame rate</string>
+    <string name="s_min_battery">Pause below battery</string>
+    <string name="t_low_refresh">Lowest refresh</string>
+    <string name="t_eco">Still after 12 s</string>
+    <string name="t_age_fade">Dim older</string>
+    <string name="t_motion">Wake on motion</string>
+    <string name="t_quiet">Quiet hours</string>
+    <string name="quiet_time">Quiet hours time</string>
+    <string name="quiet_start">Quiet hours start</string>
+    <string name="quiet_end">Quiet hours end</string>
+    <string name="battery_hint">Still after 12 s: the light animates when it appears, then holds still, so nothing is redrawn. Dim older: a new notification glows at full strength and fades over an hour. Wake on motion: after the light times out, it shows again when you move the phone, using the motion chip (no screen or CPU time while waiting).</string>
+
+    <!-- More -->
+    <string name="g_official">Official build</string>
+    <string name="g_unofficial">Other build</string>
+    <string name="g_version">Version %s</string>
+    <string name="g_download">Get latest</string>
+    <string name="g_download_sub">Newest signed APK</string>
+    <string name="g_language">Language</string>
+    <string name="g_backup">Back up</string>
+    <string name="g_backup_sub">Settings to a file</string>
+    <string name="g_restore">Restore</string>
+    <string name="g_restore_sub">From a backup</string>
+    <string name="g_log">Event log</string>
+    <string name="g_log_sub">View and copy</string>
+    <string name="sig_key">Key %s</string>
+    <string name="log_copy">Copy</string>
+    <string name="log_copied">Copied</string>
+    <string name="state_on">On</string>
+    <string name="state_off">Off</string>
+    <string name="close">Close</string>
+    <string name="lang_system">System default</string>
     <string name="backup_done">Settings saved</string>
     <string name="backup_failed">Could not save the backup</string>
     <string name="restore_done">Restored %d settings</string>
     <string name="restore_failed">That file is not a Glow LED backup</string>
-    <string name="action_cutout">Camera position</string>
-    <string name="action_apps">Apps &amp; colours</string>
-    <string name="perm_miui">Xiaomi lock-screen permissions</string>
-    <string name="perm_miui_desc">HyperOS/MIUI: turn on \"Show on lock screen\" and \"Display pop-up windows while running in background\".</string>
-    <string name="tile_cutout_sub">Align the ring</string>
-    <string name="setup_progress">%1$d of %2$d</string>
-    <string name="setup_all_done">All set</string>
-    <string name="custom_colour">Custom colour</string>
+
+    <!-- Test -->
     <string name="test_title">Glow LED test</string>
     <string name="test_text">Turn the screen off to see the light. Swipe this away to clear it.</string>
     <string name="test_sent">Test sent. Turn the screen off now.</string>
     <string name="need_listener_first">Grant notification access first</string>
 
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">New notification</string>
+    <string name="peek_hidden">Content hidden</string>
+    <string name="peek_more">+%d more</string>
+    <string name="peek_reply">Reply</string>
+    <string name="peek_mark_read">Mark as read</string>
+    <string name="peek_dismiss">Dismiss</string>
+    <string name="kind_photo">📷 Photo</string>
+    <string name="kind_video">🎥 Video</string>
+    <string name="kind_voice">🎤 Voice message</string>
+    <string name="kind_document">📄 Document</string>
+    <string name="reply_to">Reply to %s</string>
+    <string name="reply_hint">Message</string>
+    <string name="reply_send">Send</string>
+    <string name="reply_sent">Sent</string>
+    <string name="reply_failed">Could not send the reply</string>
+    <string name="reply_unavailable">This notification can\'t be answered from here any more</string>
+
+    <!-- Camera position -->
     <string name="cut_auto">Auto-detect</string>
     <string name="cut_save">Save</string>
     <string name="cut_reset">Reset</string>
@@ -84,6 +190,10 @@
     <string name="cut_detected">Detected %s cutout</string>
     <string name="cut_saved">Camera position saved</string>
     <string name="cut_rotate">Hold the phone upright to detect the cutout</string>
+    <string name="cd_left">Move left</string>
+    <string name="cd_up">Move up</string>
+    <string name="cd_down">Move down</string>
+    <string name="cd_right">Move right</string>
     <string name="shape_circle">Punch-hole</string>
     <string name="shape_pill">Pill</string>
     <string name="shape_notch">Notch</string>
@@ -96,10 +206,12 @@
     <string name="label_thickness">Ring thickness</string>
     <string name="label_animate">Animate</string>
 
+    <!-- Apps -->
     <string name="apps_search">Search apps</string>
     <string name="apps_auto">Auto</string>
     <string name="apps_loading">Loading apps…</string>
 
+    <!-- Colour picker -->
     <string name="color_title">Choose colour</string>
     <string name="color_auto">Automatic</string>
     <string name="color_hex">Hex (#RRGGBB)</string>
