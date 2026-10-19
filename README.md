@@ -42,8 +42,9 @@ are switched off, so only the light itself uses power.
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
 | **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, More) - no menus, equal-size one-line tiles, the More tab is a grid with no scrolling. |
-| **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). The space above shows a **live preview** of the screen-off light that changes as you adjust settings. Swipe up or press back to return. |
-| **Frosted glass design** | See-through glass cards, tiles and buttons over soft colour glows that follow your LED colour; frosted, blurred dialogs on Android 12+. The always-on screen itself stays pure black. |
+| **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). The space above shows a **live preview** of the screen-off light (with the droplet falling into the app icon) that changes as you adjust settings. Swipe up or press back to return. |
+| **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Style → App theme*. Runs at your display's full refresh rate (120 Hz). |
+| **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
 | **Colour wheel** | Every colour picker has a ring of all colours you turn with your finger, plus saturation, brightness, presets and hex. |
 | **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *More → Language*. |
 | **Easy updates** | Signed builds that install over each other. *More → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
@@ -60,8 +61,10 @@ are switched off, so only the light itself uses power.
 
 | One-handed mode | More (no scrolling) | Português (Brasil) |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v2/6-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a large Glow LED title above" /> | <img src="docs/screenshots/v2/5-more.png" width="220" alt="More tab as a grid of six tiles: official build, get latest, language, back up, restore, event log" /> | <img src="docs/screenshots/v2/7-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
+| <img src="docs/screenshots/v2/6-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2/5-more.png" width="220" alt="More tab as a grid of six tiles: official build, get latest, language, back up, restore, event log" /> | <img src="docs/screenshots/v2/7-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
 | Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | Build check, direct download of the latest APK, language, backup, restore, event log. | The whole app in Brazilian Portuguese. |
+
+<img src="docs/screenshots/v2/9-light.png" width="220" alt="Screen on tab in light mode" />
 
 <img src="docs/screenshots/v2/8-gauges.png" width="540" alt="Charging ring at 12 % in red, 64 % in amber and 90 % in green, filling clockwise from the top" />
 

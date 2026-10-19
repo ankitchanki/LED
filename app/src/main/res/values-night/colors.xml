@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark (default): pure black, with see-through glass cards. -->
+<resources>
+    <color name="background">#FF000000</color>
+    <color name="surface">#17FFFFFF</color>
+    <color name="surface_high">#26FFFFFF</color>
+    <color name="outline">#24FFFFFF</color>
+    <color name="glass_stroke">#2BFFFFFF</color>
+    <color name="dialog_surface">#F21C1C22</color>
+    <color name="accent">#FF00E5FF</color>
+    <color name="accent_dim">#4000E5FF</color>
+    <color name="text_primary">#FFF2F2F5</color>
+    <color name="text_secondary">#FFA6A6B2</color>
+</resources>

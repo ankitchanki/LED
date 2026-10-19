@@ -66,4 +66,9 @@
         <item>1.5 s</item>
         <item>3 s</item>
     </string-array>
+    <string-array name="theme_labels">
+        <item>Dark (black)</item>
+        <item>Light</item>
+        <item>System</item>
+    </string-array>
 </resources>

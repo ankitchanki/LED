@@ -76,6 +76,8 @@
     <string name="t_glow">Soft glow</string>
     <string name="t_rotate">Rotate ring</string>
     <string name="t_notif_colour">Notification colour</string>
+    <string name="t_haptics">Haptic feedback</string>
+    <string name="chips_app_theme">App theme</string>
     <string name="t_icon_colour">App icon colour</string>
 
     <!-- Screen off -->

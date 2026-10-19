@@ -22,7 +22,6 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.Gravity
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,8 +33,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.SystemBarStyle
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -51,6 +48,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.glowled.app.BuildConfig
 import com.glowled.app.R
+import com.glowled.app.applyAppTheme
 import com.glowled.app.core.CutoutGeometry
 import com.glowled.app.core.CutoutShape
 import com.glowled.app.core.DebugLog
@@ -67,7 +65,6 @@ import com.glowled.app.ui.SettingsUi.Toggle
 import com.glowled.app.ui.SettingsUi.ColorItem
 import com.glowled.app.ui.SettingsUi.GridItem
 import com.glowled.app.view.ReachLayout
-import com.glowled.app.view.GlassBackdrop
 import com.glowled.app.view.AppInfoView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.activity.result.contract.ActivityResultContracts
@@ -106,8 +103,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var reach: ReachLayout
     private var pageViews: List<View> = emptyList()
     private val meterPreviewEnd = Runnable { setMeters(null, 0) }
-    /** Frosted-glass background (soft colour glows); follows the chosen LED colour. */
-    private lateinit var backdrop: GlassBackdrop
     /** Live preview of the screen-off light in the one-handed space. */
     private var previewLed: LedView? = null
     private var previewIcons: AppInfoView? = null
@@ -128,7 +123,12 @@ class MainActivity : AppCompatActivity() {
         configureCameraLed()
         configurePreviewRing()
         if (key in PREVIEW_ICON_KEYS) bindPreviewIcons()
-        if (key == "default_color" && ::backdrop.isInitialized) backdrop.setGlows(glowColors())
+        if (key == "droplet" && prefs.droplet) {
+            // Show what the setting does: on the real camera, and in the one-handed preview.
+            cameraLed.playDropletBelow(prefs.defaultColor, DROP_PREVIEW_DP * density, retract = true)
+            playPreviewDroplet()
+        }
+        if (key == "app_theme") applyAppTheme(prefs.appTheme)
         // Visual feedback right on the camera when the look changes.
         if (key in REPLAY_KEYS) playCameraIntro()
         if (key != null && (key.startsWith("charge_") || key.startsWith("progress_"))) previewMeter(key)
@@ -136,15 +136,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-        )
+        goEdgeToEdge()
         super.onCreate(savedInstanceState)
         LedController.init(this)
         setContentView(R.layout.activity_main)
-        backdrop = GlassBackdrop(glowColors())
-        findViewById<View>(R.id.root).background = backdrop
+        preferMaxRefreshRate()
         // Draw into the camera cutout area so the ring can surround the real camera.
         window.attributes = window.attributes.apply {
             layoutInDisplayCutoutMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -155,6 +151,7 @@ class MainActivity : AppCompatActivity() {
         }
         cameraLed = LedView(this).apply {
             useScreenCoords = true
+            uncapped = true
             isClickable = false
             isFocusable = false
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
@@ -172,12 +169,18 @@ class MainActivity : AppCompatActivity() {
 
         master.isChecked = prefs.enabled
         master.setOnCheckedChangeListener { v, on ->
-            v.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+            Haptics.toggle(v, on)
             prefs.enabled = on
             refreshLive()
         }
-        findViewById<View>(R.id.btnPreview).setOnClickListener { LedController.startAod(pulse = false, preview = true) }
-        findViewById<View>(R.id.btnTest).setOnClickListener { sendTest() }
+        findViewById<View>(R.id.btnPreview).setOnClickListener {
+            Haptics.click(it)
+            LedController.startAod(pulse = false, preview = true)
+        }
+        findViewById<View>(R.id.btnTest).setOnClickListener {
+            Haptics.click(it)
+            sendTest()
+        }
 
         buildPages()
         setupReach()
@@ -203,7 +206,12 @@ class MainActivity : AppCompatActivity() {
         val state = getSharedPreferences(UI_STATE, MODE_PRIVATE)
         buildReachPreview(findViewById(R.id.reachPreview))
         // Only animate the preview while it can be seen.
-        reach.onReachHeight = { h -> previewLed?.visibility = if (h > 0) View.VISIBLE else View.INVISIBLE }
+        reach.movable = listOf(tabs, pager)
+        reach.onReachHeight = { h ->
+            previewLed?.visibility = if (h > 0) View.VISIBLE else View.INVISIBLE
+            // Just opened: show the droplet falling into the app icon once it's laid out.
+            if (h > 0) previewLed?.postDelayed({ playPreviewDroplet() }, PREVIEW_DROP_DELAY_MS)
+        }
         reach.onReachChanged = { open ->
             back.isEnabled = open
             state.edit().putBoolean(KEY_REACH_OPEN, open).apply()
@@ -211,8 +219,6 @@ class MainActivity : AppCompatActivity() {
         // Stay in one-handed mode if that's how the app was left.
         if (state.getBoolean(KEY_REACH_OPEN, false)) reach.post { reach.open() }
     }
-
-    private fun glowColors() = intArrayOf(getColor(R.color.accent), prefs.defaultColor, 0xFF7C4DFF.toInt())
 
     /**
      * The one-handed space shows a small black "screen" with the ring around a camera dot and the
@@ -234,6 +240,7 @@ class MainActivity : AppCompatActivity() {
         })
         val led = LedView(this).apply {
             useScreenCoords = false
+            uncapped = true
             visibility = View.INVISIBLE
         }
         inner.addView(led, FrameLayout.LayoutParams(-1, -1))
@@ -262,10 +269,25 @@ class MainActivity : AppCompatActivity() {
     private fun bindPreviewIcons() {
         previewIcons?.apply {
             monochrome = prefs.aodIcons
-            bind(previewApps)
+            // One app, like a single new notification: the droplet falls into it.
+            bind(previewApps.take(1))
             alpha = 1f
             visibility = if (prefs.aodEnabled && prefs.showAppInfo) View.VISIBLE else View.INVISIBLE
         }
+    }
+
+    /** Preview of the droplet: a drop stretches out of the camera and turns into the app icon. */
+    private fun playPreviewDroplet() {
+        val led = previewLed ?: return
+        val icons = previewIcons ?: return
+        if (led.visibility != View.VISIBLE || led.width == 0 || icons.width == 0) return
+        if (!prefs.droplet || !prefs.aodEnabled || !prefs.showAppInfo) return
+        icons.prepareDrop()
+        led.playDroplet(
+            previewApps.firstOrNull()?.color ?: prefs.defaultColor,
+            targetY = icons.top + icons.iconCenterY(),
+            targetX = icons.left + icons.newestCenterX(),
+        ) { icons.popNewest() }
     }
 
     private fun setMeters(fraction: Float?, color: Int) {
@@ -499,7 +521,11 @@ class MainActivity : AppCompatActivity() {
             Toggle(getString(R.string.t_rotate), "rotate_ring", true),
             Toggle(getString(R.string.t_notif_colour), "use_notif_color", true),
             Toggle(getString(R.string.t_icon_colour), "use_icon_color", true),
+            Toggle(getString(R.string.t_haptics), "haptics", true),
         ))
+        val look = ui.card(col)
+        ui.chips(look, getString(R.string.chips_app_theme), "app_theme",
+            labels(R.array.theme_labels), listOf("dark", "light", "system"), "dark")
         return page
     }
 
@@ -748,6 +774,7 @@ class MainActivity : AppCompatActivity() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StyleHolder {
             val h = StyleHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_style, parent, false))
             h.led.useScreenCoords = false
+            h.led.uncapped = true
             return h
         }
 
@@ -765,7 +792,7 @@ class MainActivity : AppCompatActivity() {
                     previewColors(), style, 3, 3)
             }
             h.card.setOnClickListener {
-                it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+                Haptics.click(it)
                 prefs.sp.edit().putString("style", style.key).apply()
             }
         }
@@ -789,7 +816,7 @@ class MainActivity : AppCompatActivity() {
                 addView(View(context).apply { setBackgroundResource(R.drawable.swatch_ring); visibility = View.GONE },
                     FrameLayout.LayoutParams(size, size))
                 setOnClickListener {
-                    it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+                    Haptics.click(it)
                     prefs.defaultColor = c
                     updateSwatchSelection()
                 }
@@ -1029,6 +1056,8 @@ class MainActivity : AppCompatActivity() {
         private const val PREVIEW_CAM_DP = 30
         private const val PREVIEW_HOLE_DP = 14
         private val PREVIEW_ICON_KEYS = setOf("aod_icons", "show_app_info", "aod_enabled")
+        private const val PREVIEW_DROP_DELAY_MS = 220L
+        private const val DROP_PREVIEW_DP = 26f
         private const val UI_STATE = "ui_state"
         private const val KEY_REACH_OPEN = "reach_open"
         // Discrete changes replay the entrance; sliders just update the ring live while dragging.

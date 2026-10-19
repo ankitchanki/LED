@@ -1,3 +1,34 @@
+# Glow LED v2.2.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Smoother (120 Hz)
+- Glow LED now asks for the display's **fastest refresh rate** while it's open (HyperOS otherwise
+  keeps many apps at 60 Hz).
+- The ring previews in the app animate at the display's full rate; the battery frame-rate cap only
+  applies to the screen-off and screen-on light.
+- **One-handed mode** slides the settings without re-laying out the pages on every frame; the layout
+  changes once, when the motion ends.
+- Removed the full-screen colour glows behind the settings (they cost GPU time on every frame).
+
+## Look
+- **Pure black** again by default, keeping the see-through glass cards and frosted dialogs.
+- New **light mode**: *Style → App theme* (Dark / Light / System). The camera-position screen and the
+  always-on light always stay black.
+
+## Haptics
+- Sliders tick **stronger as the value goes up and softer as it goes down** (crisp haptic primitives on
+  phones that support them). Switches click firmly when turned on and lightly when turned off; chips,
+  tiles and buttons have a short click; the colour wheel ticks as you turn it.
+- Follows the phone's *touch feedback* setting; switch off in *Style → Haptic feedback*.
+
+## Droplet preview
+- The one-handed preview shows **one** app icon, and the droplet drips from the camera into it when the
+  preview opens and when you switch *Droplet* on (it also drips from your real camera).
+
+---
+
 # Glow LED v2.1.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

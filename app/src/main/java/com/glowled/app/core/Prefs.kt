@@ -15,6 +15,11 @@ class Prefs(context: Context) {
     private fun str(key: String, def: String) = sp.getString(key, def) ?: def
     private fun strInt(key: String, def: Int) = str(key, def.toString()).toIntOrNull() ?: def
 
+    /** Settings screens: "dark" (pure black, default), "light" or "system". */
+    val appTheme get() = str("app_theme", "dark")
+    /** Haptic feedback in the settings (sliders get stronger as the value goes up). */
+    val haptics get() = bool("haptics", true)
+
     var enabled: Boolean
         get() = bool(K_ENABLED, true)
         set(v) = sp.edit().putBoolean(K_ENABLED, v).apply()

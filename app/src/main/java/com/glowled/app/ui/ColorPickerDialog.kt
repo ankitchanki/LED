@@ -99,8 +99,18 @@ object ColorPickerDialog {
             apply(Color.HSVToColor(floatArrayOf(wheel.hue, sat.value / 100f, value.value / 100f)), fromControls = true)
         }
         wheel.onHueChanged = { fromControls() }
-        sat.addOnChangeListener { _, _, fromUser -> if (fromUser) fromControls() }
-        value.addOnChangeListener { _, _, fromUser -> if (fromUser) fromControls() }
+        sat.addOnChangeListener { sl, v, fromUser ->
+            if (fromUser) {
+                Haptics.level(sl, v / 100f)
+                fromControls()
+            }
+        }
+        value.addOnChangeListener { sl, v, fromUser ->
+            if (fromUser) {
+                Haptics.level(sl, v / 100f)
+                fromControls()
+            }
+        }
 
         // Presets: two rows of nine.
         val grid = GridLayout(context).apply { columnCount = 9 }

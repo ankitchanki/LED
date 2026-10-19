@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Haptic feedback in the settings (sliders tick stronger as the value goes up). -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Android 14+: needed for wake locks with ACQUIRE_CAUSES_WAKEUP to actually turn the screen on. -->
     <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />

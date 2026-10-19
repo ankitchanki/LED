@@ -48,7 +48,10 @@ class CutoutActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Lining the ring up with the camera only works on black: always dark here.
+        delegate.localNightMode = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
         super.onCreate(savedInstanceState)
+        preferMaxRefreshRate()
         LedController.init(this)
         window.attributes = window.attributes.apply {
             layoutInDisplayCutoutMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -61,6 +64,7 @@ class CutoutActivity : AppCompatActivity() {
         hideBars()
 
         led = findViewById(R.id.led)
+        led.uncapped = true
         shapes = findViewById(R.id.shapes)
         animate = findViewById(R.id.animate)
 

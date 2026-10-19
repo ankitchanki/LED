@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.SweepGradient
-import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import kotlin.math.PI
@@ -104,7 +103,7 @@ class ColorWheelView(context: Context) : View(context) {
         val tick = (hue / 15f).toInt()
         if (tick != lastTick) {
             lastTick = tick
-            performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+            com.glowled.app.ui.Haptics.level(this, 0.55f)
         }
         onHueChanged?.invoke(hue)
     }

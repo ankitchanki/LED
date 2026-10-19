@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Light mode palette (Style → App theme → Light). Dark mode is in values-night. -->
 <resources>
+    <!-- Always black (icons on the accent, the always-on screen, the camera-position screen). -->
     <color name="black">#FF000000</color>
-    <!-- Frosted glass: see-through white over the soft colour glows of GlassBackdrop. -->
-    <color name="surface">#17FFFFFF</color>
-    <color name="surface_high">#26FFFFFF</color>
-    <color name="outline">#24FFFFFF</color>
-    <color name="glass_stroke">#2BFFFFFF</color>
-    <!-- Dialogs and sheets: mostly opaque so text stays readable, blurred behind on Android 12+. -->
-    <color name="dialog_surface">#E61C1C22</color>
-    <color name="accent">#FF00E5FF</color>
-    <color name="accent_dim">#4000E5FF</color>
-    <color name="text_primary">#FFF2F2F5</color>
-    <color name="text_secondary">#FFA6A6B2</color>
+    <color name="background">#FFF2F3F7</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="surface_high">#FFE4E7EE</color>
+    <color name="outline">#1F000000</color>
+    <color name="glass_stroke">#14000000</color>
+    <color name="dialog_surface">#F7FFFFFF</color>
+    <color name="accent">#FF0097A7</color>
+    <color name="accent_dim">#3300ACC1</color>
+    <color name="text_primary">#FF15151A</color>
+    <color name="text_secondary">#FF5E5E6A</color>
     <color name="ok">#FF3DDC84</color>
     <color name="warn">#FFFFB020</color>
     <color name="bad">#FFFF4D6A</color>

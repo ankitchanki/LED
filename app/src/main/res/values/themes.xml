@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.GlowLED" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Theme.GlowLED" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorPrimaryContainer">@color/accent_dim</item>
@@ -20,14 +20,14 @@
         <item name="colorSurfaceContainerHigh">@color/dialog_surface</item>
         <item name="colorSurfaceContainerLow">@color/dialog_surface</item>
         <item name="colorOutline">@color/outline</item>
-        <item name="android:colorBackground">@color/black</item>
-        <item name="android:windowBackground">@color/black</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:enforceStatusBarContrast">false</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowLightStatusBar">@bool/light_bars</item>
+        <item name="android:windowLightNavigationBar">@bool/light_bars</item>
         <item name="materialCardViewStyle">@style/GlowCard</item>
         <item name="shapeAppearanceCornerLarge">@style/GlowShapeLarge</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.GlowLED.Dialog</item>

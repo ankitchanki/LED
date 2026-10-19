@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.view.Gravity
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +59,7 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         if (v is ViewGroup) for (i in 0 until v.childCount) enableTree(v.getChildAt(i), on)
     }
 
-    private fun haptic(v: View) = v.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+    private fun haptic(v: View) = Haptics.click(v)
 
     // ---- containers ----------------------------------------------------------------------------
 
@@ -158,8 +157,9 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         }
         read()
         tile.setOnClickListener {
-            haptic(it)
-            sp.edit().putBoolean(t.key, !sp.getBoolean(t.key, t.def)).apply()
+            val on = !sp.getBoolean(t.key, t.def)
+            Haptics.toggle(it, on)
+            sp.edit().putBoolean(t.key, on).apply()
             refresh()
         }
         refreshers += read
@@ -323,7 +323,8 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         s.addOnChangeListener { sl, v, fromUser ->
             value.text = "${v.toInt()}${r.unit}"
             if (fromUser) {
-                if (v.toInt() % 5 == 0) sl.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                // Stronger ticks as the value goes up, softer as it goes down.
+                Haptics.level(sl, (v - r.min) / (r.max - r.min).coerceAtLeast(1).toFloat())
                 sp.edit().putInt(r.key, v.toInt()).apply()
             }
         }

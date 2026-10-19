@@ -12,11 +12,28 @@ import com.glowled.app.R
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.appbar.MaterialToolbar
 
-/** Transparent, light-icon system bars so the black UI flows under the status and navigation bars. */
+/**
+ * Transparent system bars so the UI flows under the status and navigation bars; light icons on the
+ * dark theme, dark icons on the light theme.
+ */
 fun AppCompatActivity.goEdgeToEdge() = enableEdgeToEdge(
-    statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-    navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+    statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+    navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
 )
+
+/**
+ * Asks for the display's fastest refresh rate (e.g. 120 Hz) while this screen is open. Some ROMs
+ * (HyperOS) otherwise keep third-party apps at 60 Hz. Only while the app is in the foreground.
+ */
+fun android.app.Activity.preferMaxRefreshRate() {
+    val d = (if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) display else null)
+        ?: @Suppress("DEPRECATION") windowManager.defaultDisplay ?: return
+    val cur = d.mode
+    val best = d.supportedModes
+        .filter { it.physicalWidth == cur.physicalWidth && it.physicalHeight == cur.physicalHeight }
+        .maxByOrNull { it.refreshRate } ?: return
+    window.attributes = window.attributes.apply { preferredDisplayModeId = best.modeId }
+}
 
 /** Wires the shared large collapsing header (layout/part_header.xml). */
 fun AppCompatActivity.setupHeader(title: CharSequence) {

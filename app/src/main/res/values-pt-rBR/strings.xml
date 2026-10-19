@@ -75,6 +75,8 @@
     <string name="t_glow">Brilho suave</string>
     <string name="t_rotate">Girar anel</string>
     <string name="t_notif_colour">Cor da notificação</string>
+    <string name="t_haptics">Vibração ao tocar</string>
+    <string name="chips_app_theme">Tema do app</string>
     <string name="t_icon_colour">Cor do ícone</string>
 
     <!-- Screen off -->

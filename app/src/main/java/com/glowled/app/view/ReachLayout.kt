@@ -13,8 +13,11 @@ import kotlin.math.abs
 /**
  * One-handed mode (like One UI "reachability"): pull down anywhere on the settings while the page
  * is scrolled to the top, and the tabs and settings slide down into thumb reach. Pull up (or press
- * back) to bring them back. The space opened above them is [spacer], a child of this layout whose
- * height is animated; the pages shrink instead of moving off-screen, so they stay scrollable.
+ * back) to bring them back. The space opened above them is [spacer], a child of this layout.
+ *
+ * Smoothness: while dragging and animating only the [movable] views' translation changes (no
+ * layout pass, so every frame is cheap even at 120 Hz). The spacer's height - and with it the
+ * layout of the pages, which shrink so they stay scrollable - is set once, when the motion ends.
  */
 class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     LinearLayout(context, attrs) {
@@ -30,8 +33,15 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     var onReachChanged: ((Boolean) -> Unit)? = null
 
-    /** Every height change of [spacer] (0 = fully closed), e.g. to pause what's inside it. */
+    /** The spacer's laid-out height after each motion (0 = closed), e.g. to pause what's inside it. */
     var onReachHeight: ((Int) -> Unit)? = null
+
+    /** The views below the spacer that slide with the finger (not the bottom dock). */
+    var movable: List<View> = emptyList()
+
+    /** Height the spacer is laid out with; [shown] is where the content visually is. */
+    private var committed = 0
+    private var shown = 0
 
     var isOpen = false
         private set
@@ -47,7 +57,7 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
     /** How far the content comes down: about a third of the screen. */
     private val maxReach get() = (height * REACH_FRACTION).toInt()
 
-    private val current get() = spacer?.layoutParams?.height?.coerceAtLeast(0) ?: 0
+    private val current get() = shown
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         if (spacer == null) return false
@@ -110,20 +120,48 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
             duration = 260
             interpolator = DecelerateInterpolator(1.6f)
             addUpdateListener { setReach(it.animatedValue as Int) }
+            var cancelled = false
+            addListener(object : android.animation.AnimatorListenerAdapter() {
+                override fun onAnimationCancel(a: android.animation.Animator) {
+                    cancelled = true
+                }
+
+                override fun onAnimationEnd(a: android.animation.Animator) {
+                    if (!cancelled) commit(target)
+                }
+            })
             start()
         }
         if (isOpen != open) {
             isOpen = open
-            performHapticFeedback(android.view.HapticFeedbackConstants.CONTEXT_CLICK)
+            com.glowled.app.ui.Haptics.toggle(this, open)
             onReachChanged?.invoke(open)
         }
     }
 
+    /** Visual position only: slide the content (no layout). */
     private fun setReach(h: Int) {
         val s = spacer ?: return
-        if (s.layoutParams.height == h) return
-        s.layoutParams = s.layoutParams.apply { height = h }
-        s.alpha = if (maxReach > 0) (h / maxReach.toFloat()).coerceIn(0f, 1f) else 0f
+        shown = h
+        val dy = (h - committed).toFloat()
+        movable.forEach { it.translationY = dy }
+        if (committed > 0) s.alpha = if (maxReach > 0) (h / maxReach.toFloat()).coerceIn(0f, 1f) else 0f
+    }
+
+    /** The motion is over: lay the spacer out at [h] and drop the temporary translation. */
+    private fun commit(h: Int) {
+        val s = spacer ?: return
+        val opening = committed == 0 && h > 0
+        committed = h
+        shown = h
+        if (s.layoutParams.height != h) s.layoutParams = s.layoutParams.apply { height = h }
+        movable.forEach { it.translationY = 0f }
+        if (opening) {
+            s.alpha = 0f
+            s.animate().alpha(1f).setDuration(180).start()
+        } else {
+            s.alpha = if (h > 0) 1f else 0f
+        }
         onReachHeight?.invoke(h)
     }
 

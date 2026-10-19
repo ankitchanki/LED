@@ -110,7 +110,8 @@ class LedView @JvmOverloads constructor(
         this.glow = prefs.glow
         this.alphaMul = prefs.ledAlpha / 100f
         this.periodScale = 1.5f.pow((5 - prefs.speed) / 2f)
-        this.fpsCap = prefs.fpsCap
+        // The fps cap saves battery on the always-on screen; in-app previews run at the display's rate.
+        this.fpsCap = if (uncapped) 0 else prefs.fpsCap
         this.rotateRing = prefs.rotateRing
         this.cornerRadius = CutoutGeometry.cornerRadius(context, prefs)
         setColors(colors)
@@ -183,6 +184,9 @@ class LedView @JvmOverloads constructor(
             segment(c, head - 0.04f, head, paintFor(Color.WHITE, 0.5f, false).also { it.clearShadowLayer() })
         }
     }
+
+    /** In-app previews: ignore the battery frame-rate cap and animate at the display's refresh rate. */
+    var uncapped = false
 
     /** 1 = full intensity; lower for notifications that have been waiting a while. */
     var ageFade = 1f
