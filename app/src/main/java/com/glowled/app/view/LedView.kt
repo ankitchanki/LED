@@ -177,7 +177,7 @@ class LedView @JvmOverloads constructor(
         dropRetract = retract
         var landed = false
         dropAnim = android.animation.ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = if (retract) 900 else 1150
+            duration = if (retract) 1000 else 1500
             interpolator = android.view.animation.LinearInterpolator()
             addUpdateListener {
                 dropT = it.animatedValue as Float
@@ -216,7 +216,8 @@ class LedView @JvmOverloads constructor(
         val x = cx
         val top = cy + ringR // bottom edge of the ring: where the liquid comes out
         val dist = max(dropTargetY - top, ringR * 2f)
-        val rb = max(thickness * 1.7f, ringR * 0.36f)
+        // Big enough to read as a drop on a real phone (~5-7 dp radius).
+        val rb = max(max(thickness * 2.2f, ringR * 0.45f), 5f * density)
         dropPaint.color = dropColor
         if (glow) dropPaint.setShadowLayer(glowRadius(), 0f, 0f, dropColor) else dropPaint.clearShadowLayer()
 

@@ -1,6 +1,8 @@
 package com.glowled.app.ui
 
 import android.animation.ValueAnimator
+import androidx.core.animation.doOnEnd
+import androidx.core.view.doOnLayout
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -29,6 +31,7 @@ import com.glowled.app.view.LedView
 import com.glowled.app.view.NotificationPeekView
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 /**
@@ -56,7 +59,13 @@ class AodSession(
     private val handler = Handler(Looper.getMainLooper())
     private val prefs = LedController.prefs
     val led = LedView(context)
-    val root: FrameLayout = FrameLayout(context).apply {
+    /** Lays the app strip and peek card out under the camera as part of its own layout pass. */
+    val root: FrameLayout = object : FrameLayout(context) {
+        override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+            super.onLayout(changed, l, t, r, b)
+            positionInfo()
+        }
+    }.apply {
         setBackgroundColor(Color.BLACK)
         addView(led, FrameLayout.LayoutParams(-1, -1))
     }
@@ -74,7 +83,7 @@ class AodSession(
             led.shiftX = Random.nextInt(-3, 4).toFloat()
             led.shiftY = Random.nextInt(-3, 4).toFloat()
             led.invalidate()
-            positionInfo()
+            root.requestLayout() // re-place the strip with the new shift
             handler.postDelayed(this, BURN_IN_MS)
         }
     }
@@ -110,8 +119,6 @@ class AodSession(
         root.addView(info, FrameLayout.LayoutParams(-2, -2))
         val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
         root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
-        info.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> positionInfo() }
-        peek.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> positionInfo() }
         info.onAppTap = { pkg -> onAppTapped(pkg) }
         peek.onOpen = { e -> openNotification(e) }
         bindInfo()
@@ -155,7 +162,8 @@ class AodSession(
             offsetReported = true
             // Only the lock-screen window hands over to the overlay (never the overlay to itself).
             if (context is android.app.Activity && LedController.onAodWindowOffset(loc[1], preview, remainingSec())) {
-                end(EndReason.SWITCH, lock = false)
+                // Not inside the layout pass: hand over right after it.
+                root.post { end(EndReason.SWITCH, lock = false) }
                 return
             }
             // No overlay available: keep the ring visible right under the window's top edge.
@@ -169,10 +177,27 @@ class AodSession(
         val g = geometry()
         // Window coordinates: below the ring, below the status-bar/cutout band, never at the very edge.
         val safeTop = max(led.ringBottom() + 16 * density - loc[1], statusBandPx() + 8 * density)
-        info.x = g.cx - loc[0] - info.width / 2f + led.shiftX
-        info.y = max(safeTop, 8 * density) + led.shiftY
-        peek.x = g.cx - loc[0] - peek.width / 2f
-        peek.y = info.y + (if (info.visibility == View.VISIBLE) info.height + 14 * density else 0f)
+        infoX = g.cx - loc[0] - info.measuredWidth / 2f + led.shiftX
+        infoY = max(safeTop, 8 * density) + led.shiftY
+        place(info, infoX, infoY)
+        val peekY = infoY + (if (info.visibility == View.VISIBLE) info.measuredHeight + 14 * density else 0f)
+        place(peek, g.cx - loc[0] - peek.measuredWidth / 2f, peekY)
+    }
+
+    /** Where the strip sits (window coordinates); the droplet aims here. */
+    private var infoX = 0f
+    private var infoY = 0f
+
+    /**
+     * Places a child directly inside the root's layout pass. Not setX/setY: those write
+     * translationX/Y, which the entrance/exit animations also animate - they would slide the view
+     * back onto the camera. Not layout margins either: changing them during layout only applies on
+     * a later pass that isn't guaranteed.
+     */
+    private fun place(v: View, x: Float, y: Float) {
+        val l = x.roundToInt()
+        val t = y.roundToInt()
+        v.layout(l, t, l + v.measuredWidth, t + v.measuredHeight)
     }
 
     private val startedAt = android.os.SystemClock.uptimeMillis()
@@ -208,12 +233,12 @@ class AodSession(
             return
         }
         // Wait for the freshly bound strip to be laid out, so the newest icon's position is known.
-        info.post {
-            if (ended) return@post
+        info.doOnLayout {
+            if (ended) return@doOnLayout
             handler.removeCallbacks(hideInfo)
             info.prepareDrop()
-            val tx = info.x + info.iconCenterX(0)
-            val ty = info.y + info.iconCenterY()
+            val tx = infoX + info.iconCenterX(0)
+            val ty = infoY + info.iconCenterY()
             led.playDroplet(color, ty, targetX = tx) {
                 // The drop becomes the app icon.
                 info.popFirst()
@@ -231,10 +256,12 @@ class AodSession(
             duration = 450
             interpolator = DecelerateInterpolator(1.6f)
             addUpdateListener { led.intro = it.animatedValue as Float }
+            // Chain the drop on the ring's entrance (frame-driven, no timer to drift or be dropped).
+            doOnEnd {
+                if (!ended) dropIntoIcons(NotificationStore.apps().firstOrNull()?.color ?: prefs.defaultColor)
+            }
             start()
         }
-        val color = NotificationStore.apps().firstOrNull()?.color ?: prefs.defaultColor
-        handler.postDelayed({ dropIntoIcons(color) }, 380)
     }
 
     // ---- tap an icon: who sent what -------------------------------------------------------------

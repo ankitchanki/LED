@@ -83,12 +83,14 @@ class Prefs(context: Context) {
     val hasCutout get() = cutCx >= 0 && cutRefWidth > 0
 
     fun saveCutout(shape: CutoutShape, cx: Float, cy: Float, w: Float, h: Float, refWidth: Int) {
-        sp.edit()
-            .putString("cut_shape", shape.key)
-            .putFloat("cut_cx", cx).putFloat("cut_cy", cy)
-            .putFloat("cut_w", w).putFloat("cut_h", h)
-            .putInt("cut_ref_w", refWidth)
-            .apply()
+        val e = sp.edit()
+        e.putString("cut_shape", shape.key)
+        e.putFloat("cut_cx", cx)
+        e.putFloat("cut_cy", cy)
+        e.putFloat("cut_w", w)
+        e.putFloat("cut_h", h)
+        e.putInt("cut_ref_w", refWidth)
+        e.apply()
     }
 
     // Per-app

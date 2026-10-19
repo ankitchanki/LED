@@ -1,3 +1,20 @@
+# Glow LED v1.8.2
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **App icons now always sit below the camera, not on it.** The icons and message card were placed by
+  shifting them down, and their own pop-in / fade animations reset that shift - so on a new notification
+  they slid back onto the camera. They are now laid out at a fixed spot below the ring as part of the
+  screen's layout pass; animations only move them slightly around that spot.
+- **Droplet works end to end:** the drop now aims at the icon's real position, is bigger and slower
+  (easier to see), and starts when the ring's entrance animation finishes instead of on a timer.
+  Verified by rendering the real always-on code frame by frame (see the GIF in the README).
+- Saving the camera position no longer chains editor calls (more robust).
+
+---
+
 # Glow LED v1.8.1
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
