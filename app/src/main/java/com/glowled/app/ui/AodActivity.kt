@@ -35,6 +35,7 @@ class AodActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LedController.init(this)
+        com.glowled.app.core.DebugLog.add("Lock-screen window created, ${LedController.state()}")
         getSystemService(NotificationManager::class.java).cancel(LedController.FSI_ID)
 
         setShowWhenLocked(true)
@@ -126,11 +127,13 @@ class AodActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        com.glowled.app.core.DebugLog.add("Lock-screen window resumed, ${LedController.state()}")
         if (resumedAt == 0L) resumedAt = System.currentTimeMillis()
     }
 
     override fun onStop() {
         super.onStop()
+        com.glowled.app.core.DebugLog.add("Lock-screen window stopped, ${LedController.state()}")
         // Another activity (e.g. an incoming call) took over. Ignore the brief stop some ROMs
         // send while the screen is still turning on.
         val settled = resumedAt != 0L && System.currentTimeMillis() - resumedAt > 1500
@@ -138,6 +141,7 @@ class AodActivity : Activity() {
     }
 
     override fun onDestroy() {
+        com.glowled.app.core.DebugLog.add("Lock-screen window closed")
         session.onHostGone()
         if (waitingForOff) {
             try {

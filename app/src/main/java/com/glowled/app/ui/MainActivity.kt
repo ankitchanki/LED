@@ -446,6 +446,8 @@ class MainActivity : AppCompatActivity() {
         val c = ui.card(col)
         ui.chips(c, getString(R.string.chips_method), "aod_method",
             labels(R.array.method_labels), listOf("auto", "activity", "overlay"), "auto", aodOn)
+        ui.chips(c, getString(R.string.chips_off_delay), "off_delay",
+            labels(R.array.off_delay_labels), listOf("800", "1500", "3000"), "800", aodOn)
         ui.chips(c, getString(R.string.chips_timeout), "aod_timeout",
             labels(R.array.timeout_labels), listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
         ui.chips(c, getString(R.string.chips_remind), "pulse_interval",
@@ -583,6 +585,10 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(R.string.log_copy) { _, _ ->
                 getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("Glow LED log", text))
                 Toast.makeText(this, R.string.log_copied, Toast.LENGTH_SHORT).show()
+            }
+            .setNeutralButton(R.string.log_share) { _, _ ->
+                val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text)
+                open(Intent.createChooser(send, getString(R.string.g_log)))
             }
             .setNegativeButton(R.string.close, null)
             .show()

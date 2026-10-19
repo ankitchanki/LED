@@ -86,6 +86,7 @@ object AodOverlay {
             return false
         }
         session = s
+        DebugLog.add("Overlay window added, ${LedController.state()}")
         s.start()
         return true
     }

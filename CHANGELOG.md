@@ -1,3 +1,22 @@
+# Glow LED v2.0.2 (diagnostic build)
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+Some phones (seen on HyperOS) flash the screen on for a moment right after you lock it, before the
+light appears. This build helps find out why:
+
+- **Detailed event log:** timestamps in milliseconds, and every step of the screen-off / wake sequence
+  is recorded: screen ON / OFF (and who caused it), the display's power state (ON / OFF / DOZE),
+  which method was used, when the light window was created, resumed and drew its first frame, every
+  time Glow LED wakes the screen (and why) and every time it switches it off. Keeps the last 200
+  events.
+- **Share the log:** *More → Event log → Share* sends it to any app (WhatsApp, e-mail, …).
+- **New option:** *Screen off → Start the light after screen off* (0.8 s / 1.5 s / 3 s). Waiting
+  longer gives the system time to finish switching off before the light wakes it again.
+
+---
+
 # Glow LED v2.0.1
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

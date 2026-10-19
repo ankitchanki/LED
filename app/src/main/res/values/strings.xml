@@ -92,6 +92,7 @@
     <string name="t_peek_actions">Reply buttons</string>
     <string name="t_droplet">Droplet</string>
     <string name="chips_method">Screen-off method</string>
+    <string name="chips_off_delay">Start the light after screen off</string>
     <string name="chips_timeout">Keep the light on for</string>
     <string name="chips_remind">Remind me afterwards</string>
     <string name="s_brightness">Brightness</string>
@@ -145,6 +146,7 @@
     <string name="g_log">Event log</string>
     <string name="g_log_sub">View and copy</string>
     <string name="sig_key">Key %s</string>
+    <string name="log_share">Share</string>
     <string name="log_copy">Copy</string>
     <string name="log_copied">Copied</string>
     <string name="state_on">On</string>

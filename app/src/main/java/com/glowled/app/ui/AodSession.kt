@@ -61,9 +61,19 @@ class AodSession(
     val led = LedView(context)
     /** Lays the app strip and peek card out under the camera as part of its own layout pass. */
     val root: FrameLayout = object : FrameLayout(context) {
+        private var drawn = false
+
         override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
             super.onLayout(changed, l, t, r, b)
             positionInfo()
+        }
+
+        override fun dispatchDraw(canvas: android.graphics.Canvas) {
+            super.dispatchDraw(canvas)
+            if (!drawn) {
+                drawn = true
+                DebugLog.add("Light window drew its first frame, ${LedController.state()}")
+            }
         }
     }.apply {
         setBackgroundColor(Color.BLACK)
@@ -116,6 +126,7 @@ class AodSession(
                 Intent.ACTION_USER_PRESENT -> end(EndReason.UNLOCK, lock = false)
                 // Panel just came on: now the entrance is actually visible.
                 Intent.ACTION_SCREEN_ON -> {
+                    DebugLog.add("Light: screen came on")
                     panelOnAt = android.os.SystemClock.uptimeMillis()
                     playEntrance()
                 }
@@ -379,7 +390,7 @@ class AodSession(
         } else {
             handler.postDelayed({ playEntrance() }, 1500)
         }
-        DebugLog.add(if (preview) "Preview shown" else "Always-on light shown")
+        DebugLog.add((if (preview) "Preview shown" else "Always-on light shown") + ", ${LedController.state()}")
     }
 
     /**
@@ -389,6 +400,7 @@ class AodSession(
      */
     private fun onScreenOff() {
         val sinceOn = android.os.SystemClock.uptimeMillis() - panelOnAt
+        DebugLog.add("Light: screen went off" + if (panelOnAt > 0) " ${sinceOn} ms after it came on" else "")
         if (!preview && !rewoken && panelOnAt > 0 && sinceOn < EARLY_OFF_MS) {
             rewoken = true
             DebugLog.add("System switched the screen off ${sinceOn} ms after it woke - waking it again")

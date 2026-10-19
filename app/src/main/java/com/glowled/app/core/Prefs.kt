@@ -62,6 +62,8 @@ class Prefs(context: Context) {
     val burnIn get() = bool("burn_in", true)
     val lowRefresh get() = bool("low_refresh", true)
     val fpsCap get() = strInt("fps_cap", 30)
+    /** How long to wait after the screen goes off before lighting it again. */
+    val offDelayMs get() = strInt("off_delay", 800)
     /** Always-on screen: animate for a few seconds, then hold a still ring (no redraws at all). */
     val ecoAnim get() = bool("eco_anim", true)
     /** The longer a notification waits, the dimmer its light (bright = new, at a glance). */

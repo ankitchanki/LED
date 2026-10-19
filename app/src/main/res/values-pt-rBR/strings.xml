@@ -91,6 +91,7 @@
     <string name="t_peek_actions">Botões responder</string>
     <string name="t_droplet">Gota</string>
     <string name="chips_method">Método com tela desligada</string>
+    <string name="chips_off_delay">Acender após desligar a tela</string>
     <string name="chips_timeout">Manter a luz acesa por</string>
     <string name="chips_remind">Lembrar depois</string>
     <string name="s_brightness">Brilho</string>
@@ -144,6 +145,7 @@
     <string name="g_log">Registro</string>
     <string name="g_log_sub">Ver e copiar</string>
     <string name="sig_key">Chave %s</string>
+    <string name="log_share">Compartilhar</string>
     <string name="log_copy">Copiar</string>
     <string name="log_copied">Copiado</string>
     <string name="state_on">Ativado</string>

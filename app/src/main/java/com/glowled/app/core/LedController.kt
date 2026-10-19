@@ -11,6 +11,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.hardware.display.DisplayManager
+import android.view.Display
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.TriggerEvent
@@ -96,6 +98,7 @@ object LedController {
         ContextCompat.registerReceiver(app, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         migrate()
         syncBatteryWatch()
+        watchDisplayState()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
         // Root managers remember the grant, so re-use it after a restart without prompting.
         if (prefs.sp.getBoolean(Privileged.PREF_ROOT_OK, false)) Privileged.markRootGranted()
@@ -163,18 +166,21 @@ object LedController {
                 Intent.ACTION_SCREEN_OFF -> {
                     OverlayHost.hide()
                     when {
-                        aodVisible -> Unit
+                        aodVisible -> DebugLog.add("Screen OFF while the light is showing")
                         !prefs.aodOnScreenOff -> DebugLog.add("Screen off (show-on-screen-off is disabled)")
                         suppressed -> DebugLog.add("Screen off (already shown for these notifications)")
                         else -> {
-                            DebugLog.add("Screen off: ${NotificationStore.colors().size} unread")
+                            val wait = prefs.offDelayMs
+                            DebugLog.add("Screen OFF: ${NotificationStore.colors().size} unread, starting the light in $wait ms")
                             // Give the system a moment to finish its own screen-off transition.
-                            main.postDelayed({ startAfterScreenOff(retries = 2) }, 800)
+                            main.postDelayed({ startAfterScreenOff(retries = 2) }, wait.toLong())
                         }
                     }
                 }
                 Intent.ACTION_SCREEN_ON -> {
-                    if (SystemClock.uptimeMillis() > ourWakeUntil && !aodVisible) {
+                    val ours = SystemClock.uptimeMillis() <= ourWakeUntil
+                    DebugLog.add("Screen ON (${if (ours) "Glow LED is starting the light" else "by you or the system"}), ${state()}")
+                    if (!ours && !aodVisible) {
                         // The user woke the phone themselves: next screen-off may show the AOD again.
                         suppressed = false
                         cancelPulse()
@@ -252,6 +258,8 @@ object LedController {
             else -> !canLaunchFromBackground() || OemHelper.miuiLockScreenAllowed(app) == false ||
                 prefs.sp.getBoolean(PREF_WINDOW_BLOCKED, false)
         }
+        DebugLog.add("Method: ${if (useOverlay) "overlay" else "lock-screen window"} (setting: ${prefs.aodMethod}" +
+            ", window blocked before: ${prefs.sp.getBoolean(PREF_WINDOW_BLOCKED, false)}), ${state()}")
         if (useOverlay) {
             startOverlay(duration, preview)
             return
@@ -293,7 +301,9 @@ object LedController {
         if (!launched) launchViaFullScreenIntent(intent)
         // Only force the panel on if turnScreenOn didn't (some OEM ROMs ignore it); doing it
         // first would flash the lock screen before the black AOD appears.
-        if (!preview) main.postDelayed({ if (aodVisible && !isInteractive()) wakeBriefly() }, 600)
+        if (!preview) main.postDelayed({
+            if (aodVisible && !isInteractive()) wakeBriefly("the window is up but the screen is still off after 600 ms")
+        }, 600)
     }
 
     /**
@@ -323,7 +333,7 @@ object LedController {
         ourWakeUntil = SystemClock.uptimeMillis() + LAUNCH_WINDOW_MS
         if (AodOverlay.show(duration, preview)) {
             // The overlay is added (black, dim) before the panel wakes, keeping any flash minimal.
-            if (!preview && !isInteractive()) main.postDelayed({ wakeBriefly() }, 60)
+            if (!preview && !isInteractive()) main.postDelayed({ wakeBriefly("overlay added") }, 60)
             DebugLog.add("Light started (overlay)")
         }
     }
@@ -331,11 +341,12 @@ object LedController {
     /** The ROM switched the screen off right after the light woke it: turn it back on. */
     fun wakeForLight() {
         ourWakeUntil = SystemClock.uptimeMillis() + LAUNCH_WINDOW_MS
-        wakeBriefly()
+        wakeBriefly("the system switched it off again")
     }
 
     @Suppress("DEPRECATION")
-    private fun wakeBriefly() {
+    private fun wakeBriefly(why: String) {
+        DebugLog.add("Waking the screen: $why")
         // Helps OEM ROMs that ignore turnScreenOn on the activity alone.
         try {
             val pm = app.getSystemService(PowerManager::class.java)
@@ -467,8 +478,51 @@ object LedController {
 
     /** Locks/turns the screen off (needs the accessibility service). Returns false if unavailable. */
     /** Switches the panel off: accessibility lock action, else Shizuku/root power key. */
-    fun turnScreenOff(): Boolean =
-        LedAccessibilityService.instance?.lockScreen() == true || Privileged.screenOff()
+    fun turnScreenOff(): Boolean {
+        val ok = LedAccessibilityService.instance?.lockScreen() == true || Privileged.screenOff()
+        DebugLog.add(if (ok) "Switching the screen off" else "Can't switch the screen off (no Accessibility/Shizuku)")
+        return ok
+    }
+
+    // ---- diagnostics: the display's power state, for the event log -------------------------------
+
+    @Volatile
+    private var displayState = Display.STATE_UNKNOWN
+
+    /** Logs ON / OFF / DOZE changes of the built-in display with millisecond timestamps. */
+    private fun watchDisplayState() {
+        val dm = app.getSystemService(DisplayManager::class.java) ?: return
+        displayState = dm.getDisplay(Display.DEFAULT_DISPLAY)?.state ?: Display.STATE_UNKNOWN
+        dm.registerDisplayListener(object : DisplayManager.DisplayListener {
+            override fun onDisplayChanged(id: Int) {
+                if (id != Display.DEFAULT_DISPLAY) return
+                val st = dm.getDisplay(id)?.state ?: return
+                if (st == displayState) return
+                displayState = st
+                DebugLog.add("Display -> ${stateName(st)}")
+            }
+
+            override fun onDisplayAdded(id: Int) = Unit
+            override fun onDisplayRemoved(id: Int) = Unit
+        }, main)
+    }
+
+    private fun stateName(st: Int) = when (st) {
+        Display.STATE_ON -> "ON"
+        Display.STATE_OFF -> "OFF"
+        Display.STATE_DOZE -> "DOZE (system always-on display)"
+        Display.STATE_DOZE_SUSPEND -> "DOZE_SUSPEND (system always-on display)"
+        Display.STATE_VR -> "VR"
+        Display.STATE_ON_SUSPEND -> "ON_SUSPEND"
+        else -> "UNKNOWN"
+    }
+
+    /** Short power state for the log. Never throws: logging must not break the light. */
+    fun state(): String = try {
+        "screen ${if (isInteractive()) "on" else "off"}, display ${stateName(displayState)}, ${if (isLocked()) "locked" else "unlocked"}"
+    } catch (_: Throwable) {
+        "display ${stateName(displayState)}"
+    }
 
     // ---- screen-on overlay ------------------------------------------------------------------------
 

@@ -6,9 +6,11 @@ import java.util.Locale
 
 /** Small in-memory event log shown on the home screen, so users can report what happened. */
 object DebugLog {
-    private const val MAX = 40
+    // Enough for a few complete screen-off / wake sequences.
+    private const val MAX = 200
     private val lines = ArrayDeque<String>()
-    private val fmt = SimpleDateFormat("HH:mm:ss", Locale.US)
+    // Milliseconds: the screen-off / wake sequence plays out within a second.
+    private val fmt = SimpleDateFormat("HH:mm:ss.SSS", Locale.US)
 
     @Synchronized
     fun add(msg: String) {
