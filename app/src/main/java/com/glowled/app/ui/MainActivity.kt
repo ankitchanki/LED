@@ -365,6 +365,7 @@ class MainActivity : AppCompatActivity() {
         ui.sliders(c, Range("Edge corners", "edge_radius", 0, 120, 40, "dp"), dependsOn = { prefs.style.isEdge })
         ui.toggles(col, listOf(
             Toggle("Soft glow", "glow", true),
+            Toggle("Rotate the colour ring", "rotate_ring", true),
             Toggle("App's notification colour", "use_notif_color", true),
             Toggle("App icon colour", "use_icon_color", true),
         ))
@@ -815,7 +816,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TEST_CHANNEL = "test"
         // Discrete changes replay the entrance; sliders just update the ring live while dragging.
-        private val REPLAY_KEYS = setOf("style", "default_color", "multi_mode", "glow", "enabled")
+        private val REPLAY_KEYS = setOf("style", "default_color", "multi_mode", "glow", "enabled", "rotate_ring")
         private const val DOWNLOAD_URL = "https://github.com/ankitchanki/LED/tree/main/releases"
     }
 }

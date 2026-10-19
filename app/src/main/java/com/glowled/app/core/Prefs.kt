@@ -31,6 +31,8 @@ class Prefs(context: Context) {
     val thicknessDp get() = int("thickness", 3).coerceIn(1, 16)
     val gapDp get() = int("gap", 2).coerceIn(0, 20)
     val glow get() = bool("glow", true)
+    /** Turn the split-by-app ring slowly around the camera. */
+    val rotateRing get() = bool("rotate_ring", true)
     val ledAlpha get() = int("led_alpha", 100).coerceIn(10, 100)
     val edgeRadiusDp get() = int("edge_radius", 40).coerceIn(0, 120)
 

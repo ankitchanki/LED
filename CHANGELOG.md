@@ -1,3 +1,20 @@
+# Glow LED v1.9.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Changes
+- **Rotating colour ring:** the ring split into each app's colour now turns slowly around the camera
+  (toggle: *Style → Rotate the colour ring*).
+- **Newest app in the middle:** the newest notification's icon sits right under the camera, older ones
+  alternate left and right - and the droplet falls straight down into it.
+- **No greying:** icons stay at full brightness (no dimming when one is tapped, no grey circles, no
+  focus square).
+- **Icons, never text:** no letters and no "+N" label. If an app's icon can't be loaded, the
+  notification's own status-bar icon is shown in the app's colour.
+
+---
+
 # Glow LED v1.8.2
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

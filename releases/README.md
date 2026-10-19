@@ -3,7 +3,7 @@
 | File | What it is |
 |---|---|
 | [`GlowLED-latest.apk`](GlowLED-latest.apk) | Always the newest version. **Download this one.** |
-| `GlowLED-v1.8.2.apk` | The same build, named by version. |
+| `GlowLED-v1.9.0.apk` | The same build, named by version. |
 | [`SHA256SUMS.txt`](SHA256SUMS.txt) | Checksums, if you want to verify the download. |
 
 ## ✅ This is a signed build

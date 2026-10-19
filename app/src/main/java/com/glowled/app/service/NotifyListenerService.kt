@@ -108,6 +108,7 @@ class NotifyListenerService : NotificationListenerService() {
             kind = content?.kind ?: NotificationStore.Kind.OTHER,
             hidden = hidden,
             intent = n.contentIntent,
+            smallIcon = n.smallIcon,
         )
     }
 

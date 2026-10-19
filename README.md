@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/v1.8.2/overview.png" alt="Glow LED screenshots: tap to read, droplet from the camera, styles, settings" />
+  <img src="docs/screenshots/v1.9/overview.png" alt="Glow LED screenshots: tap to read, droplet from the camera, styles, settings" />
 </p>
 
 ---
@@ -48,18 +48,18 @@ are switched off, so only the light itself uses power.
 
 | Always-on light | Tap an icon to read | Styles & colours |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v1.8.2/1-always-on.png" width="220" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.8.2/2-tap-to-read.png" width="220" alt="Peek card under the app icons showing the sender and the latest messages" /> | <img src="docs/screenshots/v1.8.2/4-style.png" width="220" alt="Style tab with animation cards, colour row and sliders, ring shown on the real camera" /> |
-| Ring split into each app's colour, app icons (no text) below it. Everything else stays black, so AMOLED pixels stay off. | Tap an app icon: who sent it and the latest messages in dim text on pure black (Samsung AOD style), with 📷 Photo / 🎥 Video / 🎤 Voice labels. Tap to open the chat. | Live preview on your real camera. Tap an animation, pick a colour, tune speed, size and gap. |
+| <img src="docs/screenshots/v1.9/1-always-on.png" width="220" alt="Black always-on screen with a green ring around the camera and app icons below it" /> | <img src="docs/screenshots/v1.9/2-tap-to-read.png" width="220" alt="Peek card under the app icons showing the sender and the latest messages" /> | <img src="docs/screenshots/v1.9/4-style.png" width="220" alt="Style tab with animation cards, colour row and sliders, ring shown on the real camera" /> |
+| Ring split into each app's colour and slowly rotating; app icons (no text) below it, newest in the middle. Everything else stays black, so AMOLED pixels stay off. | Tap an app icon: who sent it and the latest messages in dim text on pure black (Samsung AOD style), with 📷 Photo / 🎥 Video / 🎤 Voice labels. Tap to open the chat. | Live preview on your real camera. Tap an animation, pick a colour, tune speed, size and gap. |
 
 | Screen-off options | One-tap setup |
 |:---:|:---:|
-| <img src="docs/screenshots/v1.8.2/5-screen-off.png" width="220" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.8.2/6-setup.png" width="220" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
+| <img src="docs/screenshots/v1.9/5-screen-off.png" width="220" alt="Screen off tab with toggle tiles, timeout chips and brightness slider" /> | <img src="docs/screenshots/v1.9/6-setup.png" width="220" alt="Setup tab with Shizuku one-tap setup and permission checklist" /> |
 | Every option on one screen: when to show, how long, pocket detection, double-tap to wake, droplet. | Shizuku/root grants everything in one tap, or follow the checklist. |
 
 **Droplet:** when a notification arrives, a liquid drop in the app's colour stretches out of the camera,
-breaks off, falls onto its spot in the icon row and turns into the app's icon.
+breaks off, falls straight down into the middle of the icon row and turns into the app's icon.
 
-<img src="docs/screenshots/v1.8.2/droplet.gif" width="450" alt="Animation: the ring grows out of the camera, a green drop stretches out, falls onto the WhatsApp spot and turns into the WhatsApp icon" />
+<img src="docs/screenshots/v1.9/droplet.gif" width="450" alt="Animation: the ring grows out of the camera, a green drop stretches out, falls onto the WhatsApp spot and turns into the WhatsApp icon" />
 
 ## How it works (for users)
 

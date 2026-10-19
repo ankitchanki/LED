@@ -20,6 +20,8 @@ object NotificationStore {
         val kind: Kind = Kind.TEXT,
         val hidden: Boolean = false,
         val intent: android.app.PendingIntent? = null,
+        /** The notification's status-bar icon: fallback when the app icon can't be loaded. */
+        val smallIcon: android.graphics.drawable.Icon? = null,
     ) {
         /** Same LED/peek appearance (ignores the PendingIntent identity). */
         fun sameLook(o: Entry?) = o != null && o.color == color && o.title == title && o.lines == lines && o.kind == kind
@@ -81,7 +83,12 @@ object NotificationStore {
     @Synchronized
     fun isEmpty(): Boolean = entries.keys.all { it in seen }
 
-    data class AppInfo(val pkg: String, val color: Int, val count: Int)
+    data class AppInfo(
+        val pkg: String,
+        val color: Int,
+        val count: Int,
+        val smallIcon: android.graphics.drawable.Icon? = null,
+    )
 
     /** Apps with unseen notifications, newest first, with how many each has. */
     @Synchronized
@@ -90,7 +97,7 @@ object NotificationStore {
         entries.values.sortedByDescending { it.time }.forEach {
             if (it.key in seen) return@forEach
             val prev = out[it.pkg]
-            out[it.pkg] = if (prev == null) AppInfo(it.pkg, it.color, 1) else prev.copy(count = prev.count + 1)
+            out[it.pkg] = if (prev == null) AppInfo(it.pkg, it.color, 1, it.smallIcon) else prev.copy(count = prev.count + 1)
         }
         return out.values.toList()
     }

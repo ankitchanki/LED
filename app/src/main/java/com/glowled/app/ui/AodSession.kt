@@ -237,11 +237,11 @@ class AodSession(
             if (ended) return@doOnLayout
             handler.removeCallbacks(hideInfo)
             info.prepareDrop()
-            val tx = infoX + info.iconCenterX(0)
+            val tx = infoX + info.newestCenterX()
             val ty = infoY + info.iconCenterY()
             led.playDroplet(color, ty, targetX = tx) {
                 // The drop becomes the app icon.
-                info.popFirst()
+                info.popNewest()
                 if (!prefs.appInfoAlways) handler.postDelayed(hideInfo, INFO_MS)
             }
         }

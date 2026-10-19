@@ -54,6 +54,8 @@ class LedView @JvmOverloads constructor(
     private var alphaMul = 1f
     private var periodScale = 1f
     private var fpsCap = 30
+    /** Slowly rotate a ring that is split into app colours. */
+    private var rotateRing = true
     private var cornerRadius = 40 * density
 
     /**
@@ -109,6 +111,7 @@ class LedView @JvmOverloads constructor(
         this.alphaMul = prefs.ledAlpha / 100f
         this.periodScale = 1.5f.pow((5 - prefs.speed) / 2f)
         this.fpsCap = prefs.fpsCap
+        this.rotateRing = prefs.rotateRing
         this.cornerRadius = CutoutGeometry.cornerRadius(context, prefs)
         setColors(colors)
         dirty = true
@@ -390,6 +393,9 @@ class LedView @JvmOverloads constructor(
         val segmented = multiMode == MultiMode.SEGMENTS && n > 1
         val color = if (multiMode == MultiMode.LATEST) colors[0] else colors[(cycle % n).toInt()]
 
+        // Split-by-app ring turns slowly (one turn every ~9 s at normal speed).
+        val spinSplit = segmented && rotateRing && !style.isEdge && style != LedStyle.BLINK
+        val rot = if (spinSplit) ((elapsed % ROTATE_MS.scaled()) / ROTATE_MS.scaled().toFloat()) else 0f
         val transformed = shiftX != 0f || shiftY != 0f || intro < 1f
         if (transformed) {
             canvas.save()
@@ -402,13 +408,13 @@ class LedView @JvmOverloads constructor(
         }
 
         when (style) {
-            LedStyle.STATIC -> ring(canvas, color, 1f, segmented, 0f)
-            LedStyle.BREATHE -> ring(canvas, color, 0.12f + 0.88f * wave(p), segmented, 0f)
-            LedStyle.EDGE_PULSE -> ring(canvas, color, 0.1f + 0.9f * wave(p), segmented, 0f)
-            LedStyle.BLINK -> if (p < BLINK_ON) ring(canvas, color, 1f, segmented, 0f)
-            LedStyle.HEARTBEAT -> ring(canvas, color, 0.08f + 0.92f * heartbeat(p), segmented, 0f)
+            LedStyle.STATIC -> ring(canvas, color, 1f, segmented, rot)
+            LedStyle.BREATHE -> ring(canvas, color, 0.12f + 0.88f * wave(p), segmented, rot)
+            LedStyle.EDGE_PULSE -> ring(canvas, color, 0.1f + 0.9f * wave(p), segmented, rot)
+            LedStyle.BLINK -> if (p < BLINK_ON) ring(canvas, color, 1f, segmented, rot)
+            LedStyle.HEARTBEAT -> ring(canvas, color, 0.08f + 0.92f * heartbeat(p), segmented, rot)
             LedStyle.PULSE -> {
-                ring(canvas, color, 0.55f + 0.45f * (1f - wave(p)), segmented, 0f)
+                ring(canvas, color, 0.55f + 0.45f * (1f - wave(p)), segmented, rot)
                 ripple(canvas, color, p)
             }
             LedStyle.SPIN -> spin(canvas, p, segmented, color, tail = 0.38f, comets = 1, base = 0.16f)
@@ -427,6 +433,8 @@ class LedView @JvmOverloads constructor(
         scheduleNext(period, inPeriod, n, segmented)
     }
 
+    private fun Long.scaled() = max(1500L, (this * periodScale).toLong())
+
     private fun basePeriod(): Long = when (style) {
         LedStyle.STATIC -> 2500
         LedStyle.BREATHE -> 3200
@@ -443,7 +451,10 @@ class LedView @JvmOverloads constructor(
         if (!isShown || windowVisibility != VISIBLE) return
         val cycling = n > 1 && !segmented && multiMode != MultiMode.LATEST
         when (style) {
-            LedStyle.STATIC -> if (cycling) postInvalidateDelayed(period - inPeriod)
+            LedStyle.STATIC -> when {
+                segmented && rotateRing -> if (fpsCap > 0) postInvalidateDelayed(1000L / fpsCap) else postInvalidateOnAnimation()
+                cycling -> postInvalidateDelayed(period - inPeriod)
+            }
             LedStyle.BLINK -> {
                 val onMs = (period * BLINK_ON).toLong()
                 postInvalidateDelayed(if (inPeriod < onMs) onMs - inPeriod else period - inPeriod)
@@ -571,6 +582,7 @@ class LedView @JvmOverloads constructor(
 
     companion object {
         private const val BLINK_ON = 0.12f
+        private const val ROTATE_MS = 9_000L
         private const val DETACH_AT = 0.42f
         private const val LAND_AT = 0.74f
         private const val TAIL_SLICES = 9
