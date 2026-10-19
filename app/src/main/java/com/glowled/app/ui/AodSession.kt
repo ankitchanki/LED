@@ -78,6 +78,15 @@ class AodSession(
     private val storeListener: () -> Unit = { handler.post { onStoreChanged() } }
     private val timeout = Runnable { end(EndReason.TIMEOUT, lock = true) }
     private val pocketEnd = Runnable { end(EndReason.POCKET, lock = true) }
+    /** Eco: once the entrance and droplet have played, hold a still ring (no more redraws). */
+    private val settle = Runnable { led.settle() }
+    /** Re-dims the ring as the notifications get older. */
+    private val ageTick = object : Runnable {
+        override fun run() {
+            updateAgeFade()
+            handler.postDelayed(this, AGE_TICK_MS)
+        }
+    }
     private val burnIn = object : Runnable {
         override fun run() {
             led.shiftX = Random.nextInt(-3, 4).toFloat()
@@ -194,6 +203,7 @@ class AodSession(
 
     private fun bindInfo() {
         if (!prefs.showAppInfo) return
+        info.monochrome = prefs.aodIcons
         var apps = NotificationStore.apps()
         if (preview && apps.isEmpty()) apps = sampleApps
         info.bind(apps)
@@ -243,6 +253,7 @@ class AodSession(
             // Chain the drop on the ring's entrance (frame-driven, no timer to drift or be dropped).
             doOnEnd {
                 if (!ended) dropIntoIcons(NotificationStore.apps().firstOrNull()?.color ?: prefs.defaultColor)
+                armSettle()
             }
             start()
         }
@@ -319,6 +330,7 @@ class AodSession(
         receiverRegistered = true
         if (prefs.burnIn && !preview) handler.postDelayed(burnIn, BURN_IN_MS)
         if (prefs.proximity && !preview) startProximity()
+        if (prefs.ageFade && !preview) handler.postDelayed(ageTick, AGE_TICK_MS)
         // If the panel is already on (preview, or the activity woke it) animate now; otherwise
         // wait for ACTION_SCREEN_ON so the motion isn't wasted on a dark panel. Fallback after 1.5 s.
         if (context.getSystemService(PowerManager::class.java).isInteractive) {
@@ -330,9 +342,26 @@ class AodSession(
     }
 
     fun restartAnimation() {
+        led.configure(prefs, geometry(), currentColors()) // undoes an eco still ring
+        updateAgeFade()
         led.restartAnimation()
         bindInfo()
         showInfo()
+        armSettle()
+    }
+
+    private fun armSettle() {
+        handler.removeCallbacks(settle)
+        if (prefs.ecoAnim && !preview) handler.postDelayed(settle, ECO_MS)
+    }
+
+    /** Full brightness for a new notification, down to [AGE_MIN] after it has waited an hour. */
+    private fun updateAgeFade() {
+        val newest = NotificationStore.newestTime()
+        led.ageFade = if (!prefs.ageFade || preview || newest <= 0L) 1f else {
+            val age = (System.currentTimeMillis() - newest).coerceAtLeast(0L)
+            1f - (1f - AGE_MIN) * (age / AGE_FULL_MS.toFloat()).coerceAtMost(1f)
+        }
     }
 
     // ---- gestures: own double-tap detection (more reliable on a dim, half-awake panel) -----------
@@ -417,6 +446,8 @@ class AodSession(
             return
         }
         led.configure(prefs, geometry(), currentColors())
+        updateAgeFade()
+        armSettle()
         bindInfo()
         val newest = NotificationStore.newestTime()
         if (newest > newestTime) {
@@ -460,6 +491,7 @@ class AodSession(
         led.useScreenCoords = true
         led.configure(prefs, geometry(), currentColors())
         led.intro = 0f
+        updateAgeFade()
         root.addView(info, FrameLayout.LayoutParams(-2, -2))
         val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
         root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
@@ -541,6 +573,10 @@ class AodSession(
         private const val POCKET_MS = 10_000L
         private const val PREVIEW_MS = 15_000L
         private const val INFO_MS = 8_000L
+        private const val ECO_MS = 12_000L
+        private const val AGE_TICK_MS = 5 * 60_000L
+        private const val AGE_FULL_MS = 60 * 60_000L
+        private const val AGE_MIN = 0.45f
         private val SAMPLE_PACKAGES = listOf(
             "com.whatsapp", "org.telegram.messenger", "com.instagram.android", "com.google.android.gm",
             "com.google.android.apps.messaging", "com.facebook.orca", "com.snapchat.android", "com.discord",

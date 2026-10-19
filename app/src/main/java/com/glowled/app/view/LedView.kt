@@ -123,6 +123,22 @@ class LedView @JvmOverloads constructor(
         invalidate()
     }
 
+    /** 1 = full intensity; lower for notifications that have been waiting a while. */
+    var ageFade = 1f
+        set(v) {
+            if (field != v) { field = v; invalidate() }
+        }
+
+    /**
+     * Eco: stop animating and hold a still ring, so nothing is redrawn until something changes.
+     * Edge styles keep moving, at a low frame rate. [configure] brings the animation back.
+     */
+    fun settle() {
+        if (style.isEdge) fpsCap = 10 else style = LedStyle.STATIC
+        rotateRing = false
+        invalidate()
+    }
+
     fun restartAnimation() {
         startTime = SystemClock.uptimeMillis()
         invalidate()
@@ -469,7 +485,7 @@ class LedView @JvmOverloads constructor(
         val paint = if (filled) fill else stroke
         paint.shader = null
         paint.color = color
-        paint.alpha = (255 * (a * alphaMul * intro).coerceIn(0f, 1f)).toInt()
+        paint.alpha = (255 * (a * alphaMul * ageFade * intro).coerceIn(0f, 1f)).toInt()
         stroke.strokeWidth = thickness
         if (glow && paint.alpha > 8) paint.setShadowLayer(glowRadius(), 0f, 0f, paint.color)
         else paint.clearShadowLayer()
@@ -535,7 +551,7 @@ class LedView @JvmOverloads constructor(
         val paint = if (isFilled) fill else stroke
         paint.clearShadowLayer()
         paint.color = Color.WHITE
-        paint.alpha = (255 * alphaMul * intro).toInt()
+        paint.alpha = (255 * alphaMul * ageFade * intro).toInt()
         stroke.strokeWidth = thickness
         paint.shader = s
         c.drawPath(shapePath, paint)

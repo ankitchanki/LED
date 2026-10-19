@@ -20,6 +20,17 @@ class NotificationStoreTest {
     }
 
     @Test
+    fun repostedSeenNotificationLightsAgain() {
+        // e.g. "clear after unlock", then the same WhatsApp chat (same key) gets a new message.
+        NotificationStore.put(NotificationStore.Entry("a", "p", 1, 1))
+        NotificationStore.markAllSeen()
+        NotificationStore.put(NotificationStore.Entry("a", "p", 1, 1))
+        assertTrue(NotificationStore.isEmpty()) // a silent update stays seen
+        assertTrue(NotificationStore.put(NotificationStore.Entry("a", "p", 1, 2), alert = true))
+        assertFalse(NotificationStore.isEmpty())
+    }
+
+    @Test
     fun seenNotificationsDoNotLight() {
         NotificationStore.put(NotificationStore.Entry("a", "p", 1, 1))
         NotificationStore.markAllSeen()

@@ -38,6 +38,7 @@
     <string name="shell_running">Setting up…</string>
     <string name="setup_intro">Grant these once. Without them the light can\'t appear.</string>
     <string name="screen_on_hint">Shows a small ring around the camera while you use the phone. Hidden in landscape (except edge lighting).</string>
+    <string name="battery_hint">Still ring: the light animates when it appears, then holds still, so nothing is redrawn. Dim older: a new notification glows at full strength and fades over an hour, so you can tell new from old at a glance. Phone moves: after the light times out, it shows again when you pick up or move the phone, using the motion chip (no screen or CPU time while waiting).</string>
 
     <string name="action_preview">Preview</string>
     <string name="action_test_short">Test</string>

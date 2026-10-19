@@ -34,11 +34,16 @@ object NotificationStore {
     var version = 0L
         private set
 
+    /**
+     * Adds or updates [e]. [alert] = it was posted again with a new alert (a new chat message, a
+     * re-sent test): it counts as unread again even if an earlier version was already seen.
+     */
     @Synchronized
-    fun put(e: Entry): Boolean {
+    fun put(e: Entry, alert: Boolean = false): Boolean {
         val old = entries[e.key]
         entries[e.key] = e
-        val changed = !e.sameLook(old)
+        val unseen = alert && seen.remove(e.key)
+        val changed = unseen || !e.sameLook(old)
         if (changed) version++
         return changed
     }

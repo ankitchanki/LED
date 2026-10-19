@@ -3,7 +3,13 @@ package com.glowled.app.view
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
+import android.os.Build
 import android.util.LruCache
 import android.view.Gravity
 import android.view.View
@@ -14,7 +20,7 @@ import android.widget.LinearLayout
 import com.glowled.app.core.NotificationStore
 
 /**
- * One UI-style app strip under the camera on the always-on screen: app icons only - no text, no
+ * One UI-style app strip under the camera on the always-on screen: icons only - no text, no
  * dimming. The newest app sits in the middle, right under the camera (older ones alternate to its
  * left and right), so the droplet falls straight down into it ([prepareDrop] / [popNewest]).
  * Icons are tappable ([onAppTap]) to open the peek card.
@@ -22,6 +28,9 @@ import com.glowled.app.core.NotificationStore
 class AppInfoView(context: Context) : LinearLayout(context) {
 
     var onAppTap: ((String) -> Unit)? = null
+
+    /** AOD-style monochrome glyphs instead of full-colour app icons (set before [bind]). */
+    var monochrome = true
 
     private val d = resources.displayMetrics.density
     private fun dp(v: Float) = (v * d).toInt()
@@ -77,8 +86,10 @@ class AppInfoView(context: Context) : LinearLayout(context) {
     }
 
     /**
-     * The app's own icon at full brightness. If it can't be loaded, the notification's status-bar
-     * icon tinted in the app's LED colour; never a text letter.
+     * [monochrome] (default): One UI AOD-style glyphs - the notification's own status-bar icon, or
+     * the app's themed-icon layer, in soft grey. The newest app's glyph takes its notification
+     * colour, the same colour as the droplet that turns into it and its part of the ring.
+     * Otherwise the app's own full-colour icon. Never a text letter.
      */
     private fun iconChip(pm: PackageManager, app: NotificationStore.AppInfo): View = ImageView(context).apply {
         isClickable = true
@@ -87,7 +98,18 @@ class AppInfoView(context: Context) : LinearLayout(context) {
         contentDescription = labelFor(pm, app.pkg)
         val appIcon = iconFor(pm, app.pkg)
         val small = app.smallIcon?.let { runCatching { it.loadDrawable(context) }.getOrNull() }
+        val glyph = if (monochrome) small ?: themedGlyph(appIcon) else null
         when {
+            glyph != null -> {
+                setImageDrawable(glyph.mutate())
+                imageTintList = ColorStateList.valueOf(if (app.pkg == newestPkg) app.color else MONO_GREY)
+                val pad = dp(GLYPH_PAD_DP)
+                setPadding(pad, pad, pad, pad)
+            }
+            appIcon != null && monochrome -> {
+                setImageDrawable(appIcon.mutate())
+                colorFilter = GREYSCALE
+            }
             appIcon != null -> setImageDrawable(appIcon)
             small != null -> {
                 setImageDrawable(small)
@@ -96,7 +118,7 @@ class AppInfoView(context: Context) : LinearLayout(context) {
             }
             else -> background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
-                setColor(app.color)
+                setColor(if (monochrome && app.pkg != newestPkg) MONO_GREY else app.color)
             }
         }
         setOnClickListener {
@@ -184,9 +206,25 @@ class AppInfoView(context: Context) : LinearLayout(context) {
             .start()
     }
 
+    /** The monochrome layer of an adaptive (themed) app icon, Android 13+. */
+    private fun themedGlyph(icon: Drawable?): Drawable? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return null
+        val mono = (icon as? AdaptiveIconDrawable)?.monochrome ?: return null
+        // The layer includes the adaptive-icon safe zone; crop it like the launcher does.
+        return InsetDrawable(mono, -AdaptiveIconDrawable.getExtraInsetFraction())
+    }
+
     companion object {
         private const val MAX_ICONS = 5
         private const val ICON_DP = 36f
+        private const val GLYPH_PAD_DP = 7f
+        private const val MONO_GREY = 0xFFB4B4B4.toInt()
+        private val GREYSCALE = ColorMatrixColorFilter(
+            ColorMatrix().apply {
+                setSaturation(0f)
+                postConcat(ColorMatrix().apply { setScale(0.8f, 0.8f, 0.8f, 1f) })
+            },
+        )
         private val labelCache = LruCache<String, String>(32)
 
         fun labelFor(pm: PackageManager, pkg: String): String = labelCache.get(pkg) ?: try {

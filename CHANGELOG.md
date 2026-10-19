@@ -1,3 +1,33 @@
+# Glow LED v1.10.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **Test / notifications no longer show "0 unread".** With *Clear after I unlock* on, a notification
+  that was posted again with the same ID stayed marked as read. That affected pressing Test twice, and
+  a WhatsApp chat getting a new message. Every new alert now counts as unread again.
+
+## AOD-style icons
+- The icons under the camera are now monochrome glyphs, like Samsung's One UI always-on display:
+  soft grey, using each notification's own status-bar icon (or the app's themed icon).
+- The newest app's glyph is in **its notification colour**: the same colour as the droplet that turns
+  into it and as its part of the ring.
+- Prefer full-colour icons? *Screen off → AOD-style icons* off.
+
+## Battery
+- **Still ring after 12 s** (default on): the light animates when it appears, then holds still, so the
+  screen isn't redrawn until something changes. A new notification animates again.
+- **Dim older notifications** (default on): a new notification glows at full strength and fades to
+  45 % over an hour. You can tell new from old at a glance, and fewer pixels are lit.
+- **Light up when phone moves** (default on): after the light times out, Glow LED waits on the phone's
+  significant-motion sensor. It is a hardware trigger, so the CPU and screen stay asleep while waiting.
+  When you pick up or carry the phone, the light shows again for a few seconds (at most every 2 min).
+  This replaces the need for timed reminders that wake the screen blindly.
+- All three are in the **Battery** tab.
+
+---
+
 # Glow LED v1.9.1
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

@@ -10,6 +10,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import android.hardware.TriggerEvent
+import android.hardware.TriggerEventListener
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -44,6 +48,7 @@ object LedController {
     private const val FSI_CHANNEL = "aod_launcher"
     const val FSI_ID = 4201
     private const val LAUNCH_WINDOW_MS = 4000L
+    private const val MOTION_MIN_GAP_MS = 2 * 60_000L
 
     /** Set when the ROM blocked the lock-screen window once, so Auto goes straight to the overlay. */
     const val PREF_WINDOW_BLOCKED = "aod_window_blocked"
@@ -135,6 +140,7 @@ object LedController {
         notifyListeners()
         if (NotificationStore.isEmpty()) {
             cancelPulse()
+            disarmMotion()
         } else if (newPost && !isInteractive() && prefs.aodOnNew) {
             startAod(pulse = false)
         }
@@ -165,12 +171,14 @@ object LedController {
                         // The user woke the phone themselves: next screen-off may show the AOD again.
                         suppressed = false
                         cancelPulse()
+                        disarmMotion()
                     }
                     updateOverlay()
                 }
                 Intent.ACTION_USER_PRESENT -> {
                     suppressed = false
                     cancelPulse()
+                    disarmMotion()
                     if (prefs.clearOnUnlock) {
                         NotificationStore.markAllSeen()
                         notifyListeners()
@@ -358,7 +366,57 @@ object LedController {
         if ((reason == EndReason.TIMEOUT || reason == EndReason.POCKET) && prefs.pulseIntervalMin > 0) {
             schedulePulse()
         }
+        if (reason == EndReason.TIMEOUT && !NotificationStore.isEmpty()) armMotion()
         updateOverlay()
+    }
+
+    // ---- show again when the phone moves --------------------------------------------------------
+    // The significant-motion sensor is a one-shot wake-up trigger handled by the sensor hub: while
+    // armed it costs nothing (the CPU can sleep), unlike reminder pulses that light the panel blindly.
+
+    private var motionArmed = false
+    private var lastMotionGlance = 0L
+
+    private val motionTrigger = object : TriggerEventListener() {
+        override fun onTrigger(event: TriggerEvent?) {
+            main.post {
+                motionArmed = false
+                onPhoneMoved()
+            }
+        }
+    }
+
+    private fun motionSensor(): Pair<SensorManager, Sensor>? {
+        val sm = app.getSystemService(SensorManager::class.java) ?: return null
+        val s = sm.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION) ?: return null
+        return sm to s
+    }
+
+    private fun armMotion() {
+        if (motionArmed || !prefs.motionGlance) return
+        val (sm, s) = motionSensor() ?: return
+        motionArmed = sm.requestTriggerSensor(motionTrigger, s)
+        if (motionArmed) DebugLog.add("Will light up again when the phone moves")
+    }
+
+    private fun disarmMotion() {
+        if (!motionArmed) return
+        motionArmed = false
+        motionSensor()?.let { (sm, s) -> sm.cancelTriggerSensor(motionTrigger, s) }
+    }
+
+    private fun onPhoneMoved() {
+        if (isInteractive() || aodVisible || NotificationStore.isEmpty() || !prefs.motionGlance) return
+        val since = SystemClock.uptimeMillis() - lastMotionGlance
+        if (since < MOTION_MIN_GAP_MS) {
+            // Walking around: don't keep lighting up, check again a bit later.
+            main.postDelayed({ if (!isInteractive() && !aodVisible) armMotion() }, MOTION_MIN_GAP_MS - since)
+            return
+        }
+        lastMotionGlance = SystemClock.uptimeMillis()
+        DebugLog.add("Phone moved: showing the light again")
+        suppressed = false
+        startAod(pulse = true)
     }
 
     fun onPulseAlarm() {

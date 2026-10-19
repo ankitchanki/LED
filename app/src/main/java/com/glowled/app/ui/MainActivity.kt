@@ -386,6 +386,7 @@ class MainActivity : AppCompatActivity() {
             Toggle("Keep app icons visible", "app_info_always", false) { prefs.aodEnabled && prefs.showAppInfo },
             Toggle("Tap icon to read message", "show_content", true) { prefs.aodEnabled && prefs.showAppInfo },
             Toggle("Droplet animation", "droplet", true),
+            Toggle("AOD-style icons", "aod_icons", true) { prefs.aodEnabled && prefs.showAppInfo },
         ))
         val c = ui.card(col)
         ui.chips(c, "Screen-off method", "aod_method",
@@ -434,8 +435,12 @@ class MainActivity : AppCompatActivity() {
         ui.sliders(c, Range("Pause below battery", "min_battery", 0, 50, 10, "%"))
         ui.toggles(col, listOf(
             Toggle("Lowest refresh rate when off", "low_refresh", true),
+            Toggle("Still ring after 12 s", "eco_anim", true),
+            Toggle("Dim older notifications", "age_fade", true),
+            Toggle("Light up when phone moves", "motion_glance", true),
             Toggle("Quiet hours", "quiet_enabled", false),
         ))
+        col.addView(hint(getString(R.string.battery_hint)))
         val q = ui.card(col)
         quietSub = ui.link(q, R.drawable.ic_moon, "Quiet hours time", quietText()) { pickQuietHours() }
         return page

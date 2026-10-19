@@ -52,12 +52,20 @@ class Prefs(context: Context) {
     val showContent get() = bool("show_content", true)
     /** Liquid droplet from the camera when a notification arrives. */
     val droplet get() = bool("droplet", true)
+    /** Always-on icons as monochrome glyphs (One UI AOD style) instead of full-colour app icons. */
+    val aodIcons get() = bool("aod_icons", true)
 
     /** "auto", "activity" (lock-screen window) or "overlay" (accessibility overlay). */
     val aodMethod get() = str("aod_method", "auto")
     val burnIn get() = bool("burn_in", true)
     val lowRefresh get() = bool("low_refresh", true)
     val fpsCap get() = strInt("fps_cap", 30)
+    /** Always-on screen: animate for a few seconds, then hold a still ring (no redraws at all). */
+    val ecoAnim get() = bool("eco_anim", true)
+    /** The longer a notification waits, the dimmer its light (bright = new, at a glance). */
+    val ageFade get() = bool("age_fade", true)
+    /** After the light times out, show it again when the phone moves (hardware motion trigger). */
+    val motionGlance get() = bool("motion_glance", true)
 
     // Screen-on overlay
     val overlayEnabled get() = bool("overlay_enabled", true)

@@ -37,9 +37,9 @@ class NotifyListenerService : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification, rankingMap: RankingMap?) {
         val entry = toEntry(sbn, rankingMap)
         val existed = NotificationStore.contains(sbn.key)
-        val changed = if (entry != null) NotificationStore.put(entry) else NotificationStore.remove(sbn.key)
         // A brand-new notification, or an update that alerts again (e.g. a new chat message), wakes the LED.
         val isNew = entry != null && (!existed || sbn.notification.flags and Notification.FLAG_ONLY_ALERT_ONCE == 0)
+        val changed = if (entry != null) NotificationStore.put(entry, alert = isNew) else NotificationStore.remove(sbn.key)
         if (changed || isNew) LedController.onNotificationsChanged(newPost = isNew)
     }
 
