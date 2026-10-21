@@ -284,7 +284,9 @@ class AodSession(
             addUpdateListener { led.intro = it.animatedValue as Float }
             // Chain the drop on the ring's entrance (frame-driven, no timer to drift or be dropped).
             doOnEnd {
-                if (!ended) dropIntoIcons(NotificationStore.apps().firstOrNull()?.color ?: prefs.defaultColor)
+                // Only drip into an app icon when there is one (not for e.g. a charging-only view).
+                val newest = NotificationStore.apps().firstOrNull()
+                if (!ended && (newest != null || preview)) dropIntoIcons(newest?.color ?: prefs.defaultColor)
                 armSettle()
             }
             start()

@@ -21,6 +21,12 @@
     <string name="reach_tip">Tip: pull the settings down to reach them with your thumb (one-handed mode).</string>
 
     <!-- Setup -->
+    <string name="perm_listener_short">Notification access</string>
+    <string name="perm_overlay_short">Draw over apps</string>
+    <string name="perm_a11y_short">Accessibility</string>
+    <string name="perm_battery_short">Battery unrestricted</string>
+    <string name="perm_miui_short">Xiaomi lock screen</string>
+    <string name="perm_oem_short">Autostart</string>
     <string name="perm_listener">Notification access</string>
     <string name="perm_listener_desc">Required. Lets Glow LED know when a notification arrives. Nothing leaves your phone.</string>
     <string name="perm_a11y">Accessibility (optional, most reliable)</string>
@@ -60,7 +66,7 @@
     <string name="tab_on">Screen on</string>
     <string name="tab_alerts">Alerts</string>
     <string name="tab_battery">Battery</string>
-    <string name="tab_log">More</string>
+    <string name="tab_log">Settings</string>
 
     <!-- Style -->
     <string name="action_cutout">Camera position</string>
@@ -133,7 +139,7 @@
     <string name="quiet_end">Quiet hours end</string>
     <string name="battery_hint">Still after 12 s: the light animates when it appears, then holds still, so nothing is redrawn. Dim older: a new notification glows at full strength and fades over an hour. Wake on motion: after the light times out, it shows again when you move the phone, using the motion chip (no screen or CPU time while waiting).</string>
 
-    <!-- More -->
+    <!-- Settings tab (was More) -->
     <string name="g_official">Official build</string>
     <string name="g_unofficial">Other build</string>
     <string name="g_version">Version %s</string>
@@ -223,8 +229,6 @@
     <string name="color_hex">Hex (#RRGGBB)</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="tab_settings">Settings</string>
-    <string name="setup_ready">Ready</string>
     <string name="setup_open">Open settings</string>
     <string name="tutorial_title">Tutorial</string>
     <string name="tutorial_sub">Gestures &amp; features</string>
@@ -233,14 +237,14 @@
     <string name="tutorial_back">Back</string>
     <string name="tutorial_done">Got it</string>
     <string name="tutorial_later">Close guide</string>
-    <string name="tutorial_swipe">Swipe down on a settings page when it is scrolled to the top to reveal the live LED preview and bring controls within reach. Swipe up, or press Back, to close it. Swipe left or right to change tabs. You can reopen this guide from More → Tutorial.</string>
+    <string name="tutorial_swipe">Swipe down on a settings page when it is scrolled to the top to reveal the live LED preview and bring controls within reach. Swipe up, or press Back, to close it. Swipe left or right to change tabs. You can reopen this guide from Settings → Tutorial.</string>
     <string name="tutorial_test">Tap the floating Test pill, then press the power button to lock the device. With notification access and screen-off lighting enabled, Glow LED waits briefly, then shows the black notification screen. Swipe-down preview lets you try styles without locking the device.</string>
     <string name="tutorial_setup">Open the Setup cards to enable notification access and either Display over other apps or Accessibility. Accessibility can also switch the screen off immediately. On Xiaomi and other strict devices, check autostart and battery restrictions. The progress bar shows which required permissions remain.</string>
-    <string name="tutorial_styles">Style offers 11 animations, including Twin orbit and Sparkle. Choose a colour, speed, size, glow and multi-app mode. Camera position adjusts the ring around your camera. App theme and haptic feedback are in Settings; they never change the black notification background.</string>
+    <string name="tutorial_styles">Style offers 11 animations, including Twin orbit and Sparkle. Choose a colour, speed, size, glow and multi-app mode. Camera position adjusts the ring around your camera. App theme and haptic feedback are in the Settings tab; they never change the black notification background.</string>
     <string name="tutorial_transfers">When an app posts a progress notification, its ring shows transfer progress. A letter below the ring identifies the app; ↑ means upload, ↓ download and ↕ unknown direction. Moving progress with no percentage uses a spinner. Use app colours, or choose upload/download colours in Screen on. Transfers without progress notifications cannot be detected.</string>
     <string name="tutorial_battery">Battery percentage can appear below the ring on both the screen-on overlay and the black screen-off view. The charging ring uses your low, medium and high battery colours; transfers temporarily take priority. Screen-off indicators respect your timeout and power-saving settings. Battery updates do not wake the screen by themselves.</string>
     <string name="tutorial_messages">On the black notification screen, tap an app icon to read its notification, reply or mark it as read when the app supports those actions. Reply may require unlocking. Double-tap to reveal the lock screen. Alerts controls allowed apps, per-app colours, silent notifications and Do Not Disturb.</string>
-    <string name="tutorial_power">The screen-off view wakes the display and draws black; it is not the device’s native hardware AOD. Black pixels switch off on OLED, but LCD backlights can still glow. Battery offers quiet hours, low-battery protection, frame-rate limits and motion reminders. More also contains backup, restore, language and the event log.</string>
+    <string name="tutorial_power">The screen-off view wakes the display and draws black; it is not the device’s native hardware AOD. Black pixels switch off on OLED, but LCD backlights can still glow. Battery offers quiet hours, low-battery protection, frame-rate limits and motion reminders. Settings also contains backup, restore, language and the event log.</string>
     <string name="t_battery_indicator" formatted="false">Battery %</string>
     <string name="t_charge_aod">Charging when off</string>
     <string name="t_progress_initials" formatted="false">Letter &amp; arrow</string>

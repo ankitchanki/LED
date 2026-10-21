@@ -423,7 +423,6 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.tab_on) to pageScreenOn(),
             getString(R.string.tab_alerts) to pageAlerts(),
             getString(R.string.tab_battery) to pageBattery(),
-            getString(R.string.tab_settings) to pageSettings(),
             getString(R.string.tab_log) to pageMore(),
         )
         pageViews = pages.map { it.second }
@@ -536,14 +535,6 @@ class MainActivity : AppCompatActivity() {
         return page
     }
 
-    private fun pageSettings(): View {
-        val (page, col) = ui.page()
-        val look = ui.card(col)
-        ui.chips(look, getString(R.string.chips_app_theme), "app_theme",
-            labels(R.array.theme_labels), listOf("dark", "light", "system"), "dark")
-        ui.toggles(col, listOf(Toggle(getString(R.string.t_haptics), "haptics", true)))
-        return page
-    }
 
     private fun pageScreenOff(): View {
         val (page, col) = ui.page()
@@ -661,9 +652,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** More: everything as a grid of tiles side by side, so the page never needs scrolling. */
+    /** Settings: app theme and haptics, then everything else as a grid of tiles side by side. */
     private fun pageMore(): View {
         val (page, col) = ui.page()
+        val look = ui.card(col)
+        ui.chips(look, getString(R.string.chips_app_theme), "app_theme",
+            labels(R.array.theme_labels), listOf("dark", "light", "system"), "dark")
+        ui.toggles(col, listOf(Toggle(getString(R.string.t_haptics), "haptics", true)))
         val official = AppSignature.isOfficial(this)
         ui.grid(col, listOf(
             GridItem(R.drawable.ic_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub)) { showTutorial() },
@@ -902,6 +897,8 @@ class MainActivity : AppCompatActivity() {
 
     private data class Step(
         val title: String,
+        /** One-line label for the tile; [title] heads the explanation dialog. */
+        val short: String,
         val desc: String,
         val done: Boolean,
         val counts: Boolean = true,
@@ -915,34 +912,34 @@ class MainActivity : AppCompatActivity() {
         val a11y = LedAccessibilityService.instance != null || isA11yEnabled()
         val overlay = Settings.canDrawOverlays(this)
         val steps = mutableListOf<Step>()
-        steps += Step(getString(R.string.perm_listener), getString(R.string.perm_listener_desc),
+        steps += Step(getString(R.string.perm_listener), getString(R.string.perm_listener_short), getString(R.string.perm_listener_desc),
             NotifyListenerService.isEnabled(this)) {
             open(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
         }
         // Either one is enough to show the light over the lock screen; accessibility is optional.
-        steps += Step(getString(R.string.perm_overlay), getString(R.string.perm_overlay_desc), overlay || a11y) {
+        steps += Step(getString(R.string.perm_overlay), getString(R.string.perm_overlay_short), getString(R.string.perm_overlay_desc), overlay || a11y) {
             open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
-            steps += Step(getString(R.string.perm_post), getString(R.string.perm_post_desc), granted) {
+            steps += Step(getString(R.string.perm_post), getString(R.string.perm_post), getString(R.string.perm_post_desc), granted) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             }
         }
-        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_desc), a11y, counts = false) {
+        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_short), getString(R.string.perm_a11y_desc), a11y, counts = false) {
             open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
         val pm = getSystemService(PowerManager::class.java)
-        steps += Step(getString(R.string.perm_battery), getString(R.string.perm_battery_desc),
+        steps += Step(getString(R.string.perm_battery), getString(R.string.perm_battery_short), getString(R.string.perm_battery_desc),
             pm.isIgnoringBatteryOptimizations(packageName)) { requestBatteryExemption() }
         if (OemHelper.isXiaomi) {
             val ok = OemHelper.miuiLockScreenAllowed(this)
-            steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_desc), ok == true,
+            steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_short), getString(R.string.perm_miui_desc), ok == true,
                 counts = ok != null, isLink = ok == null) { OemHelper.openMiuiPermissions(this) }
         }
         OemHelper.brand?.let { b ->
-            steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_desc), false, counts = false, isLink = true) {
+            steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_short), getString(R.string.perm_oem_desc), false, counts = false, isLink = true) {
                 OemHelper.openAutostart(this)
             }
         }
@@ -962,9 +959,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupList.removeAllViews()
-        val subtitles = ui.grid(setupList, steps.map { step ->
-            GridItem(if (step.done && !step.isLink) R.drawable.ic_check else R.drawable.ic_add,
-                step.title, getString(if (step.done && !step.isLink) R.string.setup_ready else R.string.setup_open)) {
+        // Same tiles as Style / Screen off: tick = done, orange + = needed, chevron = optional.
+        ui.statusTiles(setupList, steps.map { step ->
+            SettingsUi.StatusItem(step.short, step.done && !step.isLink, optional = !step.counts || step.isLink) {
                 MaterialAlertDialogBuilder(this)
                     .setTitle(step.title)
                     .setMessage(step.desc)
@@ -972,10 +969,7 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton(R.string.setup_open) { _, _ -> step.action() }
                     .show()
             }
-        }, columns = 2)
-        subtitles.forEachIndexed { i, sub ->
-            sub.setTextColor(getColor(if (steps[i].done && !steps[i].isLink) R.color.ok else R.color.accent))
-        }
+        })
     }
 
     // ---- Shizuku / root one-tap setup ---------------------------------------------------------

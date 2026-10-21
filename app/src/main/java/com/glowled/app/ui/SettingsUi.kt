@@ -35,6 +35,8 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
     /** A colour setting; with [allowAuto], 0 means "automatic". */
     data class ColorItem(val title: String, val key: String, val def: Int, val allowAuto: Boolean = false)
     data class GridItem(val icon: Int, val title: String, val sub: String, val onClick: () -> Unit)
+    /** A setup step shown as a tile: [done] (tick), still needed, or [optional] (chevron). */
+    data class StatusItem(val title: String, val done: Boolean, val optional: Boolean, val onClick: () -> Unit)
 
     private val d = context.resources.displayMetrics.density
     private fun dp(v: Int) = (v * d).toInt()
@@ -177,6 +179,39 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         }
         refreshers += read
         t.dependsOn?.let { dependents += tile to it }
+        return tile
+    }
+
+    // ---- setup steps: the same tile as the switches, with a status mark instead of a tick box ------
+
+    fun statusTiles(parent: LinearLayout, items: List<StatusItem>) {
+        items.chunked(2).forEach { pair ->
+            val line = LinearLayout(context).apply {
+                orientation = LinearLayout.HORIZONTAL
+                isBaselineAligned = false
+            }
+            pair.forEach { line.addView(statusTile(line, it), LinearLayout.LayoutParams(0, tileHeight, 1f).apply { setMargins(dp(4), dp(4), dp(4), dp(4)) }) }
+            if (pair.size == 1) line.addView(View(context), LinearLayout.LayoutParams(0, 1, 1f).apply { setMargins(dp(4), 0, dp(4), 0) })
+            parent.addView(line, LinearLayout.LayoutParams(-1, -2))
+        }
+    }
+
+    private fun statusTile(parent: ViewGroup, item: StatusItem): View {
+        val tile = LayoutInflater.from(context).inflate(R.layout.item_toggle, parent, false) as MaterialCardView
+        tile.findViewById<TextView>(R.id.toggleTitle).text = item.title
+        val state = tile.findViewById<ImageView>(R.id.toggleState)
+        val (bg, icon, tint) = when {
+            item.done -> Triple(R.color.accent, R.drawable.ic_check, R.color.black)
+            item.optional -> Triple(R.color.surface_high, R.drawable.ic_chevron, R.color.text_secondary)
+            else -> Triple(R.color.warn, R.drawable.ic_add, R.color.black)
+        }
+        tile.setCardBackgroundColor(context.getColor(if (item.done) R.color.accent_dim else R.color.surface))
+        state.backgroundTintList = ColorStateList.valueOf(context.getColor(bg))
+        state.setImageResource(icon)
+        state.imageTintList = ColorStateList.valueOf(context.getColor(tint))
+        tile.contentDescription = item.title
+        androidx.core.view.ViewCompat.setStateDescription(tile, context.getString(if (item.done) R.string.setup_all_done else R.string.setup_open))
+        tile.setOnClickListener { haptic(it); item.onClick() }
         return tile
     }
 

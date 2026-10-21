@@ -20,6 +20,12 @@
     <string name="reach_tip">Dica: puxe as configurações para baixo para alcançá-las com o polegar (modo uma mão).</string>
 
     <!-- Setup -->
+    <string name="perm_listener_short">Acesso a notificações</string>
+    <string name="perm_overlay_short">Sobrepor apps</string>
+    <string name="perm_a11y_short">Acessibilidade</string>
+    <string name="perm_battery_short">Bateria livre</string>
+    <string name="perm_miui_short">Bloqueio Xiaomi</string>
+    <string name="perm_oem_short">Início automático</string>
     <string name="perm_listener">Acesso às notificações</string>
     <string name="perm_listener_desc">Obrigatório. Avisa o Glow LED quando chega uma notificação. Nada sai do seu celular.</string>
     <string name="perm_a11y">Acessibilidade (opcional, mais confiável)</string>
@@ -59,7 +65,7 @@
     <string name="tab_on">Tela ligada</string>
     <string name="tab_alerts">Alertas</string>
     <string name="tab_battery">Bateria</string>
-    <string name="tab_log">Mais</string>
+    <string name="tab_log">Ajustes</string>
 
     <!-- Style -->
     <string name="action_cutout">Posição da câmera</string>
@@ -132,7 +138,7 @@
     <string name="quiet_end">Fim do horário silencioso</string>
     <string name="battery_hint">Parar após 12 s: a luz anima ao aparecer e depois fica parada, então nada é redesenhado. Esmaecer antigas: uma notificação nova brilha forte e vai esmaecendo ao longo de uma hora. Acender ao mover: depois que a luz termina, ela volta quando você mexe no celular, usando o sensor de movimento (sem gastar tela ou CPU enquanto espera).</string>
 
-    <!-- More -->
+    <!-- Settings tab (was More) -->
     <string name="g_official">Versão oficial</string>
     <string name="g_unofficial">Outra versão</string>
     <string name="g_version">Versão %s</string>
@@ -222,8 +228,6 @@
     <string name="color_hex">Hex (#RRGGBB)</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
-    <string name="tab_settings">Configurações</string>
-    <string name="setup_ready">Pronto</string>
     <string name="setup_open">Abrir ajustes</string>
     <string name="tutorial_title">Tutorial</string>
     <string name="tutorial_sub">Gestos e recursos</string>
@@ -232,14 +236,14 @@
     <string name="tutorial_back">Voltar</string>
     <string name="tutorial_done">Entendi</string>
     <string name="tutorial_later">Fechar guia</string>
-    <string name="tutorial_swipe">Deslize para baixo quando a página estiver no topo para ver a prévia ao vivo e aproximar os controles. Deslize para cima ou pressione Voltar para fechar. Deslize para os lados para mudar de aba. Reabra este guia em Mais → Tutorial.</string>
+    <string name="tutorial_swipe">Deslize para baixo quando a página estiver no topo para ver a prévia ao vivo e aproximar os controles. Deslize para cima ou pressione Voltar para fechar. Deslize para os lados para mudar de aba. Reabra este guia em Ajustes → Tutorial.</string>
     <string name="tutorial_test">Toque na pílula Teste e bloqueie o aparelho com o botão liga/desliga. Com acesso às notificações e luz de tela apagada ativados, a tela preta aparece após uma breve espera. A prévia ao deslizar para baixo funciona sem bloquear o aparelho.</string>
     <string name="tutorial_setup">Use os cartões de Configuração para liberar notificações e sobreposição ou Acessibilidade. A Acessibilidade também apaga a tela imediatamente. Confira inicialização automática e restrições de bateria. A barra indica as permissões obrigatórias que faltam.</string>
-    <string name="tutorial_styles">Estilo oferece 11 animações, incluindo Órbita dupla e Cintilar. Ajuste cor, velocidade, tamanho, brilho e modo de vários apps. Posição da câmera alinha o anel. Tema e resposta tátil ficam em Configurações e não alteram o fundo preto das notificações.</string>
+    <string name="tutorial_styles">Estilo oferece 11 animações, incluindo Órbita dupla e Cintilar. Ajuste cor, velocidade, tamanho, brilho e modo de vários apps. Posição da câmera alinha o anel. Tema e resposta tátil ficam em Ajustes e não alteram o fundo preto das notificações.</string>
     <string name="tutorial_transfers">Notificações de progresso mostram o avanço no anel. Uma letra identifica o app: ↑ envio, ↓ download e ↕ direção desconhecida. Progresso sem porcentagem usa um giro. Escolha cores por app ou por direção em Tela acesa. Sem notificação de progresso, não é possível detectar a transferência.</string>
     <string name="tutorial_battery">A porcentagem da bateria aparece abaixo do anel com a tela acesa e na tela preta. O anel de carga usa suas cores por nível; transferências têm prioridade temporária. A tela preta respeita o tempo limite e a economia de energia. Atualizações de bateria não acendem a tela sozinhas.</string>
     <string name="tutorial_messages">Toque no ícone de um app na tela preta para ler, responder ou marcar como lido, se o app permitir. Responder pode pedir desbloqueio. Dois toques mostram a tela de bloqueio. Alertas controla apps, cores, notificações silenciosas e Não perturbe.</string>
-    <string name="tutorial_power">A tela apagada é uma tela preta com o display ligado, não o AOD nativo. Pixels pretos apagam em OLED; a luz de fundo de LCD continua visível. Bateria oferece horário silencioso, limite de carga e de quadros e lembretes por movimento. Mais inclui backup, restauração, idioma e log.</string>
+    <string name="tutorial_power">A tela apagada é uma tela preta com o display ligado, não o AOD nativo. Pixels pretos apagam em OLED; a luz de fundo de LCD continua visível. Bateria oferece horário silencioso, limite de carga e de quadros e lembretes por movimento. Ajustes inclui backup, restauração, idioma e log.</string>
     <string name="t_battery_indicator" formatted="false">Bateria %</string>
     <string name="t_charge_aod">Carga com tela off</string>
     <string name="t_progress_initials" formatted="false">Letra e seta</string>

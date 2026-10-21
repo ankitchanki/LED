@@ -15,6 +15,5 @@
     <color name="accent_dim">#3300ACC1</color>
     <color name="text_primary">#FF15151A</color>
     <color name="text_secondary">#FF5E5E6A</color>
-    <color name="ok">#FF3DDC84</color>
     <color name="warn">#FFFFB020</color>
 </resources>

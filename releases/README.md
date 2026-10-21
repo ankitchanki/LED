@@ -3,7 +3,7 @@
 | File | What it is |
 |---|---|
 | [`GlowLED-latest.apk`](GlowLED-latest.apk) | Always the newest version. **Download this one.** |
-| `GlowLED-v2.3.1.apk` | The same build, named by version. |
+| `GlowLED-v2.3.2.apk` | The same build, named by version. |
 | [`SHA256SUMS.txt`](SHA256SUMS.txt) | Checksums, if you want to verify the download. |
 
 ## ✅ This is a signed build
@@ -30,15 +30,15 @@ your settings.
 This happens **only once**, if the Glow LED on your phone came from an older build signed with a
 different key (the early v1.0.0–v1.2.0 GitHub releases). Fix it like this:
 
-1. *(Optional)* Save your settings first: Glow LED → **More** tab → **Back up settings**.
+1. *(Optional)* Save your settings first: Glow LED → **Settings** tab → **Back up settings**.
 2. Uninstall the old app: long-press the **Glow LED** icon → **App info** → **Uninstall**
    (or *Settings → Apps → Glow LED → Uninstall*).
 3. Install `GlowLED-latest.apk` again.
-4. *(Optional)* Glow LED → **More** → **Restore settings** and pick the file you saved.
+4. *(Optional)* Glow LED → **Settings** → **Restore settings** and pick the file you saved.
 
 After this one-time reinstall, every future update installs over it normally.
 
-**Check which build you have:** Glow LED → **More** tab. It says *Official signed build* when you
+**Check which build you have:** Glow LED → **Settings** tab. It says *Official signed build* when you
 have the right one.
 
 ## Android 13+ "Restricted setting"

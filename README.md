@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/v2/overview.png" alt="Glow LED screenshots: always-on icons, message peek with Reply and Mark as read, charging and download ring, one-handed mode, More tab" />
+  <img src="docs/screenshots/v2/overview.png" alt="Glow LED screenshots: always-on icons, message peek with Reply and Mark as read, charging and download ring, one-handed mode, Settings tab" />
 </p>
 
 ---
@@ -41,13 +41,13 @@ are switched off, so only the light itself uses power.
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
-| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings, More) - no menus, equal-size one-line tiles, More includes a repeatable tutorial. |
+| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings) - no menus, equal-size one-line tiles; Settings has app theme, haptics, a repeatable tutorial and the tools. |
 | **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). The space above shows a **live preview** of the screen-off light (with the droplet falling into the app icon) that changes as you adjust settings. Swipe up or press back to return. |
 | **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Settings → App theme*. Runs at your display's full refresh rate (120 Hz). |
 | **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
 | **Colour wheel** | Every colour picker has a ring of all colours you turn with your finger, plus saturation, brightness, presets and hex. |
-| **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *More → Language*. |
-| **Easy updates** | Signed builds that install over each other. *More → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
+| **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *Settings → Language*. |
+| **Easy updates** | Signed builds that install over each other. *Settings → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
 | **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Quick Settings tile, swipe-down live preview, floating Test pill, first-launch tutorial, themed (monochrome) icon. |
@@ -59,10 +59,10 @@ are switched off, so only the light itself uses power.
 | <img src="docs/screenshots/v2/1-always-on.png" width="220" alt="Black always-on screen with a split colour ring around the camera and grey AOD-style app glyphs below it, the newest in green" /> | <img src="docs/screenshots/v2/2-tap-to-read.png" width="220" alt="Message peek under the icons, left-aligned, with Reply and Mark as read buttons" /> | <img src="docs/screenshots/v2/4-charging-download.png" width="220" alt="Screen on tab with charging ring and download ring switches and colour tiles per battery level" /> |
 | Ring split into each app's colour; grey AOD-style glyphs below it, the newest in its notification colour. Everything else stays black. | Who sent what, left-aligned on pure black. **Reply** right there or **Mark as read**. | The ring fills with the battery level while charging, or with a download's progress. |
 
-| One-handed mode | More (no scrolling) | Português (Brasil) |
+| One-handed mode | Settings | Português (Brasil) |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v2/6-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2/5-more.png" width="220" alt="More tab as a grid of six tiles: official build, get latest, language, back up, restore, event log" /> | <img src="docs/screenshots/v2/7-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
-| Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | Build check, direct download of the latest APK, language, backup, restore, event log. | The whole app in Brazilian Portuguese. |
+| <img src="docs/screenshots/v2/6-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2/5-settings.png" width="220" alt="Settings tab: app theme, haptic feedback and tiles for tutorial, official build, get latest, language, back up, restore, event log" /> | <img src="docs/screenshots/v2/7-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
+| Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | App theme, haptics, tutorial, build check, direct download of the latest APK, language, backup, restore, event log. | The whole app in Brazilian Portuguese. |
 
 <img src="docs/screenshots/v2/9-light.png" width="220" alt="Screen on tab in light mode" />
 
@@ -88,12 +88,12 @@ breaks off, falls straight down into the middle of the icon row and turns into t
 >
 > **"App not installed" / "Invalid package" when updating?** Your phone has an older build signed
 > with a different key (the early v1.0.0–v1.2.0 GitHub releases). This is a one-time fix:
-> 1. *(Optional)* Glow LED → **More** → **Back up settings**.
+> 1. *(Optional)* Glow LED → **Settings** → **Back up settings**.
 > 2. Uninstall the old app: long-press **Glow LED** → **App info** → **Uninstall**.
 > 3. Install [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) again.
-> 4. *(Optional)* Glow LED → **More** → **Restore settings**.
+> 4. *(Optional)* Glow LED → **Settings** → **Restore settings**.
 >
-> After that, updates install normally. The **More** tab shows *Official signed build* when you have the right one.
+> After that, updates install normally. The **Settings** tab shows *Official signed build* when you have the right one.
 
 1. Download [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) and open it (allow "install unknown apps" for your browser or file manager).
 2. Open **Glow LED** and work through the **Setup** tab:
@@ -104,7 +104,7 @@ breaks off, falls straight down into the middle of the icon row and turns into t
    - **Unrestricted battery** and, on Xiaomi/OPPO/vivo/Huawei and similar, **Autostart**.
 3. In the **Style** tab tap **Camera position**, then **Auto-detect**, adjust if needed, and **Save**.
 4. Tap the floating **Test** pill, then turn the screen off.
-5. For a live preview without locking, scroll any settings page to the top and **swipe down**; swipe up or press Back to close. Reopen **More → Tutorial** for all gestures and features.
+5. For a live preview without locking, scroll any settings page to the top and **swipe down**; swipe up or press Back to close. Reopen **Settings → Tutorial** for all gestures and features.
 
 The screen-off view wakes the panel and draws black; it is not native hardware AOD. OLED pixels can switch off at black, while LCD panels keep their backlight on and may look grey in a dark room. Transfer detection requires a progress notification; direction is shown as unknown when the notification does not identify upload or download.
 

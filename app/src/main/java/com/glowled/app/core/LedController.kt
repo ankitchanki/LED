@@ -52,7 +52,9 @@ object LedController {
     const val FSI_ID = 4201
     private const val LAUNCH_WINDOW_MS = 4000L
     private const val MOTION_MIN_GAP_MS = 2 * 60_000L
-    private const val CHARGE_FLASH_MS = 4000L
+    private const val CHARGE_FLASH_MS = 5000L
+    /** How long the screen-off view shows the charging ring after plugging in. */
+    private const val CHARGE_FLASH_AOD_SEC = 5
     private const val OVERLAY_FRAME_MS = 24L
     private const val OVERLAY_DRAW_TIMEOUT_MS = 400L
 
@@ -207,6 +209,12 @@ object LedController {
                     syncBatteryWatch(pluggedHint = true)
                     updateOverlay()
                     notifyListeners()
+                    // Plugged in with the screen off: show the charging ring on the black screen for
+                    // a moment (like a phone's charging animation), then let the screen go off again.
+                    if (!isInteractive() && !aodVisible && prefs.chargeLed && prefs.aodEnabled) {
+                        DebugLog.add("Charger connected while the screen is off - showing the charging ring")
+                        startAod(pulse = true, durationOverrideSec = CHARGE_FLASH_AOD_SEC)
+                    }
                 }
                 Intent.ACTION_POWER_DISCONNECTED -> {
                     syncBatteryWatch(pluggedHint = false)
@@ -238,7 +246,7 @@ object LedController {
     fun canLaunchFromBackground(): Boolean =
         LedAccessibilityService.instance != null || Settings.canDrawOverlays(app)
 
-    fun startAod(pulse: Boolean, preview: Boolean = false) {
+    fun startAod(pulse: Boolean, preview: Boolean = false, durationOverrideSec: Int = 0) {
         if (!preview) {
             if (!prefs.enabled) return DebugLog.add("Skipped: Glow LED is off")
             if (!prefs.aodEnabled) return DebugLog.add("Skipped: screen-off light is off")
@@ -246,7 +254,11 @@ object LedController {
             if (!hasAodContent()) return DebugLog.add("Skipped: no notifications or indicators to show")
             PowerGuard.blockReason(app, prefs)?.let { return DebugLog.add("Skipped: $it") }
         }
-        val duration = if (pulse) prefs.pulseDurationSec else prefs.aodTimeoutSec
+        val duration = when {
+            durationOverrideSec > 0 -> durationOverrideSec
+            pulse -> prefs.pulseDurationSec
+            else -> prefs.aodTimeoutSec
+        }
         val overlayAvailable = LedAccessibilityService.instance != null
 
         // Two ways to show the black screen:
@@ -575,7 +587,7 @@ object LedController {
      */
     fun hasAodContent(): Boolean = !NotificationStore.isEmpty() ||
         (prefs.progressLed && (ProgressStore.current()?.fraction ?: -1f) >= 0f) ||
-        (prefs.chargeLed && prefs.chargeAod && plugged)
+        (prefs.chargeLed && plugged && (prefs.chargeAod || SystemClock.uptimeMillis() < chargeFlashUntil))
 
     fun batteryPercent(): Int? = if (prefs.batteryIndicator) batteryPct else null
 

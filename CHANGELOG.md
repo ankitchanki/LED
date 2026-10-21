@@ -1,3 +1,19 @@
+# Glow LED v2.3.2
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+- **Charging ring when the screen is off:** plugging in the charger while the screen is off now shows the
+  charging ring on the black screen for a few seconds (like a phone's charging animation), then the screen
+  goes off again. *Charging when off* still controls whether it also shows every time you lock while
+  charging. No stray droplet on a charging-only screen.
+- **One Settings tab:** "More" is now **Settings**, with App theme and Haptic feedback at the top and the
+  tools (tutorial, updates, language, backup, restore, event log) below; the separate Settings tab is gone.
+- **Setup matches the rest:** the setup steps are the same one-line tiles as Style and Screen off, with a
+  tick (done), orange + (needed) or › (optional); tap one for the explanation and the button to open it.
+
+---
+
 # Glow LED v2.3.1
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
