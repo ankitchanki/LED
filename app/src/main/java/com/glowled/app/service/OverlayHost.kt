@@ -62,8 +62,11 @@ object OverlayHost {
         val prefs = LedController.prefs
         val g = CutoutGeometry.resolve(ctx, prefs)
         v.configure(prefs, g, NotificationStore.colors())
+        v.notificationRingVisible = prefs.overlayEnabled && !NotificationStore.isEmpty() &&
+            (!prefs.overlayLockOnly || LedController.isLocked())
         val m = LedController.overlayMeter
-        v.setMeter(m?.fraction, m?.color ?: 0)
+        v.setMeter(m?.fraction, m?.color ?: 0, m?.label, m?.indeterminate ?: false)
+        v.setBattery(LedController.batteryPercent())
         val flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -80,9 +83,10 @@ object OverlayHost {
             val e = v.extentPx(g)
             // Extra room below the ring for the droplet that drips out on a new notification.
             val dropRoom = (DROP_DP * ctx.resources.displayMetrics.density).toInt() * 2
-            p = WindowManager.LayoutParams(e * 2, e * 2 + dropRoom, type, flags, PixelFormat.TRANSLUCENT)
+            val width = maxOf(e * 2, (80 * ctx.resources.displayMetrics.density).toInt())
+            p = WindowManager.LayoutParams(width, e * 2 + dropRoom, type, flags, PixelFormat.TRANSLUCENT)
             p.gravity = Gravity.TOP or Gravity.START
-            p.x = (g.cx - e).toInt()
+            p.x = (g.cx - p.width / 2f).toInt()
             p.y = (g.cy - e).toInt()
         }
         p.layoutInDisplayCutoutMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

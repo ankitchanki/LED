@@ -91,6 +91,8 @@
 
     <!-- Plain platform theme: the AOD screen loads as fast as possible with no preview flash. -->
     <style name="Theme.GlowLED.Aod" parent="android:Theme.DeviceDefault.NoActionBar.Fullscreen">
+        <!-- Preserve literal black in dark mode, including the window's starting frame. -->
+        <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowBackground">@color/black</item>
         <item name="android:colorBackground">@color/black</item>
         <item name="android:windowAnimationStyle">@null</item>
@@ -98,6 +100,9 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:statusBarColor">@color/black</item>
         <item name="android:navigationBarColor">@color/black</item>
     </style>

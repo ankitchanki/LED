@@ -102,6 +102,7 @@ class LedView @JvmOverloads constructor(
         gapDp: Int = prefs.gapDp,
         thicknessDp: Int = prefs.thicknessDp,
     ) {
+        meterSettled = false
         this.style = styleOverride ?: prefs.style
         this.multiMode = prefs.multiMode
         this.geometry = geometry
@@ -128,6 +129,17 @@ class LedView @JvmOverloads constructor(
 
     /** Fill level 0..1 of the gauge, or -1 for the normal notification light. */
     private var meterFrac = -1f
+    var notificationRingVisible = true
+        set(value) { if (field != value) { field = value; invalidate() } }
+    private var meterLabel: String? = null
+    private var meterIndeterminate = false
+    private var meterSettled = false
+    private var batteryLabel: String? = null
+    private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textAlign = Paint.Align.CENTER
+        textSize = 10 * resources.displayMetrics.scaledDensity
+        typeface = android.graphics.Typeface.DEFAULT_BOLD
+    }
     private var meterColor = 0
     private var meterStart = 0L
     /** Where on the outline its top-centre point is (0..1), so the gauge fills from 12 o'clock. */
@@ -139,13 +151,44 @@ class LedView @JvmOverloads constructor(
      * faint full track. Null goes back to the normal light. The fill sweeps in when it appears and a
      * soft highlight flows along it, so it reads as "in progress".
      */
-    fun setMeter(fraction: Float?, color: Int) {
+    fun setMeter(fraction: Float?, color: Int, label: String? = null, indeterminate: Boolean = false) {
         val f = fraction?.coerceIn(0f, 1f) ?: -1f
-        if (f == meterFrac && color == meterColor) return
+        if (f == meterFrac && color == meterColor && label == meterLabel && indeterminate == meterIndeterminate) return
         if (f >= 0f && meterFrac < 0f) meterStart = SystemClock.uptimeMillis()
         meterFrac = f
         meterColor = color
+        meterLabel = label
+        meterIndeterminate = indeterminate
         invalidate()
+    }
+
+    fun setBattery(percent: Int?) {
+        val text = percent?.coerceIn(0, 100)?.let { "$it%" }
+        if (batteryLabel == text) return
+        batteryLabel = text
+        invalidate()
+    }
+
+    private val indicatorLineHeight get() = max(16 * density, labelPaint.fontSpacing + 2 * density)
+
+    /** Leave space for the transfer initial and battery without overlapping notification icons. */
+    fun indicatorBottom(): Float = ringBottom() +
+        (if (meterLabel != null) indicatorLineHeight else 0f) + (if (batteryLabel != null) indicatorLineHeight else 0f)
+
+    private fun drawLabels(c: Canvas) {
+        var y = ringBottom() - (geometry?.cy ?: cy) + cy + indicatorLineHeight - labelPaint.descent()
+        labelPaint.alpha = (255 * alphaMul * ageFade * intro).toInt()
+        meterLabel?.let {
+            labelPaint.color = meterColor
+            labelPaint.alpha = (255 * alphaMul * ageFade * intro).toInt()
+            c.drawText(it, cx, y, labelPaint)
+            y += indicatorLineHeight
+        }
+        batteryLabel?.let {
+            labelPaint.color = Color.WHITE
+            labelPaint.alpha = (220 * alphaMul * intro).toInt()
+            c.drawText(it, cx, y, labelPaint)
+        }
     }
 
     private fun findTopFraction(): Float {
@@ -167,7 +210,12 @@ class LedView @JvmOverloads constructor(
 
     private fun drawMeter(c: Canvas, now: Long) {
         val t = now - meterStart
-        val frac = meterFrac * easeOut((t / METER_SWEEP_MS.toFloat()).coerceIn(0f, 1f))
+        if (meterIndeterminate) {
+            spin(c, (t % METER_FLOW_MS) / METER_FLOW_MS.toFloat(), false, meterColor,
+                tail = 0.24f, comets = 1, base = METER_TRACK)
+            return
+        }
+        val frac = if (meterSettled) meterFrac else meterFrac * easeOut((t / METER_SWEEP_MS.toFloat()).coerceIn(0f, 1f))
         if (isFilled) {
             val g = geometry ?: return
             val r = max(g.w, g.h) / 2f
@@ -178,7 +226,7 @@ class LedView @JvmOverloads constructor(
         }
         c.drawPath(shapePath, paintFor(meterColor, METER_TRACK, false).also { it.clearShadowLayer() })
         if (frac > 0.002f) segment(c, topFrac, topFrac + frac, paintFor(meterColor, 1f, false))
-        if (frac > 0.05f) {
+        if (frac > 0.05f && !meterSettled) {
             val p = (t % METER_FLOW_MS) / METER_FLOW_MS.toFloat()
             val head = topFrac + frac * p
             segment(c, head - 0.04f, head, paintFor(Color.WHITE, 0.5f, false).also { it.clearShadowLayer() })
@@ -199,6 +247,7 @@ class LedView @JvmOverloads constructor(
      * Edge styles keep moving, at a low frame rate. [configure] brings the animation back.
      */
     fun settle() {
+        meterSettled = true
         if (style.isEdge) fpsCap = 10 else style = LedStyle.STATIC
         rotateRing = false
         invalidate()
@@ -489,7 +538,7 @@ class LedView @JvmOverloads constructor(
             }
         }
 
-        if (meterFrac >= 0f) drawMeter(canvas, now) else when (style) {
+        if (meterFrac >= 0f) drawMeter(canvas, now) else if (notificationRingVisible) when (style) {
             LedStyle.STATIC -> ring(canvas, color, 1f, segmented, rot)
             LedStyle.BREATHE -> ring(canvas, color, 0.12f + 0.88f * wave(p), segmented, rot)
             LedStyle.EDGE_PULSE -> ring(canvas, color, 0.1f + 0.9f * wave(p), segmented, rot)
@@ -502,8 +551,17 @@ class LedView @JvmOverloads constructor(
             LedStyle.SPIN -> spin(canvas, p, segmented, color, tail = 0.38f, comets = 1, base = 0.16f)
             LedStyle.EDGE -> spin(canvas, p, segmented, color, tail = 0.16f, comets = 2, base = 0.06f)
             LedStyle.RAINBOW -> rainbow(canvas, p)
+            LedStyle.ORBIT -> spin(canvas, p, segmented, color, tail = 0.22f, comets = 2, base = 0.08f)
+            LedStyle.SPARKLE -> {
+                for (i in 0 until 6) {
+                    val a = 0.12f + 0.88f * wave((p + i / 6f) % 1f).pow(4)
+                    val start = i / 6f + p * 0.1f
+                    segment(canvas, start, start + 0.075f, paintFor(colors[i % n], a, false))
+                }
+            }
         }
 
+        drawLabels(canvas)
         if (transformed) canvas.restore()
         if (dropT >= 0f && !style.isEdge) {
             if (shiftX != 0f || shiftY != 0f) {
@@ -527,14 +585,17 @@ class LedView @JvmOverloads constructor(
         LedStyle.RAINBOW -> 3000
         LedStyle.EDGE -> 3200
         LedStyle.EDGE_PULSE -> 3000
+        LedStyle.ORBIT -> 2400
+        LedStyle.SPARKLE -> 3600
     }
 
     private fun scheduleNext(period: Long, inPeriod: Long, n: Int, segmented: Boolean) {
         if (!isShown || windowVisibility != VISIBLE) return
         if (meterFrac >= 0f) {
-            postInvalidateDelayed(METER_FRAME_MS)
+            if (!meterSettled || meterIndeterminate) postInvalidateDelayed(METER_FRAME_MS)
             return
         }
+        if (!notificationRingVisible) return
         val cycling = n > 1 && !segmented && multiMode != MultiMode.LATEST
         when (style) {
             LedStyle.STATIC -> when {

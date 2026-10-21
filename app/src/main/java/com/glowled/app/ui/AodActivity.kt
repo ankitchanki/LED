@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.graphics.PixelFormat
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -86,7 +88,16 @@ class AodActivity : Activity() {
 
     private fun configureWindow() {
         val prefs = LedController.prefs
+        // Keep the lock screen/wallpaper out of the AOD composition, including before
+        // the session's first frame. Only the LED and notification content emit colour.
+        window.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+        window.setFormat(PixelFormat.OPAQUE)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        window.isStatusBarContrastEnforced = false
+        window.isNavigationBarContrastEnforced = false
         val lp = window.attributes
+        lp.alpha = 1f
+        lp.dimAmount = 0f
         lp.screenBrightness = (prefs.aodBrightness / 100f).coerceIn(0.01f, 1f)
         lp.buttonBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
         lp.layoutInDisplayCutoutMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

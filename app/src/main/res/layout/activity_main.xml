@@ -105,13 +105,14 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Thumb dock: two identical buttons, laid out (not floating) so nothing is covered. -->
+    <!-- Floating Test pill; swipe down anywhere at the top of a page for live preview. -->
     <LinearLayout
         android:id="@+id/dock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:orientation="horizontal"
+        android:gravity="center"
         android:paddingHorizontal="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="10dp">
@@ -119,21 +120,15 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTest"
             style="@style/GlowDockButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="56dp"
-            android:layout_marginEnd="6dp"
-            android:layout_weight="1"
+            android:minWidth="168dp"
+            android:elevation="8dp"
+            android:layout_marginVertical="8dp"
             android:text="@string/action_test_short"
+            app:backgroundTint="@color/accent"
+            android:textColor="@color/black"
+            app:iconTint="@color/black"
             app:icon="@drawable/ic_bell" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPreview"
-            style="@style/GlowDockButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:text="@string/action_preview"
-            app:icon="@drawable/ic_play" />
     </LinearLayout>
 </com.glowled.app.view.ReachLayout>

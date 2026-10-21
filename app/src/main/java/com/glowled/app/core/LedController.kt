@@ -55,7 +55,6 @@ object LedController {
     private const val CHARGE_FLASH_MS = 4000L
     private const val OVERLAY_FRAME_MS = 24L
     private const val OVERLAY_DRAW_TIMEOUT_MS = 400L
-    private const val PROGRESS_RECHECK_MS = 3 * 60_000L + 1000L
 
     /** Set when the ROM blocked the lock-screen window once, so Auto goes straight to the overlay. */
     const val PREF_WINDOW_BLOCKED = "aod_window_blocked"
@@ -204,13 +203,15 @@ object LedController {
                 Intent.ACTION_POWER_CONNECTED -> {
                     // Show the charging ring for a moment even over the notification light.
                     chargeFlashUntil = SystemClock.uptimeMillis() + CHARGE_FLASH_MS
-                    main.postDelayed({ updateOverlay() }, CHARGE_FLASH_MS + 50)
+                    main.postDelayed({ updateOverlay(); notifyListeners() }, CHARGE_FLASH_MS + 50)
                     syncBatteryWatch(pluggedHint = true)
                     updateOverlay()
+                    notifyListeners()
                 }
                 Intent.ACTION_POWER_DISCONNECTED -> {
                     syncBatteryWatch(pluggedHint = false)
                     updateOverlay()
+                    notifyListeners()
                 }
             }
         }
@@ -242,7 +243,7 @@ object LedController {
             if (!prefs.enabled) return DebugLog.add("Skipped: Glow LED is off")
             if (!prefs.aodEnabled) return DebugLog.add("Skipped: screen-off light is off")
             if (aodVisible || AodOverlay.isShowing) return DebugLog.add("Skipped: light already showing")
-            if (NotificationStore.isEmpty()) return DebugLog.add("Skipped: no notifications to show")
+            if (!hasAodContent()) return DebugLog.add("Skipped: no notifications or indicators to show")
             PowerGuard.blockReason(app, prefs)?.let { return DebugLog.add("Skipped: $it") }
         }
         val duration = if (pulse) prefs.pulseDurationSec else prefs.aodTimeoutSec
@@ -275,7 +276,7 @@ object LedController {
         if (!preview && overlayAvailable && prefs.aodMethod == "auto") {
             // Watchdog: if the ROM silently blocked the window, use the overlay and remember it.
             main.postDelayed({
-                if (!aodVisible && !AodOverlay.isShowing && !NotificationStore.isEmpty()) {
+                if (!aodVisible && !AodOverlay.isShowing && hasAodContent()) {
                     DebugLog.add("Lock-screen window was blocked by the system - switching to overlay")
                     prefs.sp.edit().putBoolean(PREF_WINDOW_BLOCKED, true).apply()
                     startOverlay(duration, false)
@@ -548,13 +549,15 @@ object LedController {
             (prefs.style.isEdge || CutoutGeometry.isPortrait(app))
         val notifRing = prefs.overlayEnabled && !NotificationStore.isEmpty() && (!prefs.overlayLockOnly || isLocked())
         overlayMeter = if (canShow) computeMeter(notifRing) else null
-        if (canShow && (notifRing || overlayMeter != null)) OverlayHost.show(app) else OverlayHost.hide()
+        if (canShow && (notifRing || overlayMeter != null || prefs.batteryIndicator)) OverlayHost.show(app) else OverlayHost.hide()
     }
 
-    // ---- charging ring and download ring (screen on) ----------------------------------------------
+    // ---- charging ring and transfer ring (both views) ----------------------------------------------
 
-    /** A gauge the screen-on ring shows instead of the notification light. */
-    data class Meter(val fraction: Float, val color: Int)
+    /** A gauge either host can show instead of the notification light. */
+    data class Meter(
+        val fraction: Float, val color: Int, val label: String? = null, val indeterminate: Boolean = false,
+    )
 
     /** What the screen-on ring currently shows as a gauge (null = the notification light). */
     var overlayMeter: Meter? = null
@@ -565,10 +568,26 @@ object LedController {
     private var chargeFlashUntil = 0L
     private var batteryWatching = false
 
-    /** Download progress first (it's short-lived), then charging when no notification is waiting. */
-    private fun computeMeter(notifRing: Boolean): Meter? {
+    /** The same indicators are used by the screen-on overlay and the black AOD session. */
+    fun hasAodContent(): Boolean = !NotificationStore.isEmpty() ||
+        (prefs.progressLed && ProgressStore.current() != null) || (prefs.chargeLed && plugged)
+
+    fun batteryPercent(): Int? = if (prefs.batteryIndicator) batteryPct else null
+
+    fun computeMeter(notifRing: Boolean): Meter? {
         if (prefs.progressLed) ProgressStore.current()?.let {
-            return Meter(it.fraction, if (prefs.progressColor != 0) prefs.progressColor else it.color)
+            val color = when {
+                prefs.progressColor != 0 -> prefs.progressColor
+                prefs.progressAppColor -> {
+                    val custom = prefs.appColor(it.pkg)
+                    if (custom != 0) custom else TransferInfo.appColor(it.pkg, it.color)
+                }
+                it.direction == TransferDirection.UPLOAD -> prefs.uploadColor
+                it.direction == TransferDirection.DOWNLOAD -> prefs.downloadColor
+                else -> it.color
+            }
+            val label = if (prefs.progressInitials) "${it.initial} ${it.direction.arrow}" else null
+            return Meter(it.fraction.coerceAtLeast(0f), color, label, it.fraction < 0f)
         }
         if (prefs.chargeLed && plugged && (!notifRing || SystemClock.uptimeMillis() < chargeFlashUntil)) {
             return Meter(batteryPct / 100f, prefs.chargeColor(batteryPct))
@@ -578,27 +597,35 @@ object LedController {
 
     fun onProgressChanged() = main.post {
         updateOverlay()
+        notifyListeners()
         // A transfer that stalls stops showing after a while; re-check then.
         main.removeCallbacks(progressRecheck)
-        main.postDelayed(progressRecheck, PROGRESS_RECHECK_MS)
+        ProgressStore.expiryDelay()?.let { main.postDelayed(progressRecheck, it) }
     }
 
-    private val progressRecheck = Runnable { updateOverlay() }
+    private val progressRecheck = object : Runnable {
+        override fun run() {
+            updateOverlay()
+            notifyListeners()
+            // Another update may have refreshed the timestamp without changing a whole percent.
+            ProgressStore.expiryDelay()?.let { main.postDelayed(this, it) }
+        }
+    }
 
     private val batteryReceiver = object : BroadcastReceiver() {
         override fun onReceive(c: Context, i: Intent) = onBatteryChanged(i)
     }
 
     /**
-     * Listens to battery-level changes only while plugged in and the charging ring is on, so the
-     * frequent battery broadcasts never wake Glow LED on battery power.
+     * Listens for battery changes while an enabled indicator needs them. These broadcasts update
+     * existing views and never wake the display.
      */
     private fun syncBatteryWatch(pluggedHint: Boolean? = null) {
         val sticky = app.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         val isPlugged = pluggedHint ?: ((sticky?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: 0) != 0)
         plugged = isPlugged
         sticky?.let { batteryPct = levelOf(it) ?: batteryPct }
-        val want = isPlugged && prefs.enabled && prefs.chargeLed
+        val want = prefs.enabled && (prefs.batteryIndicator || (isPlugged && prefs.chargeLed))
         if (want && !batteryWatching) {
             ContextCompat.registerReceiver(
                 app, batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED,
@@ -627,5 +654,6 @@ object LedController {
         batteryPct = pct
         if (!p) syncBatteryWatch(pluggedHint = false)
         updateOverlay()
+        notifyListeners()
     }
 }

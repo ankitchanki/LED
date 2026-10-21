@@ -81,6 +81,11 @@ class Prefs(context: Context) {
     val overlayLockOnly get() = bool("overlay_lock_only", false)
 
     // Charging and download rings (screen on, also over the lock screen)
+    val batteryIndicator get() = bool("battery_indicator", true)
+    val progressInitials get() = bool("progress_initials", true)
+    val progressAppColor get() = bool("progress_app_color", true)
+    val uploadColor get() = int("upload_color", 0xFF00E676.toInt())
+    val downloadColor get() = int("download_color", 0xFF2979FF.toInt())
     val chargeLed get() = bool("charge_led", true)
     val chargeColorLow get() = int("charge_color_low", 0xFFFF1744.toInt())
     val chargeColorMid get() = int("charge_color_mid", 0xFFFFC400.toInt())
@@ -152,7 +157,8 @@ class Prefs(context: Context) {
 
 enum class LedStyle(val key: String) {
     STATIC("static"), BREATHE("breathe"), PULSE("pulse"), BLINK("blink"),
-    HEARTBEAT("heartbeat"), SPIN("spin"), RAINBOW("rainbow"), EDGE("edge"), EDGE_PULSE("edge_pulse");
+    HEARTBEAT("heartbeat"), SPIN("spin"), RAINBOW("rainbow"), EDGE("edge"), EDGE_PULSE("edge_pulse"),
+    ORBIT("orbit"), SPARKLE("sparkle");
 
     val isEdge get() = this == EDGE || this == EDGE_PULSE
 

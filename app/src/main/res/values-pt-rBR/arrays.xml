@@ -10,6 +10,8 @@
         <item>Anel fixo</item>
         <item>Luz de borda</item>
         <item>Pulso de borda</item>
+        <item>Órbita dupla</item>
+        <item>Cintilar</item>
     </string-array>
 
     <string-array name="multi_labels">

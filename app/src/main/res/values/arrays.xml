@@ -10,6 +10,8 @@
         <item>Static ring</item>
         <item>Edge lighting</item>
         <item>Edge pulse</item>
+        <item>Twin orbit</item>
+        <item>Sparkle</item>
     </string-array>
     <string-array name="style_values" translatable="false">
         <item>pulse</item>
@@ -21,6 +23,8 @@
         <item>static</item>
         <item>edge</item>
         <item>edge_pulse</item>
+        <item>orbit</item>
+        <item>sparkle</item>
     </string-array>
 
     <!-- Chip labels; the stored values are fixed in code. -->

@@ -77,6 +77,9 @@ class AodSession(
             }
         }
     }.apply {
+        // The accessibility host uses the service's theme, not the AOD activity theme.
+        // Never let Force Dark remap this black surface or any of its children.
+        isForceDarkAllowed = false
         setBackgroundColor(Color.BLACK)
         addView(led, FrameLayout.LayoutParams(-1, -1))
     }
@@ -198,7 +201,7 @@ class AodSession(
         }
         val g = geometry()
         // Window coordinates: below the ring, below the status-bar/cutout band, never at the very edge.
-        val safeTop = max(led.ringBottom() + 16 * density - loc[1], statusBandPx() + 8 * density)
+        val safeTop = max(led.indicatorBottom() + 16 * density - loc[1], statusBandPx() + 8 * density)
         infoX = g.cx - loc[0] - info.measuredWidth / 2f + led.shiftX
         infoY = max(safeTop, 8 * density) + led.shiftY
         place(info, infoX, infoY)
@@ -372,6 +375,7 @@ class AodSession(
     fun start() {
         LedController.aodVisible = true
         LedController.addListener(storeListener)
+        updateMeters()
         LedController.updateOverlay()
         ContextCompat.registerReceiver(
             context, receiver,
@@ -416,11 +420,20 @@ class AodSession(
 
     fun restartAnimation() {
         led.configure(prefs, geometry(), currentColors()) // undoes an eco still ring
+        updateMeters()
         updateAgeFade()
         led.restartAnimation()
         bindInfo()
         showInfo()
         armSettle()
+    }
+
+    private fun updateMeters() {
+        led.notificationRingVisible = preview || !NotificationStore.isEmpty()
+        val meter = LedController.computeMeter(!NotificationStore.isEmpty())
+        led.setMeter(meter?.fraction, meter?.color ?: 0, meter?.label, meter?.indeterminate ?: false)
+        led.setBattery(LedController.batteryPercent())
+        root.requestLayout()
     }
 
     private fun armSettle() {
@@ -502,11 +515,12 @@ class AodSession(
 
     private fun onStoreChanged() {
         if (ended) return
-        if (!preview && (NotificationStore.isEmpty() || !prefs.enabled || !prefs.aodEnabled)) {
+        if (!preview && (!LedController.hasAodContent() || !prefs.enabled || !prefs.aodEnabled)) {
             end(EndReason.CLEARED, lock = true)
             return
         }
         led.configure(prefs, geometry(), currentColors())
+        updateMeters()
         updateAgeFade()
         armSettle()
         bindInfo()

@@ -1,3 +1,18 @@
+# Glow LED v2.3.0
+
+- **Swipe preview:** pull down from the top of any settings page for a live preview; swipe up or press Back to close. Removed the separate Preview button and made Test a floating pill.
+- **Guided first launch:** an eight-step guide explains gestures, test-and-lock, permissions, styles, transfers, battery, message actions and power use. Reopen it in More → Tutorial.
+- **Cleaner setup:** equal-size permission cards with status and details on tap. App theme and haptics now live in a dedicated Settings tab.
+- **11 styles:** added Twin orbit and Sparkle; all existing style choices are preserved.
+- **Transfers:** determinate progress and indeterminate spinners, an optional app initial and direction arrow, brand/per-app colours, and configurable upload/download colours. Unknown direction stays explicitly unknown. Apps must post a progress notification; no network traffic is inspected.
+- **Battery on both views:** optional battery percentage on the screen-on overlay and screen-off AOD. Charging and transfer gauges also work on the black AOD screen; transfer updates do not wake it. Charging-only AOD can start when locking, subject to the existing timeout and power guards.
+- **Release updates:** the download button follows the latest GitHub release; CI publishes a stable GlowLED-latest.apk asset alongside the versioned APK and checksums.
+- **Black AOD:** disabled Force Dark recolouring, window transparency and system contrast scrims. The black surface is shared by activity and accessibility-overlay modes. LCD backlights cannot achieve OLED pixel-off black.
+
+Official release distribution still requires the existing Glow LED signing key. A locally generated test-key APK must not replace the official APK in releases/.
+
+---
+
 # Glow LED v2.2.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

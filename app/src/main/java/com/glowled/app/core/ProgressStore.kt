@@ -9,18 +9,25 @@ import android.os.SystemClock
  */
 object ProgressStore {
 
-    data class Item(val pkg: String, val fraction: Float, val color: Int, val updated: Long)
+    data class Item(
+        val pkg: String, val fraction: Float, val color: Int, val updated: Long,
+        val initial: String = "↕", val direction: TransferDirection = TransferDirection.UNKNOWN,
+    )
 
     private val items = LinkedHashMap<String, Item>()
 
-    /** Reads the progress bar of [n], if it has a determinate one. */
+    /** Reads either a determinate progress bar or an indeterminate spinner. */
     fun fractionOf(n: Notification): Float? {
         val e = n.extras ?: return null
-        val max = e.getInt(Notification.EXTRA_PROGRESS_MAX, 0)
-        if (max <= 0 || e.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false)) return null
-        val p = e.getInt(Notification.EXTRA_PROGRESS, 0)
-        if (p >= max) return null // finished
-        return (p.toFloat() / max).coerceIn(0f, 1f)
+        return fractionOf(e.getInt(Notification.EXTRA_PROGRESS_MAX, 0), e.getInt(Notification.EXTRA_PROGRESS, 0),
+            e.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false))
+    }
+
+    /** -1 is an active spinner, null means no active progress, otherwise 0..1. */
+    fun fractionOf(max: Int, progress: Int, indeterminate: Boolean): Float? = when {
+        indeterminate -> -1f
+        max <= 0 || progress >= max -> null
+        else -> (progress.toFloat() / max).coerceIn(0f, 1f)
     }
 
     /**
@@ -28,15 +35,24 @@ object ProgressStore {
      * Returns true when the visible ring would change (it moves in whole percent steps).
      */
     @Synchronized
-    fun update(key: String, pkg: String, fraction: Float?, color: Int): Boolean {
-        val old = items[key]
+    fun update(
+        key: String, pkg: String, fraction: Float?, color: Int,
+        initial: String = "↕", direction: TransferDirection = TransferDirection.UNKNOWN,
+        now: Long = SystemClock.uptimeMillis(),
+    ): Boolean {
+        val old = current(now)
         if (fraction == null) return items.remove(key) != null
-        items[key] = Item(pkg, fraction, color, SystemClock.uptimeMillis())
-        return old == null || percent(old.fraction) != percent(fraction) || old.color != color
+        items.remove(key)
+        items[key] = Item(pkg, fraction, color, now, initial, direction)
+        return old == null || old.pkg != pkg || percent(old.fraction) != percent(fraction) || old.color != color ||
+            old.initial != initial || old.direction != direction
     }
 
     @Synchronized
     fun remove(key: String): Boolean = items.remove(key) != null
+
+    @Synchronized
+    fun retainKeys(activeKeys: Set<String>): Boolean = items.keys.retainAll(activeKeys)
 
     @Synchronized
     fun clear() = items.clear()
@@ -44,7 +60,11 @@ object ProgressStore {
     /** The most recently updated transfer that is still moving, or null. */
     @Synchronized
     fun current(now: Long = SystemClock.uptimeMillis()): Item? =
-        items.values.filter { now - it.updated < STALE_MS }.maxByOrNull { it.updated }
+        items.values.filter { now - it.updated < STALE_MS }.lastOrNull()
+
+    @Synchronized
+    fun expiryDelay(now: Long = SystemClock.uptimeMillis()): Long? =
+        current(now)?.let { (STALE_MS - (now - it.updated)).coerceAtLeast(1L) }
 
     private fun percent(f: Float) = (f * 100).toInt()
 

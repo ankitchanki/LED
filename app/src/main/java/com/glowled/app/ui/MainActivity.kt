@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         if (key == "app_theme") applyAppTheme(prefs.appTheme)
         // Visual feedback right on the camera when the look changes.
         if (key in REPLAY_KEYS) playCameraIntro()
-        if (key != null && (key.startsWith("charge_") || key.startsWith("progress_"))) previewMeter(key)
+        if (key != null && (key.startsWith("charge_") || key.startsWith("progress_") || key == "upload_color" || key == "download_color")) previewMeter(key)
         if (key == "style" || key == Prefs.K_ENABLED) ui.refresh()
     }
 
@@ -173,10 +173,6 @@ class MainActivity : AppCompatActivity() {
             prefs.enabled = on
             refreshLive()
         }
-        findViewById<View>(R.id.btnPreview).setOnClickListener {
-            Haptics.click(it)
-            LedController.startAod(pulse = false, preview = true)
-        }
         findViewById<View>(R.id.btnTest).setOnClickListener {
             Haptics.click(it)
             sendTest()
@@ -188,6 +184,9 @@ class MainActivity : AppCompatActivity() {
         // Shizuku's binder arrives asynchronously; refresh the setup card when it does.
         Shizuku.addBinderReceivedListenerSticky(shizukuListener)
         buildSetup()
+        if (savedInstanceState == null && !getSharedPreferences(UI_STATE, MODE_PRIVATE).getBoolean("tutorial_seen", false)) {
+            window.decorView.post { showTutorial(firstRun = true) }
+        }
         // First run / something missing: open on Setup so the user sees what to do.
         if (savedInstanceState == null && setupIncomplete) pager.setCurrentItem(0, false)
         else if (savedInstanceState == null) pager.setCurrentItem(1, false)
@@ -382,7 +381,12 @@ class MainActivity : AppCompatActivity() {
             val level = PowerGuard.batteryLevel(this)
             setMeters(level / 100f, prefs.chargeColor(level))
         } else {
-            setMeters(0.62f, prefs.progressColor.takeIf { it != 0 } ?: prefs.defaultColor)
+            val color = when (key) {
+                "upload_color" -> prefs.uploadColor
+                "download_color" -> prefs.downloadColor
+                else -> prefs.progressColor.takeIf { it != 0 } ?: prefs.defaultColor
+            }
+            setMeters(0.62f, color)
         }
         cameraLed.postDelayed(meterPreviewEnd, METER_PREVIEW_MS)
     }
@@ -413,6 +417,7 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.tab_on) to pageScreenOn(),
             getString(R.string.tab_alerts) to pageAlerts(),
             getString(R.string.tab_battery) to pageBattery(),
+            getString(R.string.tab_settings) to pageSettings(),
             getString(R.string.tab_log) to pageMore(),
         )
         pageViews = pages.map { it.second }
@@ -521,11 +526,16 @@ class MainActivity : AppCompatActivity() {
             Toggle(getString(R.string.t_rotate), "rotate_ring", true),
             Toggle(getString(R.string.t_notif_colour), "use_notif_color", true),
             Toggle(getString(R.string.t_icon_colour), "use_icon_color", true),
-            Toggle(getString(R.string.t_haptics), "haptics", true),
         ))
+        return page
+    }
+
+    private fun pageSettings(): View {
+        val (page, col) = ui.page()
         val look = ui.card(col)
         ui.chips(look, getString(R.string.chips_app_theme), "app_theme",
             labels(R.array.theme_labels), listOf("dark", "light", "system"), "dark")
+        ui.toggles(col, listOf(Toggle(getString(R.string.t_haptics), "haptics", true)))
         return page
     }
 
@@ -535,6 +545,7 @@ class MainActivity : AppCompatActivity() {
         val iconsOn = { prefs.aodEnabled && prefs.showAppInfo }
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_aod), "aod_enabled", true),
+            Toggle(getString(R.string.t_battery_indicator), "battery_indicator", true),
             Toggle(getString(R.string.t_on_screen_off), "aod_on_screen_off", true, aodOn),
             Toggle(getString(R.string.t_on_new), "aod_on_new", true, aodOn),
             Toggle(getString(R.string.t_pocket), "proximity", true, aodOn),
@@ -568,6 +579,9 @@ class MainActivity : AppCompatActivity() {
             Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false) { prefs.overlayEnabled },
             Toggle(getString(R.string.t_charge), "charge_led", true),
             Toggle(getString(R.string.t_progress), "progress_led", true),
+            Toggle(getString(R.string.t_battery_indicator), "battery_indicator", true),
+            Toggle(getString(R.string.t_progress_initials), "progress_initials", true) { prefs.progressLed },
+            Toggle(getString(R.string.t_progress_app_color), "progress_app_color", true) { prefs.progressLed },
         ))
         col.addView(label(getString(R.string.charge_colours)))
         ui.colorTiles(col, listOf(
@@ -579,6 +593,11 @@ class MainActivity : AppCompatActivity() {
         ui.colorTiles(col, listOf(
             ColorItem(getString(R.string.c_progress), "progress_color", 0, allowAuto = true),
         ), dependsOn = { prefs.progressLed })
+        ui.colorTiles(col, listOf(
+            ColorItem(getString(R.string.c_upload), "upload_color", 0xFF00E676.toInt()),
+            ColorItem(getString(R.string.c_download), "download_color", 0xFF2979FF.toInt()),
+        ), dependsOn = { prefs.progressLed && !prefs.progressAppColor && prefs.progressColor == 0 })
+        col.addView(hint(getString(R.string.transfer_hint)))
         col.addView(hint(getString(R.string.screen_on_hint)))
         return page
     }
@@ -640,6 +659,7 @@ class MainActivity : AppCompatActivity() {
         val (page, col) = ui.page()
         val official = AppSignature.isOfficial(this)
         ui.grid(col, listOf(
+            GridItem(R.drawable.ic_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub)) { showTutorial() },
             GridItem(if (official) R.drawable.ic_verified else R.drawable.ic_bell,
                 getString(if (official) R.string.g_official else R.string.g_unofficial),
                 getString(R.string.g_version, BuildConfig.VERSION_NAME)) {
@@ -661,6 +681,30 @@ class MainActivity : AppCompatActivity() {
         col.addView(hint(getString(R.string.sig_key, AppSignature.short(AppSignature.sha256(this))) +
             " · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"))
         return page
+    }
+
+    private fun showTutorial(firstRun: Boolean = false) {
+        val sections = listOf(
+            R.string.tutorial_swipe, R.string.tutorial_test, R.string.tutorial_setup,
+            R.string.tutorial_styles, R.string.tutorial_transfers, R.string.tutorial_battery,
+            R.string.tutorial_messages, R.string.tutorial_power,
+        )
+        var step = 0
+        fun showStep() {
+            val dialog = MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.tutorial_step, step + 1, sections.size))
+                .setMessage(sections[step])
+                .setPositiveButton(if (step == sections.lastIndex) R.string.tutorial_done else R.string.tutorial_next) { _, _ ->
+                    if (step < sections.lastIndex) { step++; showStep() }
+                    else if (firstRun) getSharedPreferences(UI_STATE, MODE_PRIVATE).edit().putBoolean("tutorial_seen", true).apply()
+                }
+                .setNegativeButton(R.string.tutorial_later) { _, _ ->
+                    if (firstRun) getSharedPreferences(UI_STATE, MODE_PRIVATE).edit().putBoolean("tutorial_seen", true).apply()
+                }
+            if (step > 0) dialog.setNeutralButton(R.string.tutorial_back) { _, _ -> step--; showStep() }
+            dialog.show()
+        }
+        showStep()
     }
 
     private fun labels(array: Int) = resources.getStringArray(array).toList()
@@ -914,29 +958,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupList.removeAllViews()
-        val inflater = LayoutInflater.from(this)
-        steps.forEach { s ->
-            val row = inflater.inflate(R.layout.item_setup, setupList, false) as MaterialCardView
-            row.findViewById<TextView>(R.id.title).text = s.title
-            val desc = row.findViewById<TextView>(R.id.desc)
-            desc.text = s.desc
-            val icon = row.findViewById<ImageView>(R.id.stateIcon)
-            val bg = row.findViewById<View>(R.id.stateBg)
-            icon.imageTintList = ColorStateList.valueOf(getColor(R.color.black))
-            if (s.done && !s.isLink) {
-                icon.setImageResource(R.drawable.ic_check)
-                bg.backgroundTintList = ColorStateList.valueOf(getColor(R.color.ok))
-                desc.visibility = View.GONE
-                row.findViewById<View>(R.id.chevron).visibility = View.INVISIBLE
-                row.alpha = 0.7f
-                row.isClickable = false
-            } else {
-                icon.setImageResource(if (s.isLink) R.drawable.ic_apps else R.drawable.ic_add)
-                val tint = if (!s.counts) R.color.accent else if (s == steps[0]) R.color.bad else R.color.warn
-                bg.backgroundTintList = ColorStateList.valueOf(getColor(tint))
-                row.setOnClickListener { s.action() }
+        val subtitles = ui.grid(setupList, steps.map { step ->
+            GridItem(if (step.done && !step.isLink) R.drawable.ic_check else R.drawable.ic_add,
+                step.title, getString(if (step.done && !step.isLink) R.string.setup_ready else R.string.setup_open)) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(step.title)
+                    .setMessage(step.desc)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.setup_open) { _, _ -> step.action() }
+                    .show()
             }
-            setupList.addView(row)
+        }, columns = 2)
+        subtitles.forEachIndexed { i, sub ->
+            sub.setTextColor(getColor(if (steps[i].done && !steps[i].isLink) R.color.ok else R.color.accent))
         }
     }
 
@@ -1062,8 +1096,8 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_REACH_OPEN = "reach_open"
         // Discrete changes replay the entrance; sliders just update the ring live while dragging.
         private val REPLAY_KEYS = setOf("style", "default_color", "multi_mode", "glow", "enabled", "rotate_ring")
-        private const val RELEASES_URL = "https://github.com/ankitchanki/LED/tree/main/releases"
+        private const val RELEASES_URL = "https://github.com/ankitchanki/LED/releases"
         /** Always the newest signed APK (updated with every release). */
-        private const val LATEST_APK_URL = "https://github.com/ankitchanki/LED/raw/main/releases/GlowLED-latest.apk"
+        private const val LATEST_APK_URL = "https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk"
     }
 }

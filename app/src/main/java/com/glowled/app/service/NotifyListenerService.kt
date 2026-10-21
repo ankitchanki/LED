@@ -10,6 +10,8 @@ import android.util.Log
 import com.glowled.app.core.LedController
 import com.glowled.app.core.NotificationContent
 import com.glowled.app.core.NotificationStore
+import com.glowled.app.core.TransferInfo
+import com.glowled.app.core.TransferDirection
 import com.glowled.app.core.ProgressStore
 
 /** Tracks which notifications should light the LED. Bound by the system, so no foreground service is needed. */
@@ -61,12 +63,24 @@ class NotifyListenerService : NotificationListenerService() {
     }
 
     /** Download / upload progress bars feed the download ring around the camera. */
+    private val transferInitials = mutableMapOf<String, String>()
+
     private fun trackProgress(sbn: StatusBarNotification) {
         val n = sbn.notification ?: return
         val pkg = sbn.packageName
         val fraction = if (pkg != packageName && LedController.prefs.appEnabled(pkg)) ProgressStore.fractionOf(n) else null
         val color = if (fraction != null) LedController.colors.colorFor(pkg, n) else 0
-        if (ProgressStore.update(sbn.key, pkg, fraction, color)) LedController.onProgressChanged()
+        val initial = if (fraction != null) transferInitials.getOrPut(pkg) {
+            val label = try { packageManager.getApplicationLabel(packageManager.getApplicationInfo(pkg, 0)).toString() }
+                catch (_: Exception) { pkg.substringAfterLast('.') }
+            TransferInfo.initial(label)
+        } else "↕"
+        val extras = n.extras
+        val direction = if (fraction == null || n.visibility == Notification.VISIBILITY_SECRET) TransferDirection.UNKNOWN else TransferDirection.fromText(
+            listOf(Notification.EXTRA_TITLE, Notification.EXTRA_TEXT, Notification.EXTRA_BIG_TEXT)
+                .mapNotNull { extras?.getCharSequence(it)?.toString() }.joinToString(" "),
+        )
+        if (ProgressStore.update(sbn.key, pkg, fraction, color, initial, direction)) LedController.onProgressChanged()
     }
 
     /** Re-evaluates every active notification (after settings change or reconnect). */
@@ -77,6 +91,8 @@ class NotifyListenerService : NotificationListenerService() {
             Log.w("GlowLED", "activeNotifications failed", e)
             return
         }
+        if (ProgressStore.retainKeys(active.map { it.key }.toSet())) LedController.onProgressChanged()
+        active.forEach { trackProgress(it) }
         val map = try { currentRanking } catch (_: Exception) { null }
         val groups = active.groupingBy { it.groupKey }.eachCount()
         if (NotificationStore.replaceAll(active.mapNotNull { toEntry(it, map, groups) })) {
@@ -101,6 +117,7 @@ class NotifyListenerService : NotificationListenerService() {
                 val children = groupCounts?.let { (it[sbn.groupKey] ?: 1) > 1 } ?: hasChildren(sbn)
                 if (children) return null
             }
+            if (ProgressStore.fractionOf(n) != null) return null
             if (n.category == Notification.CATEGORY_TRANSPORT || n.category == Notification.CATEGORY_PROGRESS) return null
             if (map != null && map.getRanking(sbn.key, ranking)) {
                 if (prefs.ignoreLowImportance && ranking.importance in 0..NotificationManager.IMPORTANCE_LOW) return null

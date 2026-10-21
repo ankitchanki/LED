@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="releases/GlowLED-latest.apk?raw=1"><b>⬇ Download the latest APK</b></a>
+  <a href="https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk"><b>⬇ Download the latest APK</b></a>
   &nbsp;·&nbsp; ✅ signed build &nbsp;·&nbsp; <a href="releases/">all downloads &amp; install help</a>
 </p>
 
@@ -30,27 +30,27 @@ are switched off, so only the light itself uses power.
 | | |
 |---|---|
 | **Cutout aware** | Detects the camera punch-hole, pill or notch automatically (exact shape on Android 12+). Fine-tune by dragging, with sliders, or in 1 px steps. Keeps its position when the screen resolution changes (Samsung FHD+/QHD+). |
-| **9 animations** | Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static ring, Edge lighting, Edge pulse. Adjustable speed, thickness, gap, intensity and glow. |
+| **11 animations** | Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static ring, Edge lighting, Edge pulse, Twin orbit, Sparkle. Adjustable speed, thickness, gap, intensity and glow. |
 | **Colours** | Per-app colour you pick, or the app's own notification colour, or a colour taken from its icon. With WhatsApp + Telegram + Instagram waiting, the ring splits into each app's colour (or cycles, or shows only the newest). |
 | **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate, flicker-free. Timeout, optional reminder pulses, pocket detection, burn-in protection. Double-tap to wake, tap to show the app. |
 | **App under the camera** | One UI AOD-style monochrome glyphs under the ring (grey; the newest in its notification colour), or full-colour app icons; tap one to read who sent what (text, or 📷 Photo / 🎥 Video / 🎤 Voice / 📄 Document) and tap the card to open the chat. A liquid droplet drips from the camera when a notification arrives. Double-tap to wake. |
 | **Screen on** | A small light around the camera, also over the lock screen. |
-| **Charging ring** | While charging, the ring fills with your battery level from the top, in your own colour per level (0–19 %, 20–79 %, 80–100 %). Shows for a few seconds when you plug in, then whenever no notification is waiting. Switch it off any time. |
-| **Download ring** | A download, upload or install with a progress bar shows its progress around the camera, in the app's colour (or yours). |
+| **Charging ring** | Optional battery percentage on screen-on and AOD views. While charging, the ring fills with your battery level from the top, in your own colour per level (0–19 %, 20–79 %, 80–100 %). Shows for a few seconds when you plug in, then whenever no notification is waiting. Switch it off any time. |
+| **Download ring** | A download, upload or install with a progress notification shows a gauge or spinner around the camera, an optional app initial and direction arrow, with app colours or your upload/download colours. Appears on screen-on and active AOD views. |
 | **Reply & Mark as read** | Tap an app icon on the always-on screen, then **Reply** (type and send without opening the app; asks to unlock first) or **Mark as read**, using the app's own notification buttons. |
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
-| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, More) - no menus, equal-size one-line tiles, the More tab is a grid with no scrolling. |
+| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings, More) - no menus, equal-size one-line tiles, More includes a repeatable tutorial. |
 | **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). The space above shows a **live preview** of the screen-off light (with the droplet falling into the app icon) that changes as you adjust settings. Swipe up or press back to return. |
-| **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Style → App theme*. Runs at your display's full refresh rate (120 Hz). |
+| **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Settings → App theme*. Runs at your display's full refresh rate (120 Hz). |
 | **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
 | **Colour wheel** | Every colour picker has a ring of all colours you turn with your finger, plus saturation, brightness, presets and hex. |
 | **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *More → Language*. |
 | **Easy updates** | Signed builds that install over each other. *More → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
 | **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
-| **Extras** | Quick Settings tile, preview, test notification, themed (monochrome) icon. |
+| **Extras** | Quick Settings tile, swipe-down live preview, floating Test pill, first-launch tutorial, themed (monochrome) icon. |
 
 ## Screenshots
 
@@ -90,12 +90,12 @@ breaks off, falls straight down into the middle of the icon row and turns into t
 > with a different key (the early v1.0.0–v1.2.0 GitHub releases). This is a one-time fix:
 > 1. *(Optional)* Glow LED → **More** → **Back up settings**.
 > 2. Uninstall the old app: long-press **Glow LED** → **App info** → **Uninstall**.
-> 3. Install [`GlowLED-latest.apk`](releases/GlowLED-latest.apk?raw=1) again.
+> 3. Install [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) again.
 > 4. *(Optional)* Glow LED → **More** → **Restore settings**.
 >
 > After that, updates install normally. The **More** tab shows *Official signed build* when you have the right one.
 
-1. Download [`GlowLED-latest.apk`](releases/GlowLED-latest.apk?raw=1) and open it (allow "install unknown apps" for your browser or file manager).
+1. Download [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) and open it (allow "install unknown apps" for your browser or file manager).
 2. Open **Glow LED** and work through the **Setup** tab:
    - **Notification access** (required): lets the app know a notification arrived. Nothing leaves your phone.
    - **Have [Shizuku](https://shizuku.rikka.app/download/) or root?** Tap *One-tap setup* at the top of the Setup tab and everything below is granted for you.
@@ -103,7 +103,10 @@ breaks off, falls straight down into the middle of the icon row and turns into t
    - **Accessibility** (optional): makes the light unblockable on strict ROMs (HyperOS, ColorOS...) and switches the screen off instantly when the light times out. It reads no screen content.
    - **Unrestricted battery** and, on Xiaomi/OPPO/vivo/Huawei and similar, **Autostart**.
 3. In the **Style** tab tap **Camera position**, then **Auto-detect**, adjust if needed, and **Save**.
-4. Tap **Test notification**, then turn the screen off.
+4. Tap the floating **Test** pill, then turn the screen off.
+5. For a live preview without locking, scroll any settings page to the top and **swipe down**; swipe up or press Back to close. Reopen **More → Tutorial** for all gestures and features.
+
+The screen-off view wakes the panel and draws black; it is not native hardware AOD. OLED pixels can switch off at black, while LCD panels keep their backlight on and may look grey in a dark room. Transfer detection requires a progress notification; direction is shown as unknown when the notification does not identify upload or download.
 
 > **Android 13+ "Restricted setting" dialog:** apps installed from an APK can't enable accessibility straight away.
 > Open *Settings → Apps → Glow LED → ⋮ (top right) → Allow restricted settings*, then enable it again.
