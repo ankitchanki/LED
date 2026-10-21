@@ -2,9 +2,12 @@ package com.glowled.app.core
 
 import java.util.Locale
 
+/** Small sign drawn on the gauge ring at its bottom middle. */
+enum class MeterIcon { NONE, BOLT, UP, DOWN, BOTH }
+
 /** Presentation metadata only: never keep transfer titles, file names or message text. */
-enum class TransferDirection(val arrow: String) {
-    UPLOAD("↑"), DOWNLOAD("↓"), UNKNOWN("↕");
+enum class TransferDirection(val icon: MeterIcon) {
+    UPLOAD(MeterIcon.UP), DOWNLOAD(MeterIcon.DOWN), UNKNOWN(MeterIcon.BOTH);
 
     companion object {
         private val uploadWords = Regex("upload|sending|enviando|enviar|अपलोड|भेज रहा")
@@ -24,9 +27,6 @@ enum class TransferDirection(val arrow: String) {
 }
 
 object TransferInfo {
-    fun initial(label: String): String = label.trim().firstOrNull { it.isLetterOrDigit() }
-        ?.toString()?.uppercase(Locale.ROOT) ?: "↕"
-
     /** Stable brand colours; other apps use the selected per-app/notification/icon colour. */
     fun appColor(pkg: String, fallback: Int): Int = when (pkg) {
         "com.whatsapp", "com.whatsapp.w4b" -> 0xFF25D366.toInt()

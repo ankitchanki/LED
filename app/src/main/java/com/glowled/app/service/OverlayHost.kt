@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import com.glowled.app.core.CutoutGeometry
 import com.glowled.app.core.LedController
+import com.glowled.app.core.MeterIcon
 import com.glowled.app.core.NotificationStore
 import com.glowled.app.view.LedView
 
@@ -65,7 +66,7 @@ object OverlayHost {
         v.notificationRingVisible = prefs.overlayEnabled && !NotificationStore.isEmpty() &&
             (!prefs.overlayLockOnly || LedController.isLocked())
         val m = LedController.overlayMeter
-        v.setMeter(m?.fraction, m?.color ?: 0, m?.label, m?.indeterminate ?: false)
+        v.setMeter(m?.fraction, m?.color ?: 0, m?.icon ?: MeterIcon.NONE, m?.indeterminate ?: false)
         v.setBattery(LedController.batteryPercent())
         val flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or

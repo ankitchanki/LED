@@ -16,10 +16,10 @@ class TransferTest {
         assertEquals(TransferDirection.DOWNLOAD, TransferDirection.fromText("डाउनलोड हो रहा है"))
     }
 
-    @Test fun initialsAndColoursIdentifyAppsWithoutKeepingTitles() {
-        assertEquals("W", TransferInfo.initial(" WhatsApp"))
-        assertEquals("I", TransferInfo.initial("Instagram"))
-        assertEquals("↕", TransferInfo.initial(""))
+    @Test fun coloursIdentifyAppsAndDirectionsMapToSigns() {
+        assertEquals(MeterIcon.UP, TransferDirection.UPLOAD.icon)
+        assertEquals(MeterIcon.DOWN, TransferDirection.DOWNLOAD.icon)
+        assertEquals(MeterIcon.BOTH, TransferDirection.UNKNOWN.icon)
         assertEquals(0xFF25D366.toInt(), TransferInfo.appColor("com.whatsapp", 123))
         assertEquals(0xFFE1306C.toInt(), TransferInfo.appColor("com.instagram.android", 123))
         assertEquals(123, TransferInfo.appColor("other.app", 123))
@@ -35,10 +35,10 @@ class TransferTest {
     }
 
     @Test fun transferCanChangeDirectionWithoutChangingItsPercentage() {
-        assertTrue(ProgressStore.update("a", "chat", .4f, 1, "W", TransferDirection.UPLOAD, now = 1))
-        assertTrue(ProgressStore.update("a", "chat", .4f, 1, "W", TransferDirection.DOWNLOAD, now = 2))
+        assertTrue(ProgressStore.update("a", "chat", .4f, 1, TransferDirection.UPLOAD, now = 1))
+        assertTrue(ProgressStore.update("a", "chat", .4f, 1, TransferDirection.DOWNLOAD, now = 2))
         assertEquals(TransferDirection.DOWNLOAD, ProgressStore.current(2)?.direction)
-        assertFalse(ProgressStore.update("a", "chat", .401f, 1, "W", TransferDirection.DOWNLOAD, now = 3))
+        assertFalse(ProgressStore.update("a", "chat", .401f, 1, TransferDirection.DOWNLOAD, now = 3))
     }
 
     @Test fun completingTransferRestoresPreviousTransferAndStaleTransfersDisappear() {

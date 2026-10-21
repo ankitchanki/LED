@@ -17,6 +17,7 @@ import com.glowled.app.core.CutoutGeometry
 import com.glowled.app.core.CutoutShape
 import com.glowled.app.core.Geometry
 import com.glowled.app.core.LedStyle
+import com.glowled.app.core.MeterIcon
 import com.glowled.app.core.MultiMode
 import com.glowled.app.core.Prefs
 import kotlin.math.PI
@@ -131,7 +132,11 @@ class LedView @JvmOverloads constructor(
     private var meterFrac = -1f
     var notificationRingVisible = true
         set(value) { if (field != value) { field = value; invalidate() } }
-    private var meterLabel: String? = null
+    private var meterIcon = MeterIcon.NONE
+    /** When the charging bolt last flared up (a new battery percent); -1 = not pulsing. */
+    private var iconPulseStart = -1L
+    private val iconPath = Path()
+    private val iconPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
     private var meterIndeterminate = false
     private var meterSettled = false
     private var batteryLabel: String? = null
@@ -151,13 +156,16 @@ class LedView @JvmOverloads constructor(
      * faint full track. Null goes back to the normal light. The fill sweeps in when it appears and a
      * soft highlight flows along it, so it reads as "in progress".
      */
-    fun setMeter(fraction: Float?, color: Int, label: String? = null, indeterminate: Boolean = false) {
+    fun setMeter(fraction: Float?, color: Int, icon: MeterIcon = MeterIcon.NONE, indeterminate: Boolean = false) {
         val f = fraction?.coerceIn(0f, 1f) ?: -1f
-        if (f == meterFrac && color == meterColor && label == meterLabel && indeterminate == meterIndeterminate) return
-        if (f >= 0f && meterFrac < 0f) meterStart = SystemClock.uptimeMillis()
+        if (f == meterFrac && color == meterColor && icon == meterIcon && indeterminate == meterIndeterminate) return
+        val now = SystemClock.uptimeMillis()
+        if (f >= 0f && meterFrac < 0f) meterStart = now
+        // Charging: the bolt flares up when it appears and each time the battery gains a percent.
+        if (icon == MeterIcon.BOLT && f >= 0f && (meterIcon != MeterIcon.BOLT || f > meterFrac + 0.004f)) iconPulseStart = now
         meterFrac = f
         meterColor = color
-        meterLabel = label
+        meterIcon = icon
         meterIndeterminate = indeterminate
         invalidate()
     }
@@ -171,19 +179,11 @@ class LedView @JvmOverloads constructor(
 
     private val indicatorLineHeight get() = max(16 * density, labelPaint.fontSpacing + 2 * density)
 
-    /** Leave space for the transfer initial and battery without overlapping notification icons. */
-    fun indicatorBottom(): Float = ringBottom() +
-        (if (meterLabel != null) indicatorLineHeight else 0f) + (if (batteryLabel != null) indicatorLineHeight else 0f)
+    /** Leave space for the battery % without overlapping notification icons. */
+    fun indicatorBottom(): Float = ringBottom() + (if (batteryLabel != null) indicatorLineHeight else 0f)
 
     private fun drawLabels(c: Canvas) {
-        var y = ringBottom() - (geometry?.cy ?: cy) + cy + indicatorLineHeight - labelPaint.descent()
-        labelPaint.alpha = (255 * alphaMul * ageFade * intro).toInt()
-        meterLabel?.let {
-            labelPaint.color = meterColor
-            labelPaint.alpha = (255 * alphaMul * ageFade * intro).toInt()
-            c.drawText(it, cx, y, labelPaint)
-            y += indicatorLineHeight
-        }
+        val y = ringBottom() - (geometry?.cy ?: cy) + cy + indicatorLineHeight - labelPaint.descent()
         batteryLabel?.let {
             labelPaint.color = Color.WHITE
             labelPaint.alpha = (220 * alphaMul * intro).toInt()
@@ -224,13 +224,92 @@ class LedView @JvmOverloads constructor(
             c.drawArc(rect, -90f, 360f * frac, true, paintFor(meterColor, 1f, true))
             return
         }
-        c.drawPath(shapePath, paintFor(meterColor, METER_TRACK, false).also { it.clearShadowLayer() })
-        if (frac > 0.002f) segment(c, topFrac, topFrac + frac, paintFor(meterColor, 1f, false))
+        // With a sign, the ring leaves a small gap for it at its bottom middle.
+        segmentGap(c, topFrac, topFrac + 1f, paintFor(meterColor, METER_TRACK, false).also { it.clearShadowLayer() })
+        if (frac > 0.002f) segmentGap(c, topFrac, topFrac + frac, paintFor(meterColor, 1f, false))
         if (frac > 0.05f && !meterSettled) {
             val p = (t % METER_FLOW_MS) / METER_FLOW_MS.toFloat()
             val head = topFrac + frac * p
-            segment(c, head - 0.04f, head, paintFor(Color.WHITE, 0.5f, false).also { it.clearShadowLayer() })
+            segmentGap(c, head - 0.04f, head, paintFor(Color.WHITE, 0.5f, false).also { it.clearShadowLayer() })
         }
+        drawMeterIcon(c, now)
+    }
+
+    private val iconSize get() = max(8f * density, thickness * 2.6f)
+
+    /** Half the gap (as a fraction of the outline) the ring leaves around the sign. */
+    private fun iconGapHalf(): Float =
+        if (meterIcon == MeterIcon.NONE || pathLength <= 0f) 0f else (iconSize * 0.62f + 2.5f * density) / pathLength
+
+    /** Draws [from]..[to] of the outline, leaving out the gap around the sign at the bottom middle. */
+    private fun segmentGap(c: Canvas, from: Float, to: Float, paint: Paint) {
+        val h = iconGapHalf()
+        if (h <= 0f) return segment(c, from, to, paint)
+        val bottom = topFrac + 0.5f
+        var start = from
+        // The gap repeats every full turn; check the turns this stretch can touch.
+        for (k in -1..2) {
+            val g0 = bottom + k - h
+            val g1 = bottom + k + h
+            if (g1 <= start || g0 >= to) continue
+            if (g0 > start) segment(c, start, g0, paint)
+            start = max(start, g1)
+        }
+        if (start < to) segment(c, start, to, paint)
+    }
+
+    /**
+     * The sign on the ring's bottom middle: a charging bolt (which flares up for a moment on every
+     * new battery percent) or a transfer arrow. On a filled LED dot it sits in the middle, in black.
+     */
+    private fun drawMeterIcon(c: Canvas, now: Long) {
+        if (meterIcon == MeterIcon.NONE) return
+        val bx: Float
+        val by: Float
+        if (isFilled) {
+            bx = cx; by = cy
+        } else {
+            measure.getPosTan(((topFrac + 0.5f) % 1f) * pathLength, posTmp, null)
+            bx = posTmp[0]; by = posTmp[1]
+        }
+        val pt = if (iconPulseStart < 0) 1f else ((now - iconPulseStart) / ICON_PULSE_MS.toFloat())
+        val bump = if (pt < 1f) sin(PI.toFloat() * pt) else 0f
+        val size = iconSize * (1f + 0.3f * bump)
+        buildIcon(meterIcon, bx, by, size)
+        val base = if (isFilled) Color.BLACK else meterColor
+        // Flare: brighter (towards white) with a stronger glow, then back.
+        iconPaint.color = if (bump > 0f) blend(base, Color.WHITE, 0.55f * bump) else base
+        iconPaint.alpha = (255 * alphaMul * intro).toInt().coerceIn(0, 255)
+        val glowR = (if (glow) glowRadius() * 0.6f else 0f) + 6f * density * bump
+        // The halo keeps the ring's colour (a whitened halo looks grey on black).
+        if (glowR > 0.5f && !isFilled) iconPaint.setShadowLayer(glowR, 0f, 0f, base) else iconPaint.clearShadowLayer()
+        c.drawPath(iconPath, iconPaint)
+    }
+
+    private fun blend(a: Int, b: Int, t: Float) = Color.rgb(
+        (Color.red(a) + (Color.red(b) - Color.red(a)) * t).toInt(),
+        (Color.green(a) + (Color.green(b) - Color.green(a)) * t).toInt(),
+        (Color.blue(a) + (Color.blue(b) - Color.blue(a)) * t).toInt(),
+    )
+
+    /** Fills [iconPath] with [icon] centred on (x, y), [h] tall. */
+    private fun buildIcon(icon: MeterIcon, x: Float, y: Float, h: Float) {
+        val pts = when (icon) {
+            MeterIcon.BOLT -> BOLT_PTS
+            MeterIcon.UP -> UP_PTS
+            MeterIcon.DOWN -> DOWN_PTS
+            MeterIcon.BOTH -> BOTH_PTS
+            MeterIcon.NONE -> return
+        }
+        // Points are in a 1x1 box; signs are a bit narrower than tall.
+        val w = h * 0.72f
+        iconPath.reset()
+        for (i in pts.indices step 2) {
+            val px = x - w / 2f + pts[i] * w
+            val py = y - h / 2f + pts[i + 1] * h
+            if (i == 0) iconPath.moveTo(px, py) else iconPath.lineTo(px, py)
+        }
+        iconPath.close()
     }
 
     /** In-app previews: ignore the battery frame-rate cap and animate at the display's refresh rate. */
@@ -592,7 +671,8 @@ class LedView @JvmOverloads constructor(
     private fun scheduleNext(period: Long, inPeriod: Long, n: Int, segmented: Boolean) {
         if (!isShown || windowVisibility != VISIBLE) return
         if (meterFrac >= 0f) {
-            if (!meterSettled || meterIndeterminate) postInvalidateDelayed(METER_FRAME_MS)
+            val pulsing = iconPulseStart >= 0 && SystemClock.uptimeMillis() - iconPulseStart < ICON_PULSE_MS
+            if (!meterSettled || meterIndeterminate || pulsing) postInvalidateDelayed(METER_FRAME_MS)
             return
         }
         if (!notificationRingVisible) return
@@ -733,6 +813,16 @@ class LedView @JvmOverloads constructor(
         private const val METER_SWEEP_MS = 700L
         private const val METER_FLOW_MS = 2400L
         private const val METER_FRAME_MS = 50L
+        /** How long the charging bolt flares up on a new battery percent. */
+        private const val ICON_PULSE_MS = 1200L
+        // Signs as polygons in a 1x1 box (x, y pairs).
+        private val BOLT_PTS = floatArrayOf(0.64f, 0f, 0.08f, 0.58f, 0.46f, 0.58f, 0.34f, 1f, 0.92f, 0.4f, 0.54f, 0.4f)
+        private val UP_PTS = floatArrayOf(0.5f, 0f, 1f, 0.5f, 0.68f, 0.5f, 0.68f, 1f, 0.32f, 1f, 0.32f, 0.5f, 0f, 0.5f)
+        private val DOWN_PTS = floatArrayOf(0.5f, 1f, 1f, 0.5f, 0.68f, 0.5f, 0.68f, 0f, 0.32f, 0f, 0.32f, 0.5f, 0f, 0.5f)
+        private val BOTH_PTS = floatArrayOf(
+            0.5f, 0f, 0.95f, 0.36f, 0.64f, 0.36f, 0.64f, 0.64f, 0.95f, 0.64f, 0.5f, 1f,
+            0.05f, 0.64f, 0.36f, 0.64f, 0.36f, 0.36f, 0.05f, 0.36f,
+        )
         private const val BLINK_ON = 0.12f
         private const val ROTATE_MS = 9_000L
         private const val DETACH_AT = 0.42f

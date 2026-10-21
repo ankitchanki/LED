@@ -55,6 +55,7 @@ import com.glowled.app.core.DebugLog
 import com.glowled.app.core.Geometry
 import com.glowled.app.core.LedController
 import com.glowled.app.core.LedStyle
+import com.glowled.app.core.MeterIcon
 import com.glowled.app.core.NotificationStore
 import com.glowled.app.core.PowerGuard
 import com.glowled.app.core.Prefs
@@ -291,9 +292,9 @@ class MainActivity : AppCompatActivity() {
         ) { icons.popNewest() }
     }
 
-    private fun setMeters(fraction: Float?, color: Int) {
-        if (::cameraLed.isInitialized) cameraLed.setMeter(fraction, color)
-        previewLed?.setMeter(fraction, color)
+    private fun setMeters(fraction: Float?, color: Int, icon: MeterIcon = MeterIcon.NONE) {
+        if (::cameraLed.isInitialized) cameraLed.setMeter(fraction, color, icon)
+        previewLed?.setMeter(fraction, color, icon)
     }
 
     private fun applyInsets() {
@@ -385,14 +386,19 @@ class MainActivity : AppCompatActivity() {
         }
         if (key.startsWith("charge_")) {
             val level = PowerGuard.batteryLevel(this)
-            setMeters(level / 100f, prefs.chargeColor(level))
+            setMeters(level / 100f, prefs.chargeColor(level), MeterIcon.BOLT)
         } else {
             val color = when (key) {
                 "upload_color" -> prefs.uploadColor
                 "download_color" -> prefs.downloadColor
                 else -> prefs.progressColor.takeIf { it != 0 } ?: prefs.defaultColor
             }
-            setMeters(0.62f, color)
+            val icon = when {
+                !prefs.progressArrow -> MeterIcon.NONE
+                key == "upload_color" -> MeterIcon.UP
+                else -> MeterIcon.DOWN
+            }
+            setMeters(0.62f, color, icon)
         }
         cameraLed.postDelayed(meterPreviewEnd, METER_PREVIEW_MS)
     }
@@ -489,6 +495,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun pageStyle(): View {
         val (page, col) = ui.page()
+        section(col, R.string.sec_animation, first = true)
         // Animation carousel with live previews.
         val names = resources.getStringArray(R.array.style_names).map { it.substringBefore(" (") }
         val styles = resources.getStringArray(R.array.style_values).map { LedStyle.from(it) }
@@ -503,7 +510,7 @@ class MainActivity : AppCompatActivity() {
         }
         col.addView(NestedScrollableHost(this).apply { addView(rv) })
 
-        // Colour row.
+        section(col, R.string.sec_colour)
         swatches = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(dp(2), 0, dp(2), 0) }
         buildSwatches()
         col.addView(NestedScrollableHost(this).apply {
@@ -513,14 +520,20 @@ class MainActivity : AppCompatActivity() {
                 addView(swatches)
             })
         })
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_notif_colour), "use_notif_color", true),
+            Toggle(getString(R.string.t_icon_colour), "use_icon_color", true),
+        ))
+        val multi = ui.card(col)
+        ui.chips(multi, getString(R.string.chips_multi), "multi_mode",
+            labels(R.array.multi_labels), listOf("segments", "cycle", "latest"), "segments")
 
+        section(col, R.string.sec_shape)
         val c = ui.card(col)
         ui.link(c, R.drawable.ic_camera_ring, getString(R.string.action_cutout), getString(R.string.tile_cutout_sub)) {
             startActivity(Intent(this, CutoutActivity::class.java))
         }
         ui.divider(c)
-        ui.chips(c, getString(R.string.chips_multi), "multi_mode",
-            labels(R.array.multi_labels), listOf("segments", "cycle", "latest"), "segments")
         ui.sliders(c, Range(getString(R.string.s_speed), "speed", 1, 10, 5, ""),
             Range(getString(R.string.s_intensity), "led_alpha", 10, 100, 100, "%"))
         ui.sliders(c, Range(getString(R.string.s_thickness), "thickness", 1, 16, 3, "dp"),
@@ -529,57 +542,65 @@ class MainActivity : AppCompatActivity() {
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_glow), "glow", true),
             Toggle(getString(R.string.t_rotate), "rotate_ring", true),
-            Toggle(getString(R.string.t_notif_colour), "use_notif_color", true),
-            Toggle(getString(R.string.t_icon_colour), "use_icon_color", true),
         ))
         return page
     }
-
 
     private fun pageScreenOff(): View {
         val (page, col) = ui.page()
         val aodOn = { prefs.aodEnabled }
         val iconsOn = { prefs.aodEnabled && prefs.showAppInfo }
+        section(col, R.string.sec_when, first = true)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_aod), "aod_enabled", true),
-            Toggle(getString(R.string.t_battery_indicator), "battery_indicator", false),
-            Toggle(getString(R.string.t_charge_aod), "charge_aod", false) { prefs.aodEnabled && prefs.chargeLed },
             Toggle(getString(R.string.t_on_screen_off), "aod_on_screen_off", true, aodOn),
             Toggle(getString(R.string.t_on_new), "aod_on_new", true, aodOn),
-            Toggle(getString(R.string.t_pocket), "proximity", true, aodOn),
-            Toggle(getString(R.string.t_double_tap), "double_tap_wake", true, aodOn),
-            Toggle(getString(R.string.t_burn_in), "burn_in", true, aodOn),
+            Toggle(getString(R.string.t_charge_aod), "charge_aod", false) { prefs.aodEnabled && prefs.chargeLed },
+        ))
+        section(col, R.string.sec_black)
+        ui.toggles(col, listOf(
             Toggle(getString(R.string.t_app_icons), "show_app_info", true, aodOn),
-            Toggle(getString(R.string.t_keep_icons), "app_info_always", false, iconsOn),
             Toggle(getString(R.string.t_aod_icons), "aod_icons", true, iconsOn),
-            Toggle(getString(R.string.t_tap_read), "show_content", true, iconsOn),
-            Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { iconsOn() && prefs.showContent },
+            Toggle(getString(R.string.t_keep_icons), "app_info_always", false, iconsOn),
             Toggle(getString(R.string.t_droplet), "droplet", true),
         ))
+        section(col, R.string.sec_messages)
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_tap_read), "show_content", true, iconsOn),
+            Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { iconsOn() && prefs.showContent },
+        ))
+        section(col, R.string.sec_gestures)
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_double_tap), "double_tap_wake", true, aodOn),
+            Toggle(getString(R.string.t_pocket), "proximity", true, aodOn),
+            Toggle(getString(R.string.t_burn_in), "burn_in", true, aodOn),
+        ))
+        section(col, R.string.sec_timing)
         val c = ui.card(col)
-        ui.chips(c, getString(R.string.chips_method), "aod_method",
-            labels(R.array.method_labels), listOf("auto", "activity", "overlay"), "auto", aodOn)
-        ui.chips(c, getString(R.string.chips_off_delay), "off_delay",
-            labels(R.array.off_delay_labels), listOf("800", "1500", "3000"), "800", aodOn)
         ui.chips(c, getString(R.string.chips_timeout), "aod_timeout",
             labels(R.array.timeout_labels), listOf("30", "60", "120", "300", "900", "3600", "0"), "120", aodOn)
         ui.chips(c, getString(R.string.chips_remind), "pulse_interval",
             labels(R.array.remind_labels), listOf("0", "2", "5", "10", "30"), "0", aodOn)
         ui.sliders(c, Range(getString(R.string.s_brightness), "aod_brightness", 1, 100, 3, "%"),
             Range(getString(R.string.s_reminder), "pulse_duration", 3, 60, 10, "s"), dependsOn = aodOn)
+        ui.chips(c, getString(R.string.chips_off_delay), "off_delay",
+            labels(R.array.off_delay_labels), listOf("800", "1500", "3000"), "800", aodOn)
+        ui.chips(c, getString(R.string.chips_method), "aod_method",
+            labels(R.array.method_labels), listOf("auto", "activity", "overlay"), "auto", aodOn)
         return page
     }
 
     private fun pageScreenOn(): View {
         val (page, col) = ui.page()
+        section(col, R.string.sec_ring_on, first = true)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_ring_on), "overlay_enabled", true),
             Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false) { prefs.overlayEnabled },
+        ))
+        section(col, R.string.sec_charging)
+        ui.toggles(col, listOf(
             Toggle(getString(R.string.t_charge), "charge_led", true),
-            Toggle(getString(R.string.t_progress), "progress_led", true),
             Toggle(getString(R.string.t_battery_indicator), "battery_indicator", false),
-            Toggle(getString(R.string.t_progress_initials), "progress_initials", true) { prefs.progressLed },
-            Toggle(getString(R.string.t_progress_app_color), "progress_app_color", true) { prefs.progressLed },
         ))
         col.addView(label(getString(R.string.charge_colours)))
         ui.colorTiles(col, listOf(
@@ -587,6 +608,12 @@ class MainActivity : AppCompatActivity() {
             ColorItem(getString(R.string.c_mid), "charge_color_mid", 0xFFFFC400.toInt()),
             ColorItem(getString(R.string.c_high), "charge_color_high", 0xFF00E676.toInt()),
         ), dependsOn = { prefs.chargeLed })
+        section(col, R.string.sec_transfers)
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_progress), "progress_led", true),
+            Toggle(getString(R.string.t_progress_initials), "progress_initials", true) { prefs.progressLed },
+            Toggle(getString(R.string.t_progress_app_color), "progress_app_color", true) { prefs.progressLed },
+        ))
         col.addView(label(getString(R.string.progress_colour)))
         ui.colorTiles(col, listOf(
             ColorItem(getString(R.string.c_progress), "progress_color", 0, allowAuto = true),
@@ -602,12 +629,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun pageAlerts(): View {
         val (page, col) = ui.page()
+        section(col, R.string.sec_apps, first = true)
         val c = ui.card(col)
         ui.link(c, R.drawable.ic_apps, getString(R.string.action_apps), getString(R.string.apps_sub)) {
             startActivity(Intent(this, AppsActivity::class.java))
         }
         ui.divider(c)
         ui.chips(c, getString(R.string.chips_which_apps), "app_mode", labels(R.array.appmode_labels), listOf("all", "selected"), "all")
+        section(col, R.string.sec_filters)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_ignore_silent), "ignore_low", true),
             Toggle(getString(R.string.t_dnd), "respect_dnd", true),
@@ -618,21 +647,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun pageBattery(): View {
         val (page, col) = ui.page()
+        section(col, R.string.sec_power, first = true)
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_eco), "eco_anim", true),
+            Toggle(getString(R.string.t_age_fade), "age_fade", true),
+            Toggle(getString(R.string.t_motion), "motion_glance", true),
+            Toggle(getString(R.string.t_low_refresh), "low_refresh", true),
+        ))
         val c = ui.card(col)
         ui.chips(c, getString(R.string.chips_fps), "fps_cap",
             labels(R.array.fps_labels), listOf("15", "24", "30", "60", "0"), "30")
         ui.sliders(c, Range(getString(R.string.s_min_battery), "min_battery", 0, 50, 10, "%"))
-        ui.toggles(col, listOf(
-            Toggle(getString(R.string.t_low_refresh), "low_refresh", true),
-            Toggle(getString(R.string.t_eco), "eco_anim", true),
-            Toggle(getString(R.string.t_age_fade), "age_fade", true),
-            Toggle(getString(R.string.t_motion), "motion_glance", true),
-            Toggle(getString(R.string.t_quiet), "quiet_enabled", false),
-        ))
+        section(col, R.string.t_quiet)
+        ui.toggles(col, listOf(Toggle(getString(R.string.t_quiet), "quiet_enabled", false)))
         val q = ui.card(col)
         quietSub = ui.link(q, R.drawable.ic_moon, getString(R.string.quiet_time), quietText()) { pickQuietHours() }
         col.addView(hint(getString(R.string.battery_hint)))
         return page
+    }
+
+    /** Section heading inside a page, so related settings are grouped under a clear name. */
+    private fun section(col: LinearLayout, title: Int, first: Boolean = false) {
+        col.addView(TextView(this).apply {
+            setText(title)
+            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleSmall)
+            setTextColor(getColor(R.color.accent))
+            letterSpacing = 0.02f
+            setPadding(dp(12), dp(if (first) 6 else 18), dp(12), dp(4))
+        })
     }
 
     // Settings backup/restore through the system file picker (no storage permission needed).
@@ -655,10 +697,12 @@ class MainActivity : AppCompatActivity() {
     /** Settings: app theme and haptics, then everything else as a grid of tiles side by side. */
     private fun pageMore(): View {
         val (page, col) = ui.page()
+        section(col, R.string.sec_appearance, first = true)
         val look = ui.card(col)
         ui.chips(look, getString(R.string.chips_app_theme), "app_theme",
             labels(R.array.theme_labels), listOf("dark", "light", "system"), "dark")
         ui.toggles(col, listOf(Toggle(getString(R.string.t_haptics), "haptics", true)))
+        section(col, R.string.sec_tools)
         val official = AppSignature.isOfficial(this)
         ui.grid(col, listOf(
             GridItem(R.drawable.ic_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub)) { showTutorial() },

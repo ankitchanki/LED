@@ -86,7 +86,8 @@ class Prefs(context: Context) {
      * battery level is watched even on battery power.
      */
     val batteryIndicator get() = bool("battery_indicator", false)
-    val progressInitials get() = bool("progress_initials", true)
+    /** Upload / download arrow on the transfer ring (key kept from 2.3.0, which also showed a letter). */
+    val progressArrow get() = bool("progress_initials", true)
     val progressAppColor get() = bool("progress_app_color", true)
     val uploadColor get() = int("upload_color", 0xFF00E676.toInt())
     val downloadColor get() = int("download_color", 0xFF2979FF.toInt())

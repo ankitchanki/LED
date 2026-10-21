@@ -10,7 +10,6 @@ import android.util.Log
 import com.glowled.app.core.LedController
 import com.glowled.app.core.NotificationContent
 import com.glowled.app.core.NotificationStore
-import com.glowled.app.core.TransferInfo
 import com.glowled.app.core.TransferDirection
 import com.glowled.app.core.ProgressStore
 
@@ -63,24 +62,17 @@ class NotifyListenerService : NotificationListenerService() {
     }
 
     /** Download / upload progress bars feed the download ring around the camera. */
-    private val transferInitials = mutableMapOf<String, String>()
-
     private fun trackProgress(sbn: StatusBarNotification) {
         val n = sbn.notification ?: return
         val pkg = sbn.packageName
         val fraction = if (pkg != packageName && LedController.prefs.appEnabled(pkg)) ProgressStore.fractionOf(n) else null
         val color = if (fraction != null) LedController.colors.colorFor(pkg, n) else 0
-        val initial = if (fraction != null) transferInitials.getOrPut(pkg) {
-            val label = try { packageManager.getApplicationLabel(packageManager.getApplicationInfo(pkg, 0)).toString() }
-                catch (_: Exception) { pkg.substringAfterLast('.') }
-            TransferInfo.initial(label)
-        } else "↕"
         val extras = n.extras
         val direction = if (fraction == null || n.visibility == Notification.VISIBILITY_SECRET) TransferDirection.UNKNOWN else TransferDirection.fromText(
             listOf(Notification.EXTRA_TITLE, Notification.EXTRA_TEXT, Notification.EXTRA_BIG_TEXT)
                 .mapNotNull { extras?.getCharSequence(it)?.toString() }.joinToString(" "),
         )
-        if (ProgressStore.update(sbn.key, pkg, fraction, color, initial, direction)) LedController.onProgressChanged()
+        if (ProgressStore.update(sbn.key, pkg, fraction, color, direction)) LedController.onProgressChanged()
     }
 
     /** Re-evaluates every active notification (after settings change or reconnect). */

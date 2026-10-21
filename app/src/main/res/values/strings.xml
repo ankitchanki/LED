@@ -241,15 +241,32 @@
     <string name="tutorial_test">Tap the floating Test pill, then press the power button to lock the device. With notification access and screen-off lighting enabled, Glow LED waits briefly, then shows the black notification screen. Swipe-down preview lets you try styles without locking the device.</string>
     <string name="tutorial_setup">Open the Setup cards to enable notification access and either Display over other apps or Accessibility. Accessibility can also switch the screen off immediately. On Xiaomi and other strict devices, check autostart and battery restrictions. The progress bar shows which required permissions remain.</string>
     <string name="tutorial_styles">Style offers 11 animations, including Twin orbit and Sparkle. Choose a colour, speed, size, glow and multi-app mode. Camera position adjusts the ring around your camera. App theme and haptic feedback are in the Settings tab; they never change the black notification background.</string>
-    <string name="tutorial_transfers">When an app posts a progress notification, its ring shows transfer progress. A letter below the ring identifies the app; ↑ means upload, ↓ download and ↕ unknown direction. Moving progress with no percentage uses a spinner. Use app colours, or choose upload/download colours in Screen on. Transfers without progress notifications cannot be detected.</string>
-    <string name="tutorial_battery">Battery percentage can appear below the ring on both the screen-on overlay and the black screen-off view. The charging ring uses your low, medium and high battery colours; transfers temporarily take priority. Screen-off indicators respect your timeout and power-saving settings. Battery updates do not wake the screen by themselves.</string>
+    <string name="tutorial_transfers">When an app posts a progress notification, the ring shows how far the transfer has got, with a small arrow on the bottom of the ring: ↑ upload, ↓ download, ↕ direction unknown. Moving progress with no percentage uses a spinner. Use app colours, or choose upload/download colours in Screen on. Transfers without a progress notification cannot be detected.</string>
+    <string name="tutorial_battery" formatted="false">While charging, the ring fills with your battery level in your low, medium and high colours, with a small bolt on the bottom of the ring that glows each time the battery gains a percent. Plugging in while the phone is locked shows it for a few seconds; transfers take priority. Battery % below the ring is optional (Screen on → Charging &amp; battery).</string>
     <string name="tutorial_messages">On the black notification screen, tap an app icon to read its notification, reply or mark it as read when the app supports those actions. Reply may require unlocking. Double-tap to reveal the lock screen. Alerts controls allowed apps, per-app colours, silent notifications and Do Not Disturb.</string>
     <string name="tutorial_power">The screen-off view wakes the display and draws black; it is not the device’s native hardware AOD. Black pixels switch off on OLED, but LCD backlights can still glow. Battery offers quiet hours, low-battery protection, frame-rate limits and motion reminders. Settings also contains backup, restore, language and the event log.</string>
     <string name="t_battery_indicator" formatted="false">Battery %</string>
     <string name="t_charge_aod">Charging when off</string>
-    <string name="t_progress_initials" formatted="false">Letter &amp; arrow</string>
+    <string name="t_progress_initials" formatted="false">Direction arrow</string>
     <string name="t_progress_app_color" formatted="false">Transfer app colour</string>
     <string name="c_upload">Upload</string>
     <string name="c_download">Download</string>
     <string name="transfer_hint">App colours identify transfers (WhatsApp green, Instagram pink). Turn app colour off to use upload/download colours; a custom progress colour overrides both. Detection needs a progress notification. ↕ means the direction was not provided.</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">Animation</string>
+    <string name="sec_colour">Colour</string>
+    <string name="sec_shape">Shape &amp; motion</string>
+    <string name="sec_when">When to light up</string>
+    <string name="sec_black">On the black screen</string>
+    <string name="sec_messages">Messages</string>
+    <string name="sec_gestures">Gestures &amp; protection</string>
+    <string name="sec_timing">Timing &amp; brightness</string>
+    <string name="sec_ring_on">While you use the phone</string>
+    <string name="sec_charging">Charging &amp; battery</string>
+    <string name="sec_transfers">Downloads &amp; uploads</string>
+    <string name="sec_apps">Apps</string>
+    <string name="sec_filters">Filters</string>
+    <string name="sec_power">Power saving</string>
+    <string name="sec_appearance">Appearance</string>
+    <string name="sec_tools">Tools</string>
 </resources>

@@ -11,7 +11,7 @@ object ProgressStore {
 
     data class Item(
         val pkg: String, val fraction: Float, val color: Int, val updated: Long,
-        val initial: String = "↕", val direction: TransferDirection = TransferDirection.UNKNOWN,
+        val direction: TransferDirection = TransferDirection.UNKNOWN,
     )
 
     private val items = LinkedHashMap<String, Item>()
@@ -37,15 +37,15 @@ object ProgressStore {
     @Synchronized
     fun update(
         key: String, pkg: String, fraction: Float?, color: Int,
-        initial: String = "↕", direction: TransferDirection = TransferDirection.UNKNOWN,
+        direction: TransferDirection = TransferDirection.UNKNOWN,
         now: Long = SystemClock.uptimeMillis(),
     ): Boolean {
         val old = current(now)
         if (fraction == null) return items.remove(key) != null
         items.remove(key)
-        items[key] = Item(pkg, fraction, color, now, initial, direction)
+        items[key] = Item(pkg, fraction, color, now, direction)
         return old == null || old.pkg != pkg || percent(old.fraction) != percent(fraction) || old.color != color ||
-            old.initial != initial || old.direction != direction
+            old.direction != direction
     }
 
     @Synchronized

@@ -564,7 +564,7 @@ object LedController {
 
     /** A gauge either host can show instead of the notification light. */
     data class Meter(
-        val fraction: Float, val color: Int, val label: String? = null, val indeterminate: Boolean = false,
+        val fraction: Float, val color: Int, val icon: MeterIcon = MeterIcon.NONE, val indeterminate: Boolean = false,
     )
 
     /** What the screen-on ring currently shows as a gauge (null = the notification light). */
@@ -599,11 +599,11 @@ object LedController {
                 it.direction == TransferDirection.DOWNLOAD -> prefs.downloadColor
                 else -> it.color
             }
-            val label = if (prefs.progressInitials) "${it.initial} ${it.direction.arrow}" else null
-            return Meter(it.fraction.coerceAtLeast(0f), color, label, it.fraction < 0f)
+            val icon = if (prefs.progressArrow) it.direction.icon else MeterIcon.NONE
+            return Meter(it.fraction.coerceAtLeast(0f), color, icon, it.fraction < 0f)
         }
         if (prefs.chargeLed && plugged && (!notifRing || SystemClock.uptimeMillis() < chargeFlashUntil)) {
-            return Meter(batteryPct / 100f, prefs.chargeColor(batteryPct))
+            return Meter(batteryPct / 100f, prefs.chargeColor(batteryPct), MeterIcon.BOLT)
         }
         return null
     }

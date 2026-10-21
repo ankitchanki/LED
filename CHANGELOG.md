@@ -1,3 +1,28 @@
+# Glow LED v2.4.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Charging and transfers
+- **Charging bolt:** while charging, a small ⚡ sits in a gap at the bottom middle of the ring, so the
+  charging ring can't be mistaken for a notification. Each time the battery gains a percent
+  (e.g. 88 → 89 %) the bolt flares up - brighter, bigger, with a glow - for a moment.
+- **Transfers show only the sign:** the app letter (W, I, G…) is gone; just ↑ upload, ↓ download or
+  ↕ unknown sits on the ring itself (bottom middle, in the same small gap), so nothing hangs below the
+  ring. *Screen on → Direction arrow* switches it off.
+
+## Settings, organised
+Every tab is grouped under clear headings:
+- **Style:** Animation · Colour · Shape & motion
+- **Screen off:** When to light up · On the black screen · Messages · Gestures & protection ·
+  Timing & brightness
+- **Screen on:** While you use the phone · Charging & battery · Downloads & uploads
+- **Alerts:** Apps · Filters · **Battery:** Power saving · Quiet hours · **Settings:** Appearance · Tools
+
+Battery % now appears in one place (*Screen on → Charging & battery*) instead of two.
+
+---
+
 # Glow LED v2.3.3
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

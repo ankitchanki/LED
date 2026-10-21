@@ -433,7 +433,7 @@ class AodSession(
     private fun updateMeters() {
         led.notificationRingVisible = preview || !NotificationStore.isEmpty()
         val meter = LedController.computeMeter(!NotificationStore.isEmpty())
-        led.setMeter(meter?.fraction, meter?.color ?: 0, meter?.label, meter?.indeterminate ?: false)
+        led.setMeter(meter?.fraction, meter?.color ?: 0, meter?.icon ?: com.glowled.app.core.MeterIcon.NONE, meter?.indeterminate ?: false)
         led.setBattery(LedController.batteryPercent())
         root.requestLayout()
     }

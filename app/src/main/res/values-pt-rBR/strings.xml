@@ -240,15 +240,32 @@
     <string name="tutorial_test">Toque na pílula Teste e bloqueie o aparelho com o botão liga/desliga. Com acesso às notificações e luz de tela apagada ativados, a tela preta aparece após uma breve espera. A prévia ao deslizar para baixo funciona sem bloquear o aparelho.</string>
     <string name="tutorial_setup">Use os cartões de Configuração para liberar notificações e sobreposição ou Acessibilidade. A Acessibilidade também apaga a tela imediatamente. Confira inicialização automática e restrições de bateria. A barra indica as permissões obrigatórias que faltam.</string>
     <string name="tutorial_styles">Estilo oferece 11 animações, incluindo Órbita dupla e Cintilar. Ajuste cor, velocidade, tamanho, brilho e modo de vários apps. Posição da câmera alinha o anel. Tema e resposta tátil ficam em Ajustes e não alteram o fundo preto das notificações.</string>
-    <string name="tutorial_transfers">Notificações de progresso mostram o avanço no anel. Uma letra identifica o app: ↑ envio, ↓ download e ↕ direção desconhecida. Progresso sem porcentagem usa um giro. Escolha cores por app ou por direção em Tela acesa. Sem notificação de progresso, não é possível detectar a transferência.</string>
-    <string name="tutorial_battery">A porcentagem da bateria aparece abaixo do anel com a tela acesa e na tela preta. O anel de carga usa suas cores por nível; transferências têm prioridade temporária. A tela preta respeita o tempo limite e a economia de energia. Atualizações de bateria não acendem a tela sozinhas.</string>
+    <string name="tutorial_transfers">Quando um app mostra uma notificação de progresso, o anel mostra o andamento da transferência, com uma pequena seta na parte de baixo do anel: ↑ upload, ↓ download, ↕ direção desconhecida. Progresso sem porcentagem usa um giro. Use as cores dos apps ou escolha cores de upload/download em Tela ligada. Transferências sem notificação de progresso não são detectadas.</string>
+    <string name="tutorial_battery" formatted="false">Ao carregar, o anel se enche com o nível da bateria nas suas cores de nível baixo, médio e alto, com um pequeno raio na parte de baixo do anel que brilha a cada 1% ganho. Ao conectar o carregador com o celular bloqueado, ele aparece por alguns segundos; transferências têm prioridade. A % da bateria abaixo do anel é opcional (Tela ligada → Carga e bateria).</string>
     <string name="tutorial_messages">Toque no ícone de um app na tela preta para ler, responder ou marcar como lido, se o app permitir. Responder pode pedir desbloqueio. Dois toques mostram a tela de bloqueio. Alertas controla apps, cores, notificações silenciosas e Não perturbe.</string>
     <string name="tutorial_power">A tela apagada é uma tela preta com o display ligado, não o AOD nativo. Pixels pretos apagam em OLED; a luz de fundo de LCD continua visível. Bateria oferece horário silencioso, limite de carga e de quadros e lembretes por movimento. Ajustes inclui backup, restauração, idioma e log.</string>
     <string name="t_battery_indicator" formatted="false">Bateria %</string>
     <string name="t_charge_aod">Carga com tela off</string>
-    <string name="t_progress_initials" formatted="false">Letra e seta</string>
+    <string name="t_progress_initials" formatted="false">Seta de direção</string>
     <string name="t_progress_app_color" formatted="false">Cor do app</string>
     <string name="c_upload">Envio</string>
     <string name="c_download">Download</string>
     <string name="transfer_hint">As cores identificam apps (WhatsApp verde, Instagram rosa). Desative a cor do app para usar cores por direção; a cor de progresso personalizada tem prioridade. É preciso uma notificação de progresso. ↕ indica direção desconhecida.</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">Animação</string>
+    <string name="sec_colour">Cor</string>
+    <string name="sec_shape">Forma e movimento</string>
+    <string name="sec_when">Quando acender</string>
+    <string name="sec_black">Na tela preta</string>
+    <string name="sec_messages">Mensagens</string>
+    <string name="sec_gestures">Gestos e proteção</string>
+    <string name="sec_timing">Tempo e brilho</string>
+    <string name="sec_ring_on">Enquanto usa o celular</string>
+    <string name="sec_charging">Carga e bateria</string>
+    <string name="sec_transfers">Downloads e uploads</string>
+    <string name="sec_apps">Apps</string>
+    <string name="sec_filters">Filtros</string>
+    <string name="sec_power">Economia de energia</string>
+    <string name="sec_appearance">Aparência</string>
+    <string name="sec_tools">Ferramentas</string>
 </resources>
