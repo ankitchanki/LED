@@ -1,3 +1,22 @@
+# Glow LED v2.3.3
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+- **Charging ring when you plug in on the lock screen (fix):** the event log showed HyperOS switching the
+  screen on by itself the moment a charger is connected (for its own charging animation). Glow LED then
+  treated the phone as "in use" and only drew the screen-on ring - which Android hides behind the lock
+  screen when Accessibility is off. Now, whenever the charger is plugged in while the phone is locked
+  (screen off, or switched on by the system), the charging ring is shown on the black screen for a few
+  seconds, which is allowed above the lock screen.
+- Every charger connect / disconnect is now written to the event log, with the reason when the ring isn't
+  shown.
+- Tip: keep Glow LED's **Accessibility** switched on (Setup tab). HyperOS sometimes turns it off after an
+  update; without it the lock screen can flash before the light and the screen-on ring can't show over the
+  lock screen.
+
+---
+
 # Glow LED v2.3.2
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

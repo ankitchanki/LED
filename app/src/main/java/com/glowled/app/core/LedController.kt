@@ -209,14 +209,10 @@ object LedController {
                     syncBatteryWatch(pluggedHint = true)
                     updateOverlay()
                     notifyListeners()
-                    // Plugged in with the screen off: show the charging ring on the black screen for
-                    // a moment (like a phone's charging animation), then let the screen go off again.
-                    if (!isInteractive() && !aodVisible && prefs.chargeLed && prefs.aodEnabled) {
-                        DebugLog.add("Charger connected while the screen is off - showing the charging ring")
-                        startAod(pulse = true, durationOverrideSec = CHARGE_FLASH_AOD_SEC)
-                    }
+                    showChargingOnLockScreen()
                 }
                 Intent.ACTION_POWER_DISCONNECTED -> {
+                    DebugLog.add("Charger disconnected, ${state()}")
                     syncBatteryWatch(pluggedHint = false)
                     updateOverlay()
                     notifyListeners()
@@ -654,6 +650,31 @@ object LedController {
             } catch (_: Exception) {
             }
             batteryWatching = false
+        }
+    }
+
+    /**
+     * Charger plugged in while the phone is locked: show the charging ring on the black screen for
+     * a moment (like a phone's charging animation), then let the screen go off again.
+     * Covers the screen being off, and being on because the ROM wakes it for its own charging
+     * animation (HyperOS does): an ordinary overlay window is hidden by the lock screen, so the
+     * black screen (allowed above the lock screen) is used unless the accessibility overlay - which
+     * shows above it - is available.
+     */
+    private fun showChargingOnLockScreen() {
+        val on = isInteractive()
+        val locked = isLocked()
+        DebugLog.add("Charger connected, ${state()}")
+        when {
+            !prefs.chargeLed -> DebugLog.add("Charging ring is off (Screen on → Charging ring)")
+            !prefs.aodEnabled -> DebugLog.add("Screen-off light is off, charging ring shown only while the screen is on")
+            aodVisible -> Unit // the light is up: it switches to the charging ring for a moment by itself
+            on && !locked -> Unit // in use: the screen-on ring shows it
+            on && LedAccessibilityService.instance != null -> Unit // the accessibility overlay shows above the lock screen
+            else -> {
+                DebugLog.add("Showing the charging ring on the black screen")
+                startAod(pulse = true, durationOverrideSec = CHARGE_FLASH_AOD_SEC)
+            }
         }
     }
 
