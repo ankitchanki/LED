@@ -8,6 +8,8 @@
     <color name="surface_high">#FFE4E7EE</color>
     <color name="outline">#1F000000</color>
     <color name="glass_stroke">#14000000</color>
+    <!-- Floating Test pill: see-through so the settings show behind it. -->
+    <color name="pill_bg">#C7FFFFFF</color>
     <color name="dialog_surface">#F7FFFFFF</color>
     <color name="accent">#FF0097A7</color>
     <color name="accent_dim">#3300ACC1</color>

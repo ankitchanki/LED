@@ -63,12 +63,25 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
 
     // ---- containers ----------------------------------------------------------------------------
 
+    private val pageCols = mutableListOf<LinearLayout>()
+    private var bottomClearance = 0
+
+    /**
+     * Extra space at the bottom of every page, so its last row can scroll clear of whatever floats
+     * over it (the Test pill and the navigation bar).
+     */
+    fun setBottomClearance(px: Int) {
+        bottomClearance = px
+        pageCols.forEach { it.setPadding(it.paddingLeft, it.paddingTop, it.paddingRight, dp(12) + px) }
+    }
+
     /** A pager page: scrolls only if its content is taller than the space available. */
     fun page(): Pair<View, LinearLayout> {
         val col = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(12), dp(4), dp(12), dp(12))
+            setPadding(dp(12), dp(4), dp(12), dp(12) + bottomClearance)
         }
+        pageCols += col
         val scroll = NestedScrollView(context).apply {
             isFillViewport = true
             overScrollMode = View.OVER_SCROLL_NEVER

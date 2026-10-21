@@ -1,3 +1,22 @@
+# Glow LED v2.3.1
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+- **Floating Test pill:** small, see-through (iOS-style) and floating above the settings instead of
+  taking a whole row at the bottom; pages scroll underneath it and end with room to scroll their last
+  row clear of it.
+- **No screen wake-ups while charging:** locking the phone on the charger turned the screen back on for
+  the charging ring whenever the charging ring was enabled (the default). That is now a separate switch,
+  *Screen off → Charging when off*, off by default.
+- **Spinners don't wake the screen:** background tasks that show an endless spinner ("checking for
+  updates", backups) could start the screen-off light on every lock. Only a transfer with real progress
+  can now; spinners still show on the screen-on ring.
+- **Smoother drawing:** the main, Apps and camera-position screens no longer paint a second full-screen
+  background over the window's own (one less full-screen fill every frame).
+
+---
+
 # Glow LED v2.3.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
@@ -8,7 +27,7 @@ later and keeps your settings.
 - **Cleaner setup:** equal-size permission cards with status and details on tap. App theme and haptics now live in a dedicated Settings tab.
 - **11 styles:** added Twin orbit and Sparkle; all existing style choices are preserved.
 - **Transfers:** determinate progress and indeterminate spinners, an optional app initial and direction arrow, brand/per-app colours, and configurable upload/download colours. Unknown direction stays explicitly unknown. Apps must post a progress notification; no network traffic is inspected.
-- **Battery on both views:** optional battery percentage on the screen-on overlay and screen-off AOD. Charging and transfer gauges also work on the black AOD screen; transfer updates do not wake it. Charging-only AOD can start when locking, subject to the existing timeout and power guards.
+- **Battery on both views:** optional battery percentage on the screen-on overlay and screen-off AOD. Charging and transfer gauges also work on the black AOD screen; transfer updates do not wake it. Charging alone can light the screen-off view when you turn on *Screen off → Charging when off*.
 - **Release updates:** the download button follows the latest GitHub release; CI publishes a stable GlowLED-latest.apk asset alongside the versioned APK and checksums.
 - **Black AOD:** disabled Force Dark recolouring, window transparency and system contrast scrims. The black surface is shared by activity and accessibility-overlay modes. LCD backlights cannot achieve OLED pixel-off black.
 - **Battery % is opt-in** (*Screen on* or *Screen off → Battery %*): when on, the screen-on window stays up and the battery level is watched on battery power too, so it is off by default to keep the background drain at zero.

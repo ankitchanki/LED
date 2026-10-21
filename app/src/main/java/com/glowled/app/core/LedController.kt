@@ -568,9 +568,14 @@ object LedController {
     private var chargeFlashUntil = 0L
     private var batteryWatching = false
 
-    /** The same indicators are used by the screen-on overlay and the black AOD session. */
+    /**
+     * Whether there is anything for the screen-off light to show. Only things worth waking the
+     * screen for: unread notifications, a transfer with real progress (not just a spinner - many
+     * background tasks show one), and charging only if the user asked for it.
+     */
     fun hasAodContent(): Boolean = !NotificationStore.isEmpty() ||
-        (prefs.progressLed && ProgressStore.current() != null) || (prefs.chargeLed && plugged)
+        (prefs.progressLed && (ProgressStore.current()?.fraction ?: -1f) >= 0f) ||
+        (prefs.chargeLed && prefs.chargeAod && plugged)
 
     fun batteryPercent(): Int? = if (prefs.batteryIndicator) batteryPct else null
 

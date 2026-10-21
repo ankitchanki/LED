@@ -1,2 +1,2 @@
-ffae79e05ad0c797ec494726021eccc96cfe6b58ee2965bda8a0b7fb7057d718  GlowLED-latest.apk
-ffae79e05ad0c797ec494726021eccc96cfe6b58ee2965bda8a0b7fb7057d718  GlowLED-v2.3.0.apk
+1444cee002f7bcff14265c25d351f29976d26fce72ffda29a879a87a401fb0f2  GlowLED-latest.apk
+1444cee002f7bcff14265c25d351f29976d26fce72ffda29a879a87a401fb0f2  GlowLED-v2.3.1.apk

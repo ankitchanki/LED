@@ -242,6 +242,7 @@
     <string name="tutorial_messages">On the black notification screen, tap an app icon to read its notification, reply or mark it as read when the app supports those actions. Reply may require unlocking. Double-tap to reveal the lock screen. Alerts controls allowed apps, per-app colours, silent notifications and Do Not Disturb.</string>
     <string name="tutorial_power">The screen-off view wakes the display and draws black; it is not the device’s native hardware AOD. Black pixels switch off on OLED, but LCD backlights can still glow. Battery offers quiet hours, low-battery protection, frame-rate limits and motion reminders. More also contains backup, restore, language and the event log.</string>
     <string name="t_battery_indicator" formatted="false">Battery %</string>
+    <string name="t_charge_aod">Charging when off</string>
     <string name="t_progress_initials" formatted="false">Letter &amp; arrow</string>
     <string name="t_progress_app_color" formatted="false">Transfer app colour</string>
     <string name="c_upload">Upload</string>

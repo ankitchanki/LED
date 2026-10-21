@@ -241,6 +241,7 @@
     <string name="tutorial_messages">Toque no ícone de um app na tela preta para ler, responder ou marcar como lido, se o app permitir. Responder pode pedir desbloqueio. Dois toques mostram a tela de bloqueio. Alertas controla apps, cores, notificações silenciosas e Não perturbe.</string>
     <string name="tutorial_power">A tela apagada é uma tela preta com o display ligado, não o AOD nativo. Pixels pretos apagam em OLED; a luz de fundo de LCD continua visível. Bateria oferece horário silencioso, limite de carga e de quadros e lembretes por movimento. Mais inclui backup, restauração, idioma e log.</string>
     <string name="t_battery_indicator" formatted="false">Bateria %</string>
+    <string name="t_charge_aod">Carga com tela off</string>
     <string name="t_progress_initials" formatted="false">Letra e seta</string>
     <string name="t_progress_app_color" formatted="false">Cor do app</string>
     <string name="c_upload">Envio</string>

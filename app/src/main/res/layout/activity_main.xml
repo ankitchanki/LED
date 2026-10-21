@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Compact single screen: header, swipeable sections, thumb dock. Pull down for one-handed mode. -->
-<com.glowled.app.view.ReachLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Compact single screen: header and swipeable sections, with the Test pill floating above them.
+     Pull down for one-handed mode. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<com.glowled.app.view.ReachLayout
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:orientation="vertical">
-    <!-- Background: GlassBackdrop (soft colour glows behind the frosted cards), set in code. -->
 
     <!-- Header: sits under the transparent status bar (top inset added in code). -->
     <LinearLayout
@@ -105,30 +108,16 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Floating Test pill; swipe down anywhere at the top of a page for live preview. -->
-    <LinearLayout
-        android:id="@+id/dock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="10dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnTest"
-            style="@style/GlowDockButton"
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:minWidth="168dp"
-            android:elevation="8dp"
-            android:layout_marginVertical="8dp"
-            android:text="@string/action_test_short"
-            app:backgroundTint="@color/accent"
-            android:textColor="@color/black"
-            app:iconTint="@color/black"
-            app:icon="@drawable/ic_bell" />
-    </LinearLayout>
 </com.glowled.app.view.ReachLayout>
+
+    <!-- Floating, see-through Test pill: takes no layout space, the settings scroll underneath it.
+         Its bottom margin (above the navigation bar) is set in code. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTest"
+        style="@style/GlowPill"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/pill_height"
+        android:layout_gravity="bottom|center_horizontal"
+        android:text="@string/action_test_short"
+        app:icon="@drawable/ic_bell" />
+</FrameLayout>

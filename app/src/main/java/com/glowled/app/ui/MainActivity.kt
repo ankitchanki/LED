@@ -82,8 +82,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 /**
- * Single-screen home: header with master switch, live preview, swipeable setting pages, and a
- * thumb dock. Every setting lives here; nothing hides behind a menu.
+ * Single-screen home: header with master switch, swipeable setting pages (pull down for the live
+ * preview) and a floating Test pill. Every setting lives here; nothing hides behind a menu.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -200,7 +200,6 @@ class MainActivity : AppCompatActivity() {
         reach = findViewById(R.id.root)
         reach.spacer = findViewById(R.id.reachSpace)
         reach.canContentScrollUp = { pageViews.getOrNull(pager.currentItem)?.canScrollVertically(-1) == true }
-        reach.dragZoneBottom = { findViewById<View>(R.id.dock).top }
         val back = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() = reach.close()
         }
@@ -299,13 +298,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun applyInsets() {
         val header = findViewById<View>(R.id.header)
-        val dock = findViewById<View>(R.id.dock)
+        val pill = findViewById<View>(R.id.btnTest)
         val headerTop = header.paddingTop
-        val dockBottom = dock.paddingBottom
+        val pillHeight = resources.getDimensionPixelSize(R.dimen.pill_height)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
             header.updatePadding(top = bars.top + headerTop, left = bars.left + dp(20), right = bars.right + dp(20))
-            dock.updatePadding(bottom = bars.bottom + dockBottom, left = bars.left + dp(16), right = bars.right + dp(16))
+            // The pill floats just above the navigation bar; the pages scroll underneath it and end
+            // with enough empty space that their last row can always be scrolled clear of it.
+            (pill.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = bars.bottom + dp(PILL_GAP_DP)
+            pill.requestLayout()
+            ui.setBottomClearance(bars.bottom + dp(PILL_GAP_DP) + pillHeight + dp(8))
             insets
         }
     }
@@ -549,6 +552,7 @@ class MainActivity : AppCompatActivity() {
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_aod), "aod_enabled", true),
             Toggle(getString(R.string.t_battery_indicator), "battery_indicator", false),
+            Toggle(getString(R.string.t_charge_aod), "charge_aod", false) { prefs.aodEnabled && prefs.chargeLed },
             Toggle(getString(R.string.t_on_screen_off), "aod_on_screen_off", true, aodOn),
             Toggle(getString(R.string.t_on_new), "aod_on_new", true, aodOn),
             Toggle(getString(R.string.t_pocket), "proximity", true, aodOn),
@@ -1091,6 +1095,7 @@ class MainActivity : AppCompatActivity() {
         private const val PREVIEW_HOLE_DP = 14
         private val PREVIEW_ICON_KEYS = setOf("aod_icons", "show_app_info", "aod_enabled")
         private const val PREVIEW_DROP_DELAY_MS = 220L
+        private const val PILL_GAP_DP = 12
         private const val DROP_PREVIEW_DP = 26f
         private const val UI_STATE = "ui_state"
         private const val KEY_REACH_OPEN = "reach_open"

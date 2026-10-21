@@ -91,6 +91,8 @@ class Prefs(context: Context) {
     val uploadColor get() = int("upload_color", 0xFF00E676.toInt())
     val downloadColor get() = int("download_color", 0xFF2979FF.toInt())
     val chargeLed get() = bool("charge_led", true)
+    /** Light up the screen-off view for charging alone (otherwise it only shows with notifications). */
+    val chargeAod get() = bool("charge_aod", false)
     val chargeColorLow get() = int("charge_color_low", 0xFFFF1744.toInt())
     val chargeColorMid get() = int("charge_color_mid", 0xFFFFC400.toInt())
     val chargeColorHigh get() = int("charge_color_high", 0xFF00E676.toInt())
