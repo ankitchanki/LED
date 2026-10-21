@@ -36,7 +36,7 @@ are switched off, so only the light itself uses power.
 | **App under the camera** | One UI AOD-style monochrome glyphs under the ring (grey; the newest in its notification colour), or full-colour app icons; tap one to read who sent what (text, or 📷 Photo / 🎥 Video / 🎤 Voice / 📄 Document) and tap the card to open the chat. A liquid droplet drips from the camera when a notification arrives. Double-tap to wake. |
 | **Screen on** | A small light around the camera, also over the lock screen. |
 | **Charging ring** | While charging, the ring fills with your battery level from the top, in your own colour per level (0–19 %, 20–79 %, 80–100 %), with a small **⚡ bolt in the gap at the bottom middle** of the ring. Every time the battery goes up 1 % (88 → 89 %) the bolt **flares brighter** for a moment. Plug in while the phone is locked or the screen is off and the ring shows for 5 seconds; turn on *Charging when off* to keep it on the black screen the whole time. Optional battery % under *Screen on → Charging & battery*. |
-| **Download ring** | A download, upload or install with a progress notification shows a gauge or spinner around the camera, with just a small **↓ / ↑ / ↕ arrow** sitting in the ring's bottom gap (no letters). App colours or your own upload/download colours. Appears on screen-on and active AOD views. |
+| **Download ring** | A download, upload or install with a progress notification shows a gauge or spinner around the camera, with just a small **↓ / ↑ arrow** (↕ if the notification doesn't say which way) sitting in the ring's bottom gap (no letters). App colours or your own upload/download colours. Appears on screen-on and active AOD views. |
 | **Reply & Mark as read** | Tap an app icon on the always-on screen, then **Reply** (type and send without opening the app; asks to unlock first) or **Mark as read**, using the app's own notification buttons. |
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
@@ -73,10 +73,10 @@ are switched off, so only the light itself uses power.
 |:---:|:---:|
 | <img src="docs/screenshots/v2.4/10-light.png" width="220" alt="Screen on tab in light mode" /> | <img src="docs/screenshots/v2.4/11-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
 
-**Rings with icons:** charging at 42 % and 89 % (bolt), download (↓), upload (↑) and sync (↕). The icon sits in a small gap
+**Rings with icons:** charging at 42 % and 89 % (bolt), download (↓), upload (↑), and ↕ when the app does not say which way the transfer is going. The icon sits in a small gap
 at the bottom middle of the ring, in the ring's colour.
 
-<img src="docs/screenshots/v2.4/gauges.png" width="600" alt="Five rings: amber charging ring at 42 percent with bolt, green charging ring with bolt, blue download ring with down arrow, green upload ring with up arrow, green ring with up-down arrow" />
+<img src="docs/screenshots/v2.4/gauges.png" width="600" alt="Five rings: amber charging ring at 42 percent with bolt, green charging ring with bolt, blue download ring with down arrow, green upload ring with up arrow, green ring with up-down arrow for an unknown direction" />
 
 **Bolt flare:** each time the battery goes up by 1 %, the bolt grows and glows brighter for about a second (left: resting, right: flaring).
 
