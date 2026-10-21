@@ -53,7 +53,6 @@
     <string name="setup_all_done">All set</string>
 
     <!-- Tabs and dock -->
-    <string name="action_preview">Preview</string>
     <string name="action_test_short">Test</string>
     <string name="tab_setup">Setup</string>
     <string name="tab_style">Style</string>
@@ -242,9 +241,9 @@
     <string name="tutorial_battery">Battery percentage can appear below the ring on both the screen-on overlay and the black screen-off view. The charging ring uses your low, medium and high battery colours; transfers temporarily take priority. Screen-off indicators respect your timeout and power-saving settings. Battery updates do not wake the screen by themselves.</string>
     <string name="tutorial_messages">On the black notification screen, tap an app icon to read its notification, reply or mark it as read when the app supports those actions. Reply may require unlocking. Double-tap to reveal the lock screen. Alerts controls allowed apps, per-app colours, silent notifications and Do Not Disturb.</string>
     <string name="tutorial_power">The screen-off view wakes the display and draws black; it is not the device’s native hardware AOD. Black pixels switch off on OLED, but LCD backlights can still glow. Battery offers quiet hours, low-battery protection, frame-rate limits and motion reminders. More also contains backup, restore, language and the event log.</string>
-    <string name="t_battery_indicator">Battery % · screen on &amp; off</string>
-    <string name="t_progress_initials">Transfer app letter &amp; direction</string>
-    <string name="t_progress_app_color">Use transfer app colour</string>
+    <string name="t_battery_indicator" formatted="false">Battery %</string>
+    <string name="t_progress_initials" formatted="false">Letter &amp; arrow</string>
+    <string name="t_progress_app_color" formatted="false">Transfer app colour</string>
     <string name="c_upload">Upload</string>
     <string name="c_download">Download</string>
     <string name="transfer_hint">App colours identify transfers (WhatsApp green, Instagram pink). Turn app colour off to use upload/download colours; a custom progress colour overrides both. Detection needs a progress notification. ↕ means the direction was not provided.</string>

@@ -81,7 +81,11 @@ class Prefs(context: Context) {
     val overlayLockOnly get() = bool("overlay_lock_only", false)
 
     // Charging and download rings (screen on, also over the lock screen)
-    val batteryIndicator get() = bool("battery_indicator", true)
+    /**
+     * Battery % under the ring. Off by default: when on, the screen-on window stays up and the
+     * battery level is watched even on battery power.
+     */
+    val batteryIndicator get() = bool("battery_indicator", false)
     val progressInitials get() = bool("progress_initials", true)
     val progressAppColor get() = bool("progress_app_color", true)
     val uploadColor get() = int("upload_color", 0xFF00E676.toInt())

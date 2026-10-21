@@ -184,8 +184,11 @@ class MainActivity : AppCompatActivity() {
         // Shizuku's binder arrives asynchronously; refresh the setup card when it does.
         Shizuku.addBinderReceivedListenerSticky(shizukuListener)
         buildSetup()
-        if (savedInstanceState == null && !getSharedPreferences(UI_STATE, MODE_PRIVATE).getBoolean("tutorial_seen", false)) {
-            window.decorView.post { showTutorial(firstRun = true) }
+        val uiState = getSharedPreferences(UI_STATE, MODE_PRIVATE)
+        if (savedInstanceState == null && !uiState.getBoolean("tutorial_seen", false)) {
+            // Shown once, however it is closed (Done, Close or tapping outside); More → Tutorial reopens it.
+            uiState.edit().putBoolean("tutorial_seen", true).apply()
+            window.decorView.post { showTutorial() }
         }
         // First run / something missing: open on Setup so the user sees what to do.
         if (savedInstanceState == null && setupIncomplete) pager.setCurrentItem(0, false)
@@ -545,7 +548,7 @@ class MainActivity : AppCompatActivity() {
         val iconsOn = { prefs.aodEnabled && prefs.showAppInfo }
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_aod), "aod_enabled", true),
-            Toggle(getString(R.string.t_battery_indicator), "battery_indicator", true),
+            Toggle(getString(R.string.t_battery_indicator), "battery_indicator", false),
             Toggle(getString(R.string.t_on_screen_off), "aod_on_screen_off", true, aodOn),
             Toggle(getString(R.string.t_on_new), "aod_on_new", true, aodOn),
             Toggle(getString(R.string.t_pocket), "proximity", true, aodOn),
@@ -579,7 +582,7 @@ class MainActivity : AppCompatActivity() {
             Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false) { prefs.overlayEnabled },
             Toggle(getString(R.string.t_charge), "charge_led", true),
             Toggle(getString(R.string.t_progress), "progress_led", true),
-            Toggle(getString(R.string.t_battery_indicator), "battery_indicator", true),
+            Toggle(getString(R.string.t_battery_indicator), "battery_indicator", false),
             Toggle(getString(R.string.t_progress_initials), "progress_initials", true) { prefs.progressLed },
             Toggle(getString(R.string.t_progress_app_color), "progress_app_color", true) { prefs.progressLed },
         ))
@@ -683,7 +686,7 @@ class MainActivity : AppCompatActivity() {
         return page
     }
 
-    private fun showTutorial(firstRun: Boolean = false) {
+    private fun showTutorial() {
         val sections = listOf(
             R.string.tutorial_swipe, R.string.tutorial_test, R.string.tutorial_setup,
             R.string.tutorial_styles, R.string.tutorial_transfers, R.string.tutorial_battery,
@@ -696,11 +699,8 @@ class MainActivity : AppCompatActivity() {
                 .setMessage(sections[step])
                 .setPositiveButton(if (step == sections.lastIndex) R.string.tutorial_done else R.string.tutorial_next) { _, _ ->
                     if (step < sections.lastIndex) { step++; showStep() }
-                    else if (firstRun) getSharedPreferences(UI_STATE, MODE_PRIVATE).edit().putBoolean("tutorial_seen", true).apply()
                 }
-                .setNegativeButton(R.string.tutorial_later) { _, _ ->
-                    if (firstRun) getSharedPreferences(UI_STATE, MODE_PRIVATE).edit().putBoolean("tutorial_seen", true).apply()
-                }
+                .setNegativeButton(R.string.tutorial_later, null)
             if (step > 0) dialog.setNeutralButton(R.string.tutorial_back) { _, _ -> step--; showStep() }
             dialog.show()
         }
