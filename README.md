@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/v2/overview.png" alt="Glow LED screenshots: always-on icons, message peek with Reply and Mark as read, charging and download ring, one-handed mode, Settings tab" />
+  <img src="docs/screenshots/v2.4/overview.png" alt="Glow LED screenshots: always-on icons, message peek with Reply and Mark as read, charging ring with a bolt, Screen off settings, one-handed mode, Settings tab" />
 </p>
 
 ---
@@ -32,16 +32,16 @@ are switched off, so only the light itself uses power.
 | **Cutout aware** | Detects the camera punch-hole, pill or notch automatically (exact shape on Android 12+). Fine-tune by dragging, with sliders, or in 1 px steps. Keeps its position when the screen resolution changes (Samsung FHD+/QHD+). |
 | **11 animations** | Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static ring, Edge lighting, Edge pulse, Twin orbit, Sparkle. Adjustable speed, thickness, gap, intensity and glow. |
 | **Colours** | Per-app colour you pick, or the app's own notification colour, or a colour taken from its icon. With WhatsApp + Telegram + Instagram waiting, the ring splits into each app's colour (or cycles, or shows only the newest). |
-| **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate, flicker-free. Timeout, optional reminder pulses, pocket detection, burn-in protection. Double-tap to wake, tap to show the app. |
+| **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate, flicker-free (on Xiaomi/HyperOS the panel only wakes after the black frame is drawn, so there is no lock-screen flash). Timeout, optional reminder pulses, pocket detection, burn-in protection. Double-tap to wake, tap to show the app. |
 | **App under the camera** | One UI AOD-style monochrome glyphs under the ring (grey; the newest in its notification colour), or full-colour app icons; tap one to read who sent what (text, or 📷 Photo / 🎥 Video / 🎤 Voice / 📄 Document) and tap the card to open the chat. A liquid droplet drips from the camera when a notification arrives. Double-tap to wake. |
 | **Screen on** | A small light around the camera, also over the lock screen. |
-| **Charging ring** | Optional battery percentage on screen-on and AOD views. While charging, the ring fills with your battery level from the top, in your own colour per level (0–19 %, 20–79 %, 80–100 %). Shows for a few seconds when you plug in, then whenever no notification is waiting. Switch it off any time. |
-| **Download ring** | A download, upload or install with a progress notification shows a gauge or spinner around the camera, an optional app initial and direction arrow, with app colours or your upload/download colours. Appears on screen-on and active AOD views. |
+| **Charging ring** | While charging, the ring fills with your battery level from the top, in your own colour per level (0–19 %, 20–79 %, 80–100 %), with a small **⚡ bolt in the gap at the bottom middle** of the ring. Every time the battery goes up 1 % (88 → 89 %) the bolt **flares brighter** for a moment. Plug in while the phone is locked or the screen is off and the ring shows for 5 seconds; turn on *Charging when off* to keep it on the black screen the whole time. Optional battery % under *Screen on → Charging & battery*. |
+| **Download ring** | A download, upload or install with a progress notification shows a gauge or spinner around the camera, with just a small **↓ / ↑ / ↕ arrow** sitting in the ring's bottom gap (no letters). App colours or your own upload/download colours. Appears on screen-on and active AOD views. |
 | **Reply & Mark as read** | Tap an app icon on the always-on screen, then **Reply** (type and send without opening the app; asks to unlock first) or **Mark as read**, using the app's own notification buttons. |
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
-| **One screen** | Every setting is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings) - no menus, equal-size one-line tiles; Settings has app theme, haptics, a repeatable tutorial and the tools. |
+| **Organised settings** | Everything is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings), each split into short named sections: *Style* → Animation · Colour · Shape & motion; *Screen off* → When to light up · On the black screen · Messages · Gestures & protection · Timing & brightness; *Screen on* → While you use the phone · Charging & battery · Downloads & uploads; *Alerts* → Apps · Filters; *Battery* → Power saving · Quiet hours; *Settings* → Appearance · Tools. No menus, equal-size one-line tiles. Setup shows each permission as a compact tile with a tick. |
 | **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). The space above shows a **live preview** of the screen-off light (with the droplet falling into the app icon) that changes as you adjust settings. Swipe up or press back to return. |
 | **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Settings → App theme*. Runs at your display's full refresh rate (120 Hz). |
 | **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
@@ -50,28 +50,42 @@ are switched off, so only the light itself uses power.
 | **Easy updates** | Signed builds that install over each other. *Settings → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
 | **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
-| **Extras** | Quick Settings tile, swipe-down live preview, floating Test pill, first-launch tutorial, themed (monochrome) icon. |
+| **Extras** | Floating see-through **Test** pill that never hides a setting, Quick Settings tile, swipe-down live preview, first-launch tutorial, themed (monochrome) icon. |
 
 ## Screenshots
 
-| Always-on light | Tap an icon: Reply / Mark as read | Charging & download ring |
+| Always-on light | Tap an icon: Reply / Mark as read | Charging (screen off) |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v2/1-always-on.png" width="220" alt="Black always-on screen with a split colour ring around the camera and grey AOD-style app glyphs below it, the newest in green" /> | <img src="docs/screenshots/v2/2-tap-to-read.png" width="220" alt="Message peek under the icons, left-aligned, with Reply and Mark as read buttons" /> | <img src="docs/screenshots/v2/4-charging-download.png" width="220" alt="Screen on tab with charging ring and download ring switches and colour tiles per battery level" /> |
-| Ring split into each app's colour; grey AOD-style glyphs below it, the newest in its notification colour. Everything else stays black. | Who sent what, left-aligned on pure black. **Reply** right there or **Mark as read**. | The ring fills with the battery level while charging, or with a download's progress. |
+| <img src="docs/screenshots/v2.4/1-always-on.png" width="220" alt="Black always-on screen with a split colour ring around the camera and grey AOD-style app glyphs below it, the newest in green" /> | <img src="docs/screenshots/v2.4/2-tap-to-read.png" width="220" alt="Message peek under the icons, left-aligned, with Reply and Mark as read buttons" /> | <img src="docs/screenshots/v2.4/3-charging.png" width="220" alt="Black screen with a green charging ring at 89 percent around the camera and a small bolt in the gap at the bottom of the ring" /> |
+| Ring split into each app's colour; grey AOD-style glyphs below it, the newest in its notification colour. Everything else stays black. | Who sent what, left-aligned on pure black. **Reply** right there or **Mark as read**. | Plug in and the ring fills with the battery level, with a bolt at the bottom middle. |
 
-| One-handed mode | Settings | Português (Brasil) |
+| Setup | Style | Screen off |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v2/6-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2/5-settings.png" width="220" alt="Settings tab: app theme, haptic feedback and tiles for tutorial, official build, get latest, language, back up, restore, event log" /> | <img src="docs/screenshots/v2/7-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
-| Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | App theme, haptics, tutorial, build check, direct download of the latest APK, language, backup, restore, event log. | The whole app in Brazilian Portuguese. |
+| <img src="docs/screenshots/v2.4/4-setup.png" width="220" alt="Setup tab: compact permission tiles with ticks, All set, Shizuku card" /> | <img src="docs/screenshots/v2.4/5-style.png" width="220" alt="Style tab with Animation, Colour and Shape and motion sections" /> | <img src="docs/screenshots/v2.4/6-screen-off.png" width="220" alt="Screen off tab with sections When to light up, On the black screen, Messages, Gestures and protection, Timing and brightness, and the floating Test pill" /> |
+| Permissions as small tiles with a tick; important ones first, Autostart and Shizuku last. | Animation, colour, shape & motion. | Settings grouped by what they do; the see-through **Test** pill floats above. |
 
-<img src="docs/screenshots/v2/9-light.png" width="220" alt="Screen on tab in light mode" />
+| Screen on | One-handed mode | Settings |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/v2.4/7-screen-on.png" width="220" alt="Screen on tab: While you use the phone, Charging and battery with colour per battery level, Downloads and uploads with direction arrow" /> | <img src="docs/screenshots/v2.4/9-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2.4/8-settings.png" width="220" alt="Settings tab: Appearance with app theme and haptic feedback, Tools with tutorial, official build, get latest, language, back up, restore, event log" /> |
+| Ring while on, charging ring colours, download ring with direction arrow. | Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | Appearance (theme, haptics) and Tools (tutorial, build check, latest APK, language, backup, restore, event log). |
 
-<img src="docs/screenshots/v2/8-gauges.png" width="540" alt="Charging ring at 12 % in red, 64 % in amber and 90 % in green, filling clockwise from the top" />
+| Light mode | Português (Brasil) |
+|:---:|:---:|
+| <img src="docs/screenshots/v2.4/10-light.png" width="220" alt="Screen on tab in light mode" /> | <img src="docs/screenshots/v2.4/11-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
+
+**Rings with icons:** charging at 42 % and 89 % (bolt), download (↓), upload (↑) and sync (↕). The icon sits in a small gap
+at the bottom middle of the ring, in the ring's colour.
+
+<img src="docs/screenshots/v2.4/gauges.png" width="600" alt="Five rings: amber charging ring at 42 percent with bolt, green charging ring with bolt, blue download ring with down arrow, green upload ring with up arrow, green ring with up-down arrow" />
+
+**Bolt flare:** each time the battery goes up by 1 %, the bolt grows and glows brighter for about a second (left: resting, right: flaring).
+
+<img src="docs/screenshots/v2.4/bolt-flare.png" width="300" alt="The charging bolt at rest and while flaring, larger and brighter" />
 
 **Droplet:** when a notification arrives, a liquid drop in the app's colour stretches out of the camera,
 breaks off, falls straight down into the middle of the icon row and turns into the app's icon.
 
-<img src="docs/screenshots/v2/droplet.gif" width="450" alt="Animation: the ring grows out of the camera, a green drop stretches out, falls into the middle of the icon row and turns into that app's glyph in the same colour; older apps are grey AOD-style glyphs" />
+<img src="docs/screenshots/v2.4/droplet.gif" width="450" alt="Animation: the ring grows out of the camera, a green drop stretches out, falls into the middle of the icon row and turns into that app's glyph in the same colour; older apps are grey AOD-style glyphs" />
 
 ## How it works (for users)
 
@@ -178,12 +192,13 @@ Without these secrets, CI signs the APK with a throwaway debug key. Such APKs ca
 
 | Problem | Fix |
 |---|---|
-| Test does nothing when the screen turns off (Xiaomi/HyperOS) | Enable the **Accessibility overlay**, then the **Xiaomi lock-screen permissions** step. Check the *Log* tab: it says why the light was skipped. |
+| Test does nothing, or the lock screen flashes first (Xiaomi/HyperOS) | Set *Screen off → Screen-off method* to **Auto**, enable the **Accessibility overlay**, then the **Xiaomi lock-screen permissions** step. Check *Settings → Event log*: it says why the light was skipped. |
 | Light stops after a while | Set battery to *Unrestricted* and allow *Autostart* (Setup list). On Xiaomi also lock the app in Recents. |
 | Screen doesn't turn on when a notification arrives | Enable the accessibility overlay. On Xiaomi, also allow *Show on lock screen* and *Display pop-up windows while running in background* (the Autostart button opens that page). |
 | Ring is slightly off-centre | *Camera position*, then nudge with the arrows. Some phones report a cutout box larger than the hole. |
 | Screen stays on after the light times out | That happens without the accessibility service: the screen then turns off at your normal screen timeout. Enable accessibility for an instant switch-off. |
-| Nothing for one app | *Apps & colours*: check the app is on. Silent notifications are ignored unless you turn that off in Settings. |
+| Nothing for one app | *Alerts → Apps*: check the app is on. Silent notifications are ignored unless you turn off *Alerts → Ignore silent*. |
+| No charging ring when I plug in with the screen off | Turn on *Screen on → Charging ring* and *Screen off → Screen-off light*. It shows for 5 s; turn on *Charging when off* to keep it. |
 
 ## Privacy
 
