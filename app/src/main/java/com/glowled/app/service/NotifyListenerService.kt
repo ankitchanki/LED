@@ -72,6 +72,7 @@ class NotifyListenerService : NotificationListenerService() {
             listOf(Notification.EXTRA_TITLE, Notification.EXTRA_TEXT, Notification.EXTRA_BIG_TEXT)
                 .mapNotNull { extras?.getCharSequence(it)?.toString() }.joinToString(" "),
         )
+        if (fraction != null) LedController.prefs.noteTransferApp(pkg)
         if (ProgressStore.update(sbn.key, pkg, fraction, color, direction)) LedController.onProgressChanged()
     }
 

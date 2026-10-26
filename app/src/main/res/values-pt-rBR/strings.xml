@@ -250,7 +250,7 @@
     <string name="t_progress_app_color" formatted="false">Cor do app</string>
     <string name="c_upload">Envio</string>
     <string name="c_download">Download</string>
-    <string name="transfer_hint">As cores identificam apps (WhatsApp verde, Instagram rosa). Desative a cor do app para usar cores por direção; a cor de progresso personalizada tem prioridade. É preciso uma notificação de progresso. ↕ indica direção desconhecida.</string>
+    <string name="transfer_hint">As cores identificam apps (WhatsApp verde, Instagram rosa). Desative a cor do app para usar cores por direção; a cor de progresso personalizada tem prioridade. É preciso uma notificação de progresso. Defina a seta por app, ou o que aparece quando a direção é desconhecida, em Setas.</string>
     <!-- Section headings inside the tabs -->
     <string name="sec_animation">Animação</string>
     <string name="sec_colour">Cor</string>
@@ -268,4 +268,51 @@
     <string name="sec_power">Economia de energia</string>
     <string name="sec_appearance">Aparência</string>
     <string name="sec_tools">Ferramentas</string>
+    <!-- Setas de transferência (2.5.0) -->
+    <string name="arrows_title">Setas por app</string>
+    <string name="arrows_sub_some">Definidas por você: %1$d · o resto automático</string>
+    <string name="arrows_sub_none">Tudo automático</string>
+    <string name="unknown_title">Se desconhecida</string>
+    <string name="sec_arrows">Setas</string>
+    <string name="sec_set_by_you">Definidas por você</string>
+    <string name="sec_auto_apps">Automático</string>
+    <string name="sec_search_results">Todos os apps</string>
+    <string name="arrow_sub_always">Sempre</string>
+    <string name="arrow_sub_known">App conhecido</string>
+    <string name="arrow_sub_text">Lê a notificação</string>
+    <string name="arrow_auto">Auto</string>
+    <string name="arrow_download">Download</string>
+    <string name="arrow_upload">Envio</string>
+    <string name="arrow_none">Sem seta</string>
+    <string name="arrows_footer">Os apps aparecem aqui após o primeiro download ou envio, junto com apps conhecidos. Pesquise para definir qualquer outro app.</string>
+    <string name="arrows_empty">Nenhum app encontrado</string>
+    <string name="arrow_status_active">Transferindo agora</string>
+    <string name="arrow_status_idle">Nenhuma transferência agora</string>
+    <string name="sec_arrow_on_ring">Seta no anel</string>
+    <string name="seg_none">Nenhuma</string>
+    <string name="arrow_explain_known">O automático lê o texto da notificação e depois usa a direção habitual deste app (%1$s).</string>
+    <string name="arrow_explain_text">O automático lê o texto da notificação. Se não disser nada, “Se desconhecida” decide (%1$s).</string>
+    <string name="arrow_explain_down">Toda transferência de %1$s mostra ↓, diga o que disser a notificação.</string>
+    <string name="arrow_explain_up">Toda transferência de %1$s mostra ↑, diga o que disser a notificação.</string>
+    <string name="arrow_explain_none">%1$s mostra o anel sem seta. A cor ainda segue a direção.</string>
+    <string name="sec_ring_colour">Cor do anel</string>
+    <string name="ring_colour_app">Cor do app</string>
+    <string name="ring_colour_upload">Cor de envio</string>
+    <string name="ring_colour_download">Cor de download</string>
+    <string name="reset_auto">Voltar ao automático</string>
+    <string name="unknown_intro">Quando a notificação não diz se é envio ou download e o app não tem seta própria.</string>
+    <string name="unk_none">Sem ícone</string>
+    <string name="unk_none_sub">Só o anel</string>
+    <string name="unk_both">Mostrar ↕</string>
+    <string name="unk_both_sub">Transferindo, direção desconhecida</string>
+    <string name="unk_down">Tratar como download</string>
+    <string name="unk_down_sub">A maioria das transferências é download</string>
+    <string name="unk_up">Tratar como envio</string>
+    <string name="unk_up_sub">Para celulares que fazem muito backup</string>
+    <string name="sec_order">Ordem que o Glow LED segue</string>
+    <string name="order_1">Sua escolha para o app</string>
+    <string name="order_2">Palavras na notificação</string>
+    <string name="order_3">App conhecido (Play Store ↓, Fotos ↑…)</string>
+    <string name="order_4">Esta configuração</string>
+    <string name="selected">Selecionado</string>
 </resources>

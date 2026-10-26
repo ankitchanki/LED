@@ -63,6 +63,12 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
 
     private fun haptic(v: View) = Haptics.click(v)
 
+    /** Dims [v] (and makes it untappable) while [enabled] is false; re-checked on every refresh. */
+    fun dependOn(v: View, enabled: () -> Boolean) {
+        dependents += v to enabled
+        setEnabledDeep(v, enabled())
+    }
+
     // ---- containers ----------------------------------------------------------------------------
 
     private val pageCols = mutableListOf<LinearLayout>()

@@ -251,7 +251,7 @@
     <string name="t_progress_app_color" formatted="false">Transfer app colour</string>
     <string name="c_upload">Upload</string>
     <string name="c_download">Download</string>
-    <string name="transfer_hint">App colours identify transfers (WhatsApp green, Instagram pink). Turn app colour off to use upload/download colours; a custom progress colour overrides both. Detection needs a progress notification. ↕ means the direction was not provided.</string>
+    <string name="transfer_hint">App colours identify transfers (WhatsApp green, Instagram pink). Turn app colour off to use upload/download colours; a custom progress colour overrides both. Detection needs a progress notification. Set the arrow per app, or what shows when the direction is unknown, under Arrows.</string>
     <!-- Section headings inside the tabs -->
     <string name="sec_animation">Animation</string>
     <string name="sec_colour">Colour</string>
@@ -269,4 +269,51 @@
     <string name="sec_power">Power saving</string>
     <string name="sec_appearance">Appearance</string>
     <string name="sec_tools">Tools</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">Per-app arrows</string>
+    <string name="arrows_sub_some">Set by you: %1$d · the rest automatic</string>
+    <string name="arrows_sub_none">All automatic</string>
+    <string name="unknown_title">If unknown</string>
+    <string name="sec_arrows">Arrows</string>
+    <string name="sec_set_by_you">Set by you</string>
+    <string name="sec_auto_apps">Automatic</string>
+    <string name="sec_search_results">All apps</string>
+    <string name="arrow_sub_always">Always</string>
+    <string name="arrow_sub_known">Known app</string>
+    <string name="arrow_sub_text">Reads the notification</string>
+    <string name="arrow_auto">Auto</string>
+    <string name="arrow_download">Download</string>
+    <string name="arrow_upload">Upload</string>
+    <string name="arrow_none">No arrow</string>
+    <string name="arrows_footer">Apps appear here after their first download or upload, along with well-known apps. Search to set any other app.</string>
+    <string name="arrows_empty">No matching app</string>
+    <string name="arrow_status_active">Transferring now</string>
+    <string name="arrow_status_idle">No transfer right now</string>
+    <string name="sec_arrow_on_ring">Arrow on the ring</string>
+    <string name="seg_none">None</string>
+    <string name="arrow_explain_known">Auto reads the notification text first, then uses this app\'s usual direction (%1$s).</string>
+    <string name="arrow_explain_text">Auto reads the notification text. When it says nothing, “If unknown” decides (%1$s).</string>
+    <string name="arrow_explain_down">Every transfer from %1$s shows ↓, whatever its notification says.</string>
+    <string name="arrow_explain_up">Every transfer from %1$s shows ↑, whatever its notification says.</string>
+    <string name="arrow_explain_none">%1$s shows the ring without an arrow. The colour still follows the direction.</string>
+    <string name="sec_ring_colour">Ring colour</string>
+    <string name="ring_colour_app">App colour</string>
+    <string name="ring_colour_upload">Upload colour</string>
+    <string name="ring_colour_download">Download colour</string>
+    <string name="reset_auto">Reset to Auto</string>
+    <string name="unknown_intro">When the notification doesn\'t say upload or download, and the app has no arrow of its own.</string>
+    <string name="unk_none">No icon</string>
+    <string name="unk_none_sub">Just the ring</string>
+    <string name="unk_both">Show ↕</string>
+    <string name="unk_both_sub">Moving, direction unknown</string>
+    <string name="unk_down">Treat as download</string>
+    <string name="unk_down_sub">Most transfers are downloads</string>
+    <string name="unk_up">Treat as upload</string>
+    <string name="unk_up_sub">For phones that back up a lot</string>
+    <string name="sec_order">Order Glow LED follows</string>
+    <string name="order_1">Your choice for the app</string>
+    <string name="order_2">Words in the notification</string>
+    <string name="order_3">Known app (Play Store ↓, Photos ↑…)</string>
+    <string name="order_4">This setting</string>
+    <string name="selected">Selected</string>
 </resources>

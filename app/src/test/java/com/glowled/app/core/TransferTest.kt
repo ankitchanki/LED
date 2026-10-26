@@ -25,6 +25,30 @@ class TransferTest {
         assertEquals(123, TransferInfo.appColor("other.app", 123))
     }
 
+    @Test fun arrowFollowsChoiceThenTextThenKnownAppThenUnknownSetting() {
+        val photos = "com.google.android.apps.photos"
+        // The user's choice wins over everything.
+        assertEquals(TransferLook(TransferDirection.DOWNLOAD, MeterIcon.DOWN),
+            TransferInfo.look(photos, TransferDirection.UPLOAD, ArrowChoice.DOWN, UnknownArrow.NONE))
+        // Then the words in the notification.
+        assertEquals(MeterIcon.DOWN, TransferInfo.look(photos, TransferDirection.DOWNLOAD, ArrowChoice.AUTO, UnknownArrow.NONE).icon)
+        // Then the known app.
+        assertEquals(TransferLook(TransferDirection.UPLOAD, MeterIcon.UP),
+            TransferInfo.look(photos, TransferDirection.UNKNOWN, ArrowChoice.AUTO, UnknownArrow.BOTH))
+        assertEquals(MeterIcon.DOWN, TransferInfo.look("com.android.vending", TransferDirection.UNKNOWN, ArrowChoice.AUTO, UnknownArrow.NONE).icon)
+        // Then the "If unknown" setting.
+        assertEquals(TransferLook(TransferDirection.UNKNOWN, MeterIcon.NONE),
+            TransferInfo.look("other.app", TransferDirection.UNKNOWN, ArrowChoice.AUTO, UnknownArrow.NONE))
+        assertEquals(MeterIcon.BOTH, TransferInfo.look("other.app", TransferDirection.UNKNOWN, ArrowChoice.AUTO, UnknownArrow.BOTH).icon)
+        assertEquals(TransferLook(TransferDirection.UPLOAD, MeterIcon.UP),
+            TransferInfo.look("other.app", TransferDirection.UNKNOWN, ArrowChoice.AUTO, UnknownArrow.UP))
+        // No arrow hides the sign but keeps the direction for the colour.
+        assertEquals(TransferLook(TransferDirection.UPLOAD, MeterIcon.NONE),
+            TransferInfo.look(photos, TransferDirection.UNKNOWN, ArrowChoice.NONE, UnknownArrow.BOTH))
+        assertEquals(ArrowChoice.AUTO, ArrowChoice.from("bogus"))
+        assertEquals(UnknownArrow.NONE, UnknownArrow.from(null))
+    }
+
     @Test fun determinateIndeterminateAndFinishedProgressAreDistinct() {
         assertEquals(0.25f, ProgressStore.fractionOf(100, 25, false))
         assertEquals(0f, ProgressStore.fractionOf(100, -2, false))

@@ -589,17 +589,18 @@ object LedController {
 
     fun computeMeter(notifRing: Boolean): Meter? {
         if (prefs.progressLed) ProgressStore.current()?.let {
+            val look = TransferInfo.look(it.pkg, it.direction, prefs.appArrow(it.pkg), prefs.unknownArrow)
             val color = when {
                 prefs.progressColor != 0 -> prefs.progressColor
                 prefs.progressAppColor -> {
                     val custom = prefs.appColor(it.pkg)
                     if (custom != 0) custom else TransferInfo.appColor(it.pkg, it.color)
                 }
-                it.direction == TransferDirection.UPLOAD -> prefs.uploadColor
-                it.direction == TransferDirection.DOWNLOAD -> prefs.downloadColor
+                look.direction == TransferDirection.UPLOAD -> prefs.uploadColor
+                look.direction == TransferDirection.DOWNLOAD -> prefs.downloadColor
                 else -> it.color
             }
-            val icon = if (prefs.progressArrow) it.direction.icon else MeterIcon.NONE
+            val icon = if (prefs.progressArrow) look.icon else MeterIcon.NONE
             return Meter(it.fraction.coerceAtLeast(0f), color, icon, it.fraction < 0f)
         }
         if (prefs.chargeLed && plugged && (!notifRing || SystemClock.uptimeMillis() < chargeFlashUntil)) {

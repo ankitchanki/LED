@@ -1,3 +1,23 @@
+# Glow LED v2.5.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Transfer arrows you can assign
+*Screen on → Downloads & uploads → Arrows* opens two new screens, laid out like iPhone settings
+(large title, grouped rows):
+- **Per-app arrows:** apps that have shown a download/upload, plus well-known apps, split into
+  *Set by you* and *Automatic*. Search finds any other app. Tap one for a live ring preview and
+  **Auto | ↓ | ↑ | None**, its ring colour, and *Reset to Auto*.
+- **If unknown:** what the ring shows when nothing tells the direction: **No icon** (new default),
+  **Show ↕**, **Treat as download** or **Treat as upload**.
+- **Known apps:** Play Store, browsers, the download manager and app stores/updaters count as ↓;
+  Google Photos, Amazon Photos and Samsung Cloud backup as ↑, even when the notification says nothing.
+- Order Glow LED follows: your choice for the app → words in the notification → known app →
+  *If unknown*. The upload/download colour follows the same answer.
+
+---
+
 # Glow LED v2.4.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

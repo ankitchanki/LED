@@ -56,6 +56,7 @@ import com.glowled.app.core.Geometry
 import com.glowled.app.core.LedController
 import com.glowled.app.core.LedStyle
 import com.glowled.app.core.MeterIcon
+import com.glowled.app.core.UnknownArrow
 import com.glowled.app.core.NotificationStore
 import com.glowled.app.core.PowerGuard
 import com.glowled.app.core.Prefs
@@ -109,6 +110,8 @@ class MainActivity : AppCompatActivity() {
     private var previewIcons: AppInfoView? = null
     private val previewApps by lazy { AodSession.sampleApps(this) }
     private var quietSub: TextView? = null
+    private var arrowsSub: TextView? = null
+    private var unknownSub: TextView? = null
     private var setupIncomplete = false
 
     private val prefs get() = LedController.prefs
@@ -319,6 +322,8 @@ class MainActivity : AppCompatActivity() {
         LedController.appInForeground = true
         LedController.updateOverlay() // our own preview replaces the screen-on ring meanwhile
         master.isChecked = prefs.enabled
+        arrowsSub?.text = arrowsText()
+        unknownSub?.text = unknownText()
         buildSetup()
         refreshLive()
         LedController.addListener(storeListener)
@@ -614,6 +619,16 @@ class MainActivity : AppCompatActivity() {
             Toggle(getString(R.string.t_progress_initials), "progress_initials", true) { prefs.progressLed },
             Toggle(getString(R.string.t_progress_app_color), "progress_app_color", true) { prefs.progressLed },
         ))
+        col.addView(label(getString(R.string.sec_arrows)))
+        val arrows = ui.card(col)
+        arrowsSub = ui.link(arrows, R.drawable.ic_apps, getString(R.string.arrows_title), arrowsText()) {
+            ArrowsActivity.open(this, ArrowsActivity.MODE_LIST)
+        }
+        ui.divider(arrows)
+        unknownSub = ui.link(arrows, R.drawable.ic_download, getString(R.string.unknown_title), unknownText()) {
+            ArrowsActivity.open(this, ArrowsActivity.MODE_UNKNOWN)
+        }
+        ui.dependOn(arrows.parent as View) { prefs.progressLed && prefs.progressArrow }
         col.addView(label(getString(R.string.progress_colour)))
         ui.colorTiles(col, listOf(
             ColorItem(getString(R.string.c_progress), "progress_color", 0, allowAuto = true),
@@ -665,6 +680,18 @@ class MainActivity : AppCompatActivity() {
         col.addView(hint(getString(R.string.battery_hint)))
         return page
     }
+
+    private fun arrowsText(): String {
+        val n = prefs.appsWithArrow().size
+        return if (n == 0) getString(R.string.arrows_sub_none) else getString(R.string.arrows_sub_some, n)
+    }
+
+    private fun unknownText(): String = getString(when (prefs.unknownArrow) {
+        UnknownArrow.NONE -> R.string.unk_none
+        UnknownArrow.BOTH -> R.string.unk_both
+        UnknownArrow.DOWN -> R.string.unk_down
+        UnknownArrow.UP -> R.string.unk_up
+    })
 
     /** Section heading inside a page, so related settings are grouped under a clear name. */
     private fun section(col: LinearLayout, title: Int, first: Boolean = false) {

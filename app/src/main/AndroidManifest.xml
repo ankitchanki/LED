@@ -52,6 +52,11 @@
             android:parentActivityName=".ui.MainActivity" />
 
         <activity
+            android:name=".ui.ArrowsActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
             android:name=".ui.CutoutActivity"
             android:exported="false"
             android:screenOrientation="portrait"

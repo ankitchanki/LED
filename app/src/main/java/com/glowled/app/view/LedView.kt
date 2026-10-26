@@ -293,24 +293,7 @@ class LedView @JvmOverloads constructor(
     )
 
     /** Fills [iconPath] with [icon] centred on (x, y), [h] tall. */
-    private fun buildIcon(icon: MeterIcon, x: Float, y: Float, h: Float) {
-        val pts = when (icon) {
-            MeterIcon.BOLT -> BOLT_PTS
-            MeterIcon.UP -> UP_PTS
-            MeterIcon.DOWN -> DOWN_PTS
-            MeterIcon.BOTH -> BOTH_PTS
-            MeterIcon.NONE -> return
-        }
-        // Points are in a 1x1 box; signs are a bit narrower than tall.
-        val w = h * 0.72f
-        iconPath.reset()
-        for (i in pts.indices step 2) {
-            val px = x - w / 2f + pts[i] * w
-            val py = y - h / 2f + pts[i + 1] * h
-            if (i == 0) iconPath.moveTo(px, py) else iconPath.lineTo(px, py)
-        }
-        iconPath.close()
-    }
+    private fun buildIcon(icon: MeterIcon, x: Float, y: Float, h: Float) = signPath(icon, x, y, h, iconPath)
 
     /** In-app previews: ignore the battery frame-rate cap and animate at the display's refresh rate. */
     var uncapped = false
@@ -823,6 +806,27 @@ class LedView @JvmOverloads constructor(
             0.5f, 0f, 0.95f, 0.36f, 0.64f, 0.36f, 0.64f, 0.64f, 0.95f, 0.64f, 0.5f, 1f,
             0.05f, 0.64f, 0.36f, 0.64f, 0.36f, 0.36f, 0.05f, 0.36f,
         )
+
+        /** Fills [out] with the ring sign [icon] centred on (x, y), [h] tall (shared with in-app previews). */
+        fun signPath(icon: MeterIcon, x: Float, y: Float, h: Float, out: Path) {
+            out.reset()
+            val pts = when (icon) {
+                MeterIcon.BOLT -> BOLT_PTS
+                MeterIcon.UP -> UP_PTS
+                MeterIcon.DOWN -> DOWN_PTS
+                MeterIcon.BOTH -> BOTH_PTS
+                MeterIcon.NONE -> return
+            }
+            // Points are in a 1x1 box; signs are a bit narrower than tall.
+            val w = h * 0.72f
+            for (i in pts.indices step 2) {
+                val px = x - w / 2f + pts[i] * w
+                val py = y - h / 2f + pts[i + 1] * h
+                if (i == 0) out.moveTo(px, py) else out.lineTo(px, py)
+            }
+            out.close()
+        }
+
         private const val BLINK_ON = 0.12f
         private const val ROTATE_MS = 9_000L
         private const val DETACH_AT = 0.42f

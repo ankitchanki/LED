@@ -154,11 +154,37 @@ class Prefs(context: Context) {
         else sp.edit().putInt("app_color_$pkg", color).apply()
     }
 
+    /** Arrow on the transfer ring for one app. */
+    fun appArrow(pkg: String): ArrowChoice = ArrowChoice.from(sp.getString("app_arrow_$pkg", null))
+
+    fun setAppArrow(pkg: String, choice: ArrowChoice) {
+        if (choice == ArrowChoice.AUTO) sp.edit().remove("app_arrow_$pkg").apply()
+        else sp.edit().putString("app_arrow_$pkg", choice.key).apply()
+    }
+
+    /** Apps that set their own arrow. */
+    fun appsWithArrow(): Set<String> =
+        sp.all.keys.filter { it.startsWith("app_arrow_") }.map { it.removePrefix("app_arrow_") }.toSet()
+
+    val unknownArrow: UnknownArrow get() = UnknownArrow.from(str("unknown_arrow", UnknownArrow.NONE.key))
+
+    /** Apps that have shown a progress bar, so the per-app arrow list can offer them (comma separated). */
+    val transferApps: Set<String>
+        get() = str(K_TRANSFER_APPS, "").split(',').filter { it.isNotBlank() }.toSet()
+
+    fun noteTransferApp(pkg: String) {
+        val now = transferApps
+        if (pkg in now) return
+        sp.edit().putString(K_TRANSFER_APPS, (now.toList() + pkg).takeLast(MAX_TRANSFER_APPS).joinToString(",")).apply()
+    }
+
     companion object {
         const val K_ENABLED = "enabled"
         const val DEFAULT_COLOR = 0xFF00E5FF.toInt()
         const val CHARGE_LOW = 20
         const val CHARGE_HIGH = 80
+        const val K_TRANSFER_APPS = "transfer_apps"
+        private const val MAX_TRANSFER_APPS = 60
     }
 }
 
