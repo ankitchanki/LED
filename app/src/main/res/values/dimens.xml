@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Every toggle tile has this height, so the grid lines up. -->
-    <dimen name="tile_height">52dp</dimen>
     <!-- Floating Test pill. -->
     <dimen name="pill_height">44dp</dimen>
     <dimen name="pill_radius">22dp</dimen>

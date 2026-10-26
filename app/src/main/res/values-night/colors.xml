@@ -13,4 +13,8 @@
     <color name="accent_dim">#4000E5FF</color>
     <color name="text_primary">#FFF2F2F5</color>
     <color name="text_secondary">#FFA6A6B2</color>
+    <!-- Switch track when off, and the chosen part of a segmented control. -->
+    <color name="switch_off">#FF39393D</color>
+    <color name="segment_selected">#FF636366</color>
+    <color name="segment_pill">#FF2C2C2E</color>
 </resources>

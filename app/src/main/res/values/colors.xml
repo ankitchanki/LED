@@ -16,4 +16,8 @@
     <color name="text_primary">#FF15151A</color>
     <color name="text_secondary">#FF5E5E6A</color>
     <color name="warn">#FFFFB020</color>
+    <!-- Switch track when off, and the chosen part of a segmented control. -->
+    <color name="switch_off">#FFE9E9EB</color>
+    <color name="segment_selected">#FFFFFFFF</color>
+    <color name="segment_pill">@color/surface_high</color>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Highlight behind the chosen tab (tinted by tabIndicatorColor). -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="3dp" />
+    <corners android:radius="18dp" />
     <solid android:color="@android:color/white" />
 </shape>

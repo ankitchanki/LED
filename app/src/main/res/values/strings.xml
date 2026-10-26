@@ -315,5 +315,7 @@
     <string name="order_2">Words in the notification</string>
     <string name="order_3">Known app (Play Store ↓, Photos ↑…)</string>
     <string name="order_4">This setting</string>
+    <string name="setup_optional">Optional</string>
+    <string name="setup_allow">Allow</string>
     <string name="selected">Selected</string>
 </resources>

@@ -56,7 +56,7 @@
             android:background="@drawable/swatch"
             android:contentDescription="@string/color_title" />
 
-        <com.google.android.material.materialswitch.MaterialSwitch
+        <com.glowled.app.view.GlowSwitch
             android:id="@+id/toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

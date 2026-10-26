@@ -1,3 +1,24 @@
+# Glow LED v2.6.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Home screen, iPhone style
+- Every tab is now a **grouped list** like iPhone Settings instead of two-column tiles: rounded
+  groups, a small coloured icon on each row, grey capital section names and notes under groups.
+- **Sliding on/off switches** with a white knob (also in *Apps & colours*), and a bigger header with
+  the same switch for Glow LED itself.
+- Short choices (several notifications, which apps, app theme, screen-off method…) are **segmented
+  controls**; longer ones (how long the light stays on, reminders, frame rate) are a row showing
+  the current value that opens a list.
+- Sliders are full width with a white knob; colours by battery level sit in one row of swatches.
+- **Setup:** each permission is a row with a green tick, or an orange **Allow** when it is still
+  needed.
+- **Settings → Tools** is a list with a subtitle on each row.
+- Tabs are pills; the highlight slides to the chosen one.
+
+---
+
 # Glow LED v2.5.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

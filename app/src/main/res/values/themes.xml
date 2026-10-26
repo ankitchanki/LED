@@ -53,6 +53,12 @@
     </style>
 
     <!-- Floating Test pill: small, see-through (iOS-style), so it never hides the settings. -->
+    <style name="GlowTabText" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textSize">15sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <style name="GlowPill" parent="Widget.Material3.Button.TonalButton.Icon">
         <item name="backgroundTint">@color/pill_bg</item>
         <item name="android:textColor">@color/text_primary</item>

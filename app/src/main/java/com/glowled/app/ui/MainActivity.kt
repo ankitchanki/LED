@@ -78,7 +78,7 @@ import rikka.shizuku.Shizuku
 import com.glowled.app.view.LedView
 import com.glowled.app.view.NestedScrollableHost
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.materialswitch.MaterialSwitch
+import com.glowled.app.view.GlowSwitch
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -89,7 +89,7 @@ import com.google.android.material.tabs.TabLayoutMediator
  */
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var master: MaterialSwitch
+    private lateinit var master: GlowSwitch
     private lateinit var status: TextView
     /** Full-screen, touch-through layer that draws the ring on the phone's real camera cutout. */
     private lateinit var cameraLed: LedView
@@ -535,7 +535,7 @@ class MainActivity : AppCompatActivity() {
 
         section(col, R.string.sec_shape)
         val c = ui.card(col)
-        ui.link(c, R.drawable.ic_camera_ring, getString(R.string.action_cutout), getString(R.string.tile_cutout_sub)) {
+        ui.link(c, R.drawable.ic_s_camera, getString(R.string.action_cutout), getString(R.string.tile_cutout_sub), RowIcons.DARK_GREY) {
             startActivity(Intent(this, CutoutActivity::class.java))
         }
         ui.divider(c)
@@ -621,11 +621,11 @@ class MainActivity : AppCompatActivity() {
         ))
         col.addView(label(getString(R.string.sec_arrows)))
         val arrows = ui.card(col)
-        arrowsSub = ui.link(arrows, R.drawable.ic_apps, getString(R.string.arrows_title), arrowsText()) {
+        arrowsSub = ui.link(arrows, R.drawable.ic_s_apps, getString(R.string.arrows_title), arrowsText(), RowIcons.INDIGO) {
             ArrowsActivity.open(this, ArrowsActivity.MODE_LIST)
         }
         ui.divider(arrows)
-        unknownSub = ui.link(arrows, R.drawable.ic_download, getString(R.string.unknown_title), unknownText()) {
+        unknownSub = ui.link(arrows, R.drawable.ic_s_updown, getString(R.string.unknown_title), unknownText(), RowIcons.GREY) {
             ArrowsActivity.open(this, ArrowsActivity.MODE_UNKNOWN)
         }
         ui.dependOn(arrows.parent as View) { prefs.progressLed && prefs.progressArrow }
@@ -646,7 +646,7 @@ class MainActivity : AppCompatActivity() {
         val (page, col) = ui.page()
         section(col, R.string.sec_apps, first = true)
         val c = ui.card(col)
-        ui.link(c, R.drawable.ic_apps, getString(R.string.action_apps), getString(R.string.apps_sub)) {
+        ui.link(c, R.drawable.ic_s_apps, getString(R.string.action_apps), getString(R.string.apps_sub), RowIcons.BLUE) {
             startActivity(Intent(this, AppsActivity::class.java))
         }
         ui.divider(c)
@@ -675,8 +675,7 @@ class MainActivity : AppCompatActivity() {
         ui.sliders(c, Range(getString(R.string.s_min_battery), "min_battery", 0, 50, 10, "%"))
         section(col, R.string.t_quiet)
         ui.toggles(col, listOf(Toggle(getString(R.string.t_quiet), "quiet_enabled", false)))
-        val q = ui.card(col)
-        quietSub = ui.link(q, R.drawable.ic_moon, getString(R.string.quiet_time), quietText()) { pickQuietHours() }
+        quietSub = ui.link(col, R.drawable.ic_s_clock, getString(R.string.quiet_time), quietText(), RowIcons.INDIGO) { pickQuietHours() }
         col.addView(hint(getString(R.string.battery_hint)))
         return page
     }
@@ -697,10 +696,12 @@ class MainActivity : AppCompatActivity() {
     private fun section(col: LinearLayout, title: Int, first: Boolean = false) {
         col.addView(TextView(this).apply {
             setText(title)
-            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleSmall)
-            setTextColor(getColor(R.color.accent))
-            letterSpacing = 0.02f
-            setPadding(dp(12), dp(if (first) 6 else 18), dp(12), dp(4))
+            isAllCaps = true
+            textSize = 13f
+            letterSpacing = 0.03f
+            setTextColor(getColor(R.color.text_secondary))
+            setPadding(dp(16), dp(if (first) 10 else 24), dp(16), dp(6))
+            androidx.core.view.ViewCompat.setAccessibilityHeading(this, true)
         })
     }
 
@@ -732,23 +733,23 @@ class MainActivity : AppCompatActivity() {
         section(col, R.string.sec_tools)
         val official = AppSignature.isOfficial(this)
         ui.grid(col, listOf(
-            GridItem(R.drawable.ic_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub)) { showTutorial() },
-            GridItem(if (official) R.drawable.ic_verified else R.drawable.ic_bell,
+            GridItem(R.drawable.ic_s_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub), RowIcons.ORANGE) { showTutorial() },
+            GridItem(if (official) R.drawable.ic_s_verified else R.drawable.ic_s_shield,
                 getString(if (official) R.string.g_official else R.string.g_unofficial),
-                getString(R.string.g_version, BuildConfig.VERSION_NAME)) {
+                getString(R.string.g_version, BuildConfig.VERSION_NAME), if (official) RowIcons.GREEN else RowIcons.ORANGE) {
                 open(Intent(Intent.ACTION_VIEW, Uri.parse(RELEASES_URL)))
             },
-            GridItem(R.drawable.ic_download, getString(R.string.g_download), getString(R.string.g_download_sub)) {
+            GridItem(R.drawable.ic_s_download, getString(R.string.g_download), getString(R.string.g_download_sub), RowIcons.BLUE) {
                 open(Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_APK_URL)))
             },
-            GridItem(R.drawable.ic_language, getString(R.string.g_language), currentLanguageName()) { pickLanguage() },
-            GridItem(R.drawable.ic_save, getString(R.string.g_backup), getString(R.string.g_backup_sub)) {
+            GridItem(R.drawable.ic_s_globe, getString(R.string.g_language), currentLanguageName(), RowIcons.INDIGO) { pickLanguage() },
+            GridItem(R.drawable.ic_s_save, getString(R.string.g_backup), getString(R.string.g_backup_sub), RowIcons.CYAN) {
                 backupLauncher.launch("glowled-settings.json")
             },
-            GridItem(R.drawable.ic_restore, getString(R.string.g_restore), getString(R.string.g_restore_sub)) {
+            GridItem(R.drawable.ic_s_restore, getString(R.string.g_restore), getString(R.string.g_restore_sub), RowIcons.BROWN) {
                 restoreLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
             },
-            GridItem(R.drawable.ic_log, getString(R.string.g_log), getString(R.string.g_log_sub)) { showLog() },
+            GridItem(R.drawable.ic_s_log, getString(R.string.g_log), getString(R.string.g_log_sub), RowIcons.GREY) { showLog() },
         ))
         col.addView(hint(getString(R.string.reach_tip)))
         col.addView(hint(getString(R.string.sig_key, AppSignature.short(AppSignature.sha256(this))) +
@@ -779,12 +780,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun labels(array: Int) = resources.getStringArray(array).toList()
 
-    /** Small section label above a row of tiles. */
+    /** Small label above a group inside a section. */
     private fun label(text: String) = TextView(this).apply {
         this.text = text
-        setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge)
+        textSize = 13f
         setTextColor(getColor(R.color.text_secondary))
-        setPadding(dp(12), dp(10), dp(12), dp(2))
+        setPadding(dp(16), dp(14), dp(16), dp(6))
     }
 
     private fun showLog() {
@@ -842,11 +843,13 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    /** Grey note under a group. */
     private fun hint(text: String) = TextView(this).apply {
         this.text = text
         setTextColor(getColor(R.color.text_secondary))
-        textSize = 12f
-        setPadding(dp(10), dp(10), dp(10), dp(4))
+        textSize = 13f
+        setLineSpacing(0f, 1.1f)
+        setPadding(dp(16), dp(8), dp(16), dp(4))
     }
 
     private fun deviceInfo() =
@@ -974,6 +977,8 @@ class MainActivity : AppCompatActivity() {
         val done: Boolean,
         val counts: Boolean = true,
         val isLink: Boolean = false,
+        val icon: Int = 0,
+        val color: Int = 0,
         val action: () -> Unit,
     )
 
@@ -984,33 +989,37 @@ class MainActivity : AppCompatActivity() {
         val overlay = Settings.canDrawOverlays(this)
         val steps = mutableListOf<Step>()
         steps += Step(getString(R.string.perm_listener), getString(R.string.perm_listener_short), getString(R.string.perm_listener_desc),
-            NotifyListenerService.isEnabled(this)) {
+            NotifyListenerService.isEnabled(this), icon = R.drawable.ic_s_bell, color = RowIcons.RED) {
             open(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
         }
         // Either one is enough to show the light over the lock screen; accessibility is optional.
-        steps += Step(getString(R.string.perm_overlay), getString(R.string.perm_overlay_short), getString(R.string.perm_overlay_desc), overlay || a11y) {
+        steps += Step(getString(R.string.perm_overlay), getString(R.string.perm_overlay_short), getString(R.string.perm_overlay_desc), overlay || a11y,
+            icon = R.drawable.ic_s_layers, color = RowIcons.BLUE) {
             open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
-            steps += Step(getString(R.string.perm_post), getString(R.string.perm_post), getString(R.string.perm_post_desc), granted) {
+            steps += Step(getString(R.string.perm_post), getString(R.string.perm_post), getString(R.string.perm_post_desc), granted,
+                icon = R.drawable.ic_s_badge, color = RowIcons.ORANGE) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             }
         }
-        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_short), getString(R.string.perm_a11y_desc), a11y, counts = false) {
+        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_short), getString(R.string.perm_a11y_desc), a11y, counts = false,
+            icon = R.drawable.ic_s_access, color = RowIcons.BLUE) {
             open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
         val pm = getSystemService(PowerManager::class.java)
         steps += Step(getString(R.string.perm_battery), getString(R.string.perm_battery_short), getString(R.string.perm_battery_desc),
-            pm.isIgnoringBatteryOptimizations(packageName)) { requestBatteryExemption() }
+            pm.isIgnoringBatteryOptimizations(packageName), icon = R.drawable.ic_s_battery, color = RowIcons.GREEN) { requestBatteryExemption() }
         if (OemHelper.isXiaomi) {
             val ok = OemHelper.miuiLockScreenAllowed(this)
             steps += Step(getString(R.string.perm_miui), getString(R.string.perm_miui_short), getString(R.string.perm_miui_desc), ok == true,
-                counts = ok != null, isLink = ok == null) { OemHelper.openMiuiPermissions(this) }
+                counts = ok != null, isLink = ok == null, icon = R.drawable.ic_s_lock, color = RowIcons.DARK_GREY) { OemHelper.openMiuiPermissions(this) }
         }
         OemHelper.brand?.let { b ->
-            steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_short), getString(R.string.perm_oem_desc), false, counts = false, isLink = true) {
+            steps += Step(getString(R.string.perm_oem, b), getString(R.string.perm_oem_short), getString(R.string.perm_oem_desc), false, counts = false, isLink = true,
+                icon = R.drawable.ic_s_power, color = RowIcons.GREY) {
                 OemHelper.openAutostart(this)
             }
         }
@@ -1030,9 +1039,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupList.removeAllViews()
-        // Same tiles as Style / Screen off: tick = done, orange + = needed, chevron = optional.
+        // A row per step: tick = done, orange "Allow" = needed, chevron = optional.
         ui.statusTiles(setupList, steps.map { step ->
-            SettingsUi.StatusItem(step.short, step.done && !step.isLink, optional = !step.counts || step.isLink) {
+            SettingsUi.StatusItem(step.short, step.done && !step.isLink, optional = !step.counts || step.isLink, step.icon, step.color) {
                 MaterialAlertDialogBuilder(this)
                     .setTitle(step.title)
                     .setMessage(step.desc)
@@ -1053,12 +1062,12 @@ class MainActivity : AppCompatActivity() {
         shellBox.removeAllViews()
         val c = ui.card(shellBox)
         when {
-            Privileged.backend() != Privileged.Backend.NONE -> ui.link(c, R.drawable.ic_check,
+            Privileged.backend() != Privileged.Backend.NONE -> ui.link(c, R.drawable.ic_s_verified,
                 getString(R.string.shell_connected, Privileged.backend().name.lowercase().replaceFirstChar { it.uppercase() }),
-                getString(R.string.shell_connected_desc)) { runShellSetup() }
+                getString(R.string.shell_connected_desc), RowIcons.GREEN) { runShellSetup() }
             else -> {
                 if (Privileged.shizukuRunning()) {
-                    ui.link(c, R.drawable.ic_play, getString(R.string.shell_shizuku), getString(R.string.shell_desc)) {
+                    ui.link(c, R.drawable.ic_s_bolt, getString(R.string.shell_shizuku), getString(R.string.shell_desc), RowIcons.INDIGO) {
                         Privileged.requestShizuku { ok ->
                             if (ok) runShellSetup()
                             else Toast.makeText(this, R.string.shell_denied, Toast.LENGTH_SHORT).show()
@@ -1067,7 +1076,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 if (Privileged.rootLikely()) {
                     if (Privileged.shizukuRunning()) ui.divider(c)
-                    ui.link(c, R.drawable.ic_play, getString(R.string.shell_root), getString(R.string.shell_desc)) {
+                    ui.link(c, R.drawable.ic_s_bolt, getString(R.string.shell_root), getString(R.string.shell_desc), RowIcons.INDIGO) {
                         Privileged.requestRoot { ok ->
                             prefs.sp.edit().putBoolean(Privileged.PREF_ROOT_OK, ok).apply()
                             if (ok) runShellSetup()
@@ -1076,7 +1085,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 if (!Privileged.shizukuRunning() && !Privileged.rootLikely()) {
-                    ui.link(c, R.drawable.ic_apps, getString(R.string.shell_get), getString(R.string.shell_get_desc)) {
+                    ui.link(c, R.drawable.ic_s_bolt, getString(R.string.shell_get), getString(R.string.shell_get_desc), RowIcons.INDIGO) {
                         open(Intent(Intent.ACTION_VIEW, Uri.parse("https://shizuku.rikka.app/download/")))
                     }
                 }

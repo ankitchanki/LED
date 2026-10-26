@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.glowled.app.R
 import com.glowled.app.core.LedController
-import com.google.android.material.materialswitch.MaterialSwitch
+import com.glowled.app.view.GlowSwitch
 import android.content.res.ColorStateList
 import java.util.concurrent.Executors
 
@@ -101,7 +101,7 @@ class AppsActivity : AppCompatActivity() {
         val label: TextView = v.findViewById(R.id.label)
         val colorLabel: TextView = v.findViewById(R.id.colorLabel)
         val swatch: View = v.findViewById(R.id.swatch)
-        val toggle: MaterialSwitch = v.findViewById(R.id.toggle)
+        val toggle: GlowSwitch = v.findViewById(R.id.toggle)
         var pkg: String? = null
     }
 

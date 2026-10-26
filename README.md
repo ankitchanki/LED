@@ -42,7 +42,8 @@ are switched off, so only the light itself uses power.
 | **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
 | **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
 | **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
-| **Organised settings** | Everything is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings), each split into short named sections: *Style* → Animation · Colour · Shape & motion; *Screen off* → When to light up · On the black screen · Messages · Gestures & protection · Timing & brightness; *Screen on* → While you use the phone · Charging & battery · Downloads & uploads; *Alerts* → Apps · Filters; *Battery* → Power saving · Quiet hours; *Settings* → Appearance · Tools. No menus, equal-size one-line tiles. Setup shows each permission as a compact tile with a tick. |
+| **Organised settings** | Everything is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings), each split into short named sections: *Style* → Animation · Colour · Shape & motion; *Screen off* → When to light up · On the black screen · Messages · Gestures & protection · Timing & brightness; *Screen on* → While you use the phone · Charging & battery · Downloads & uploads; *Alerts* → Apps · Filters; *Battery* → Power saving · Quiet hours; *Settings* → Appearance · Tools. No menus. |
+| **iPhone-style settings** | Every tab is a grouped list like iPhone Settings: rounded groups, a small coloured icon on each row, sliding on/off switches, segmented controls for short choices and a value row for longer ones. Tabs are pills with a highlight that slides between them. Setup shows each permission as a row with a green tick or an orange **Allow**. |
 | **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). The space above shows a **live preview** of the screen-off light (with the droplet falling into the app icon) that changes as you adjust settings. Swipe up or press back to return. |
 | **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Settings → App theme*. Runs at your display's full refresh rate (120 Hz). |
 | **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
@@ -62,8 +63,8 @@ are switched off, so only the light itself uses power.
 
 | Setup | Style | Screen off |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v2.4/4-setup.png" width="220" alt="Setup tab: compact permission tiles with ticks, All set, Shizuku card" /> | <img src="docs/screenshots/v2.4/5-style.png" width="220" alt="Style tab with Animation, Colour and Shape and motion sections" /> | <img src="docs/screenshots/v2.4/6-screen-off.png" width="220" alt="Screen off tab with sections When to light up, On the black screen, Messages, Gestures and protection, Timing and brightness, and the floating Test pill" /> |
-| Permissions as small tiles with a tick; important ones first, Autostart and Shizuku last. | Animation, colour, shape & motion. | Settings grouped by what they do; the see-through **Test** pill floats above. |
+| <img src="docs/screenshots/v2.4/4-setup.png" width="220" alt="Setup tab: grouped permission rows with coloured icons and green ticks, All set, Shizuku row" /> | <img src="docs/screenshots/v2.4/5-style.png" width="220" alt="Style tab with Animation, Colour and Shape and motion sections" /> | <img src="docs/screenshots/v2.4/6-screen-off.png" width="220" alt="Screen off tab with sections When to light up, On the black screen, Messages, Gestures and protection, Timing and brightness, and the floating Test pill" /> |
+| Each permission is a row with a green tick; important ones first, Autostart and Shizuku last. | Animation, colour, shape & motion. | Settings grouped by what they do; the see-through **Test** pill floats above. |
 
 | Screen on | One-handed mode | Settings |
 |:---:|:---:|:---:|
@@ -77,7 +78,7 @@ are switched off, so only the light itself uses power.
 
 | Light mode | Português (Brasil) |
 |:---:|:---:|
-| <img src="docs/screenshots/v2.4/10-light.png" width="220" alt="Screen on tab in light mode" /> | <img src="docs/screenshots/v2.4/11-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
+| <img src="docs/screenshots/v2.4/10-light.png" width="220" alt="Screen off tab in light mode: white grouped rows with coloured icons and switches" /> | <img src="docs/screenshots/v2.4/11-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
 
 **Rings with icons:** charging at 42 % and 89 % (bolt), download (↓), upload (↑), and ↕ (optional, for an unknown direction). The icon sits in a small gap
 at the bottom middle of the ring, in the ring's colour.
