@@ -41,18 +41,6 @@
     <string name="perm_miui">Permissões de tela de bloqueio da Xiaomi</string>
     <string name="perm_miui_desc">HyperOS/MIUI: ative \"Mostrar na tela de bloqueio\" e \"Exibir janelas pop-up em segundo plano\".</string>
     <string name="restricted_hint">Android 13+: apps instalados por arquivo APK recebem \"configurações restritas\" para Acesso às notificações e Acessibilidade. É uma regra do Android, não um erro. Se uma opção estiver cinza: Informações do app → ⋮ (canto superior direito) → Permitir configurações restritas, e tente de novo.</string>
-    <string name="shell_shizuku">Configurar com um toque (Shizuku)</string>
-    <string name="shell_root">Configurar com um toque (root)</string>
-    <string name="shell_desc">Concede tudo acima automaticamente: sem procurar nas Configurações, sem a etapa de \"configurações restritas\".</string>
-    <string name="shell_connected">%s conectado</string>
-    <string name="shell_connected_desc">A tela desliga na hora mesmo sem Acessibilidade. Toque para configurar de novo.</string>
-    <string name="shell_get">Tem Shizuku? Configure com um toque</string>
-    <string name="shell_get_desc">Opcional. Instale e inicie o Shizuku (funciona sem root) e depois volte aqui.</string>
-    <string name="shell_denied">A permissão não foi concedida</string>
-    <string name="shell_running">Configurando…</string>
-    <string name="shell_summary">Configuração via %1$s: %2$d de %3$d permissões</string>
-    <string name="shell_summary_a11y">+ acessibilidade.</string>
-    <string name="shell_summary_no_a11y">(a acessibilidade falhou - ative manualmente).</string>
     <string name="setup_intro">Conceda uma vez. Sem isso a luz não aparece.</string>
     <string name="setup_progress">%1$d de %2$d</string>
     <string name="setup_all_done">Tudo pronto</string>
@@ -316,5 +304,7 @@
     <string name="order_4">Esta configuração</string>
     <string name="setup_optional">Opcional</string>
     <string name="setup_allow">Permitir</string>
+    <string name="a11y_banking">Alguns apps de banco e pagamento não abrem enquanto um serviço de acessibilidade de fora da Play Store está ativo. Se algum dos seus fizer isso, desative aqui: o Glow LED continua funcionando com a janela da tela de bloqueio (no Xiaomi pode aparecer um breve clarão antes da luz).</string>
+    <string name="a11y_turn_off">Desativar</string>
     <string name="selected">Selecionado</string>
 </resources>

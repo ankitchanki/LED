@@ -3,7 +3,7 @@
 | File | What it is |
 |---|---|
 | [`GlowLED-latest.apk`](GlowLED-latest.apk) | Always the newest version. **Download this one.** |
-| `GlowLED-v2.6.0.apk` | The same build, named by version. |
+| `GlowLED-v2.7.0.apk` | The same build, named by version. |
 | [`SHA256SUMS.txt`](SHA256SUMS.txt) | Checksums, if you want to verify the download. |
 
 ## ✅ This is a signed build
@@ -44,5 +44,11 @@ have the right one.
 ## Android 13+ "Restricted setting"
 
 Apps installed from an APK file can't turn on Notification access / Accessibility until you allow
-it: *App info → ⋮ (top right) → Allow restricted settings*. Or use **One-tap setup with Shizuku**
-in the Setup tab, which grants everything for you.
+it: *App info → ⋮ (top right) → Allow restricted settings*.
+
+## "App blocked to protect your device"
+
+Play Protect's fraud protection (India and some other countries) blocks apps installed from a
+browser or file manager when they ask for Notification access, which Glow LED needs. Install with
+`adb install GlowLED-latest.apk` from a computer, or pause *Play Store → profile → Play Protect →
+⚙ → Scan apps with Play Protect*, install, and turn it back on right away.

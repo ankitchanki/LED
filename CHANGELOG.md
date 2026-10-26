@@ -1,3 +1,25 @@
+# Glow LED v2.7.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Friendlier to banking apps
+- **Root and Shizuku removed:** no su checks, no shell commands, no Shizuku library or its exported
+  provider. Shizuku needed wireless debugging, which many banking apps refuse to run with: you can
+  now keep Developer options off.
+- **Accessibility can be turned off from the app:** *Setup → Accessibility → Turn off*. The dialog
+  explains that some banking apps refuse to open while an accessibility service from outside the
+  Play Store is on; Glow LED keeps working without it.
+- **Screen-on ring over apps** now always uses the normal "display over other apps" window, which
+  banking and payment apps can hide; the accessibility window is only used on the lock screen.
+
+## "App blocked to protect your device"
+Play Protect's fraud protection blocks apps installed from a browser or file manager when they ask
+for Notification access, which Glow LED needs, so this can't be avoided in the app. The README and
+`releases/README.md` explain how to install (adb, or pausing the Play Protect scan for the install).
+
+---
+
 # Glow LED v2.6.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

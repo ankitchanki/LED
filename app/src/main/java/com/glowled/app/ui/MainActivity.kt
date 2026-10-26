@@ -73,8 +73,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.glowled.app.util.AppSignature
 import com.glowled.app.util.OemHelper
 import com.glowled.app.util.SettingsBackup
-import com.glowled.app.util.Privileged
-import rikka.shizuku.Shizuku
 import com.glowled.app.view.LedView
 import com.glowled.app.view.NestedScrollableHost
 import com.google.android.material.card.MaterialCardView
@@ -185,8 +183,6 @@ class MainActivity : AppCompatActivity() {
         buildPages()
         setupReach()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
-        // Shizuku's binder arrives asynchronously; refresh the setup card when it does.
-        Shizuku.addBinderReceivedListenerSticky(shizukuListener)
         buildSetup()
         val uiState = getSharedPreferences(UI_STATE, MODE_PRIVATE)
         if (savedInstanceState == null && !uiState.getBoolean("tutorial_seen", false)) {
@@ -345,7 +341,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         prefs.sp.unregisterOnSharedPreferenceChangeListener(prefsListener)
-        Shizuku.removeBinderReceivedListener(shizukuListener)
         super.onDestroy()
     }
 
@@ -481,12 +476,10 @@ class MainActivity : AppCompatActivity() {
             trackThickness = dp(6)
         }
         col.addView(setupBar, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(8), 0, dp(8), dp(10)) })
-        // Most important first (notification access, display over apps); autostart and the
-        // optional Shizuku/root one-tap setup come last.
+        // Most important first (notification access, display over apps); accessibility and
+        // autostart, both optional, come last.
         setupList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(setupList)
-        shellBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        col.addView(shellBox)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             col.addView(TextView(this).apply {
                 setText(R.string.restricted_hint)
@@ -979,12 +972,12 @@ class MainActivity : AppCompatActivity() {
         val isLink: Boolean = false,
         val icon: Int = 0,
         val color: Int = 0,
+        val actionLabel: Int = R.string.setup_open,
         val action: () -> Unit,
     )
 
     private fun buildSetup() {
         if (!::setupList.isInitialized) return
-        buildShellCard()
         val a11y = LedAccessibilityService.instance != null || isA11yEnabled()
         val overlay = Settings.canDrawOverlays(this)
         val steps = mutableListOf<Step>()
@@ -1005,9 +998,19 @@ class MainActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             }
         }
-        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_short), getString(R.string.perm_a11y_desc), a11y, counts = false,
-            icon = R.drawable.ic_s_access, color = RowIcons.BLUE) {
-            open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        // Some banking apps refuse to open while an accessibility service from outside the Play
+        // Store is on, so it stays optional and can be switched off from here.
+        val a11yLive = LedAccessibilityService.instance
+        steps += Step(getString(R.string.perm_a11y), getString(R.string.perm_a11y_short),
+            getString(R.string.perm_a11y_desc) + "\n\n" + getString(R.string.a11y_banking), a11y, counts = false,
+            icon = R.drawable.ic_s_access, color = RowIcons.BLUE,
+            actionLabel = if (a11yLive != null) R.string.a11y_turn_off else R.string.setup_open) {
+            if (a11yLive != null) {
+                a11yLive.disableSelf()
+                window.decorView.postDelayed({ buildSetup(); refreshLive() }, 400)
+            } else {
+                open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            }
         }
         val pm = getSystemService(PowerManager::class.java)
         steps += Step(getString(R.string.perm_battery), getString(R.string.perm_battery_short), getString(R.string.perm_battery_desc),
@@ -1046,61 +1049,10 @@ class MainActivity : AppCompatActivity() {
                     .setTitle(step.title)
                     .setMessage(step.desc)
                     .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.setup_open) { _, _ -> step.action() }
+                    .setPositiveButton(step.actionLabel) { _, _ -> step.action() }
                     .show()
             }
         })
-    }
-
-    // ---- Shizuku / root one-tap setup ---------------------------------------------------------
-
-    private lateinit var shellBox: LinearLayout
-    private val shizukuListener = Shizuku.OnBinderReceivedListener { runOnUiThread { buildShellCard() } }
-
-    private fun buildShellCard() {
-        if (!::shellBox.isInitialized) return
-        shellBox.removeAllViews()
-        val c = ui.card(shellBox)
-        when {
-            Privileged.backend() != Privileged.Backend.NONE -> ui.link(c, R.drawable.ic_s_verified,
-                getString(R.string.shell_connected, Privileged.backend().name.lowercase().replaceFirstChar { it.uppercase() }),
-                getString(R.string.shell_connected_desc), RowIcons.GREEN) { runShellSetup() }
-            else -> {
-                if (Privileged.shizukuRunning()) {
-                    ui.link(c, R.drawable.ic_s_bolt, getString(R.string.shell_shizuku), getString(R.string.shell_desc), RowIcons.INDIGO) {
-                        Privileged.requestShizuku { ok ->
-                            if (ok) runShellSetup()
-                            else Toast.makeText(this, R.string.shell_denied, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                if (Privileged.rootLikely()) {
-                    if (Privileged.shizukuRunning()) ui.divider(c)
-                    ui.link(c, R.drawable.ic_s_bolt, getString(R.string.shell_root), getString(R.string.shell_desc), RowIcons.INDIGO) {
-                        Privileged.requestRoot { ok ->
-                            prefs.sp.edit().putBoolean(Privileged.PREF_ROOT_OK, ok).apply()
-                            if (ok) runShellSetup()
-                            else Toast.makeText(this, R.string.shell_denied, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                if (!Privileged.shizukuRunning() && !Privileged.rootLikely()) {
-                    ui.link(c, R.drawable.ic_s_bolt, getString(R.string.shell_get), getString(R.string.shell_get_desc), RowIcons.INDIGO) {
-                        open(Intent(Intent.ACTION_VIEW, Uri.parse("https://shizuku.rikka.app/download/")))
-                    }
-                }
-            }
-        }
-    }
-
-    private fun runShellSetup() {
-        Toast.makeText(this, R.string.shell_running, Toast.LENGTH_SHORT).show()
-        Privileged.setup(this) { summary ->
-            prefs.sp.edit().remove(LedController.PREF_WINDOW_BLOCKED).apply()
-            Toast.makeText(this, summary, Toast.LENGTH_LONG).show()
-            buildSetup()
-            refreshLive()
-        }
     }
 
     private fun isA11yEnabled(): Boolean {

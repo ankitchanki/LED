@@ -147,14 +147,5 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
-
-        <!-- Optional Shizuku support (user-approved shell access, no root needed). -->
-        <provider
-            android:name="rikka.shizuku.ShizukuProvider"
-            android:authorities="${applicationId}.shizuku"
-            android:enabled="true"
-            android:exported="true"
-            android:multiprocess="false"
-            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
     </application>
 </manifest>

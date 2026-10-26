@@ -50,7 +50,7 @@ are switched off, so only the light itself uses power.
 | **Colour wheel** | Every colour picker has a ring of all colours you turn with your finger, plus saturation, brightness, presets and hex. |
 | **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *Settings → Language*. |
 | **Easy updates** | Signed builds that install over each other. *Settings → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
-| **Shizuku / root** | Optional one-tap setup that grants every permission at once (no "restricted settings" step), plus instant screen-off without Accessibility. |
+| **Banking-app friendly** | No root or Shizuku code. Accessibility is optional and can be turned off from *Setup*; over apps the ring is a normal overlay that banking apps can hide. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Floating see-through **Test** pill that never hides a setting, Quick Settings tile, swipe-down live preview, first-launch tutorial, themed (monochrome) icon. |
 
@@ -63,8 +63,8 @@ are switched off, so only the light itself uses power.
 
 | Setup | Style | Screen off |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v2.4/4-setup.png" width="220" alt="Setup tab: grouped permission rows with coloured icons and green ticks, All set, Shizuku row" /> | <img src="docs/screenshots/v2.4/5-style.png" width="220" alt="Style tab with Animation, Colour and Shape and motion sections" /> | <img src="docs/screenshots/v2.4/6-screen-off.png" width="220" alt="Screen off tab with sections When to light up, On the black screen, Messages, Gestures and protection, Timing and brightness, and the floating Test pill" /> |
-| Each permission is a row with a green tick; important ones first, Autostart and Shizuku last. | Animation, colour, shape & motion. | Settings grouped by what they do; the see-through **Test** pill floats above. |
+| <img src="docs/screenshots/v2.4/4-setup.png" width="220" alt="Setup tab: grouped permission rows with coloured icons and green ticks, All set" /> | <img src="docs/screenshots/v2.4/5-style.png" width="220" alt="Style tab with Animation, Colour and Shape and motion sections" /> | <img src="docs/screenshots/v2.4/6-screen-off.png" width="220" alt="Screen off tab with sections When to light up, On the black screen, Messages, Gestures and protection, Timing and brightness, and the floating Test pill" /> |
+| Each permission is a row with a green tick; important ones first, Accessibility and Autostart (both optional) last. | Animation, colour, shape & motion. | Settings grouped by what they do; the see-through **Test** pill floats above. |
 
 | Screen on | One-handed mode | Settings |
 |:---:|:---:|:---:|
@@ -119,9 +119,8 @@ breaks off, falls straight down into the middle of the icon row and turns into t
 1. Download [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) and open it (allow "install unknown apps" for your browser or file manager).
 2. Open **Glow LED** and work through the **Setup** tab:
    - **Notification access** (required): lets the app know a notification arrived. Nothing leaves your phone.
-   - **Have [Shizuku](https://shizuku.rikka.app/download/) or root?** Tap *One-tap setup* at the top of the Setup tab and everything below is granted for you.
    - **Display over other apps**: lets the light appear while the screen is off. This alone is enough.
-   - **Accessibility** (optional): makes the light unblockable on strict ROMs (HyperOS, ColorOS...) and switches the screen off instantly when the light times out. It reads no screen content.
+   - **Accessibility** (optional): makes the light unblockable on strict ROMs (HyperOS, ColorOS...) and switches the screen off instantly when the light times out. It reads no screen content. If a banking app complains, turn it off from the same row.
    - **Unrestricted battery** and, on Xiaomi/OPPO/vivo/Huawei and similar, **Autostart**.
 3. In the **Style** tab tap **Camera position**, then **Auto-detect**, adjust if needed, and **Save**.
 4. Tap the floating **Test** pill, then turn the screen off.
@@ -131,6 +130,29 @@ The screen-off view wakes the panel and draws black; it is not native hardware A
 
 > **Android 13+ "Restricted setting" dialog:** apps installed from an APK can't enable accessibility straight away.
 > Open *Settings → Apps → Glow LED → ⋮ (top right) → Allow restricted settings*, then enable it again.
+
+## "App blocked to protect your device" (Google Play Protect)
+
+In India and some other countries, Play Protect's *enhanced fraud protection* stops apps installed
+from a **browser, messaging app or file manager** if they ask for **Notification access** or
+**Accessibility**. Glow LED needs Notification access to know a notification arrived, so it can't
+avoid this check. It is not a virus warning about this app's code. Two ways to install:
+
+1. **With a computer:** `adb install GlowLED-latest.apk` (needs USB debugging only for that
+   moment; turn Developer options off again afterwards, as many banking apps require).
+2. **On the phone:** Play Store → your profile picture → **Play Protect** → ⚙ → turn off
+   **Scan apps with Play Protect** → install the APK → turn the scan **back on** straight away.
+
+## Banking apps
+
+Glow LED has no root or Shizuku code. Some banking apps still refuse to open when:
+- **Developer options / USB or wireless debugging** are on: turn them off in Settings.
+- **An accessibility service from outside the Play Store** is on: Glow LED's accessibility is
+  optional; *Setup → Accessibility → Turn off* switches it off (the light keeps working).
+
+The screen-on ring is a normal "display over other apps" window over apps, so banking apps that
+hide overlays can hide it. A "Play Integrity" failure comes from the phone itself (unlocked
+bootloader or root), not from installed apps.
 
 ## How it works
 

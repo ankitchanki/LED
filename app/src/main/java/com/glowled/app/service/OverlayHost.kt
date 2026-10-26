@@ -15,8 +15,9 @@ import com.glowled.app.core.NotificationStore
 import com.glowled.app.view.LedView
 
 /**
- * Screen-on indicator window. Uses an accessibility overlay when available (shows on the lock
- * screen and above the status bar); otherwise a "display over other apps" window.
+ * Screen-on indicator window. Over apps it is a "display over other apps" window, which apps that
+ * guard against overlays (banking, payments) can hide; the accessibility overlay is only used on
+ * the lock screen, or when there is no overlay permission.
  * The window is sized tightly around the camera so the compositor has almost nothing to blend.
  */
 object OverlayHost {
@@ -27,7 +28,9 @@ object OverlayHost {
     private val listener: () -> Unit = { refresh() }
 
     fun show(context: Context) {
-        val a11y = LedAccessibilityService.instance
+        val a11y = LedAccessibilityService.instance?.takeIf {
+            !Settings.canDrawOverlays(context) || LedController.isLocked()
+        }
         if (view != null && usingA11y == (a11y != null)) {
             refresh()
             return

@@ -34,7 +34,6 @@ import com.glowled.app.service.OverlayHost
 import com.glowled.app.service.PulseReceiver
 import com.glowled.app.ui.AodActivity
 import com.glowled.app.util.OemHelper
-import com.glowled.app.util.Privileged
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
@@ -103,8 +102,6 @@ object LedController {
         syncBatteryWatch()
         watchDisplayState()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
-        // Root managers remember the grant, so re-use it after a restart without prompting.
-        if (prefs.sp.getBoolean(Privileged.PREF_ROOT_OK, false)) Privileged.markRootGranted()
     }
 
     // SharedPreferences keeps only a weak reference, so hold the listener in a field.
@@ -236,8 +233,7 @@ object LedController {
 
     fun isLocked(): Boolean = app.getSystemService(KeyguardManager::class.java).isKeyguardLocked
 
-    fun canTurnScreenOff(): Boolean =
-        LedAccessibilityService.instance != null || Privileged.backend() != Privileged.Backend.NONE
+    fun canTurnScreenOff(): Boolean = LedAccessibilityService.instance != null
 
     fun canLaunchFromBackground(): Boolean =
         LedAccessibilityService.instance != null || Settings.canDrawOverlays(app)
@@ -337,7 +333,7 @@ object LedController {
             main.postDelayed({ startOverlay(durationSec, false) }, 120)
             true
         } else {
-            DebugLog.add("Window started $px px below the camera - turn on Accessibility (or Shizuku setup) so the ring can sit on the camera")
+            DebugLog.add("Window started $px px below the camera - turn on Accessibility so the ring can sit on the camera")
             false
         }
     }
@@ -501,10 +497,9 @@ object LedController {
     }
 
     /** Locks/turns the screen off (needs the accessibility service). Returns false if unavailable. */
-    /** Switches the panel off: accessibility lock action, else Shizuku/root power key. */
     fun turnScreenOff(): Boolean {
-        val ok = LedAccessibilityService.instance?.lockScreen() == true || Privileged.screenOff()
-        DebugLog.add(if (ok) "Switching the screen off" else "Can't switch the screen off (no Accessibility/Shizuku)")
+        val ok = LedAccessibilityService.instance?.lockScreen() == true
+        DebugLog.add(if (ok) "Switching the screen off" else "Can't switch the screen off (no Accessibility)")
         return ok
     }
 
