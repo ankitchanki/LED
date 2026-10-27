@@ -12,7 +12,10 @@ import org.json.JSONObject
 object SettingsBackup {
 
     // Device-specific runtime state that shouldn't travel to a new install.
-    private val skip = setOf("root_ok", "aod_window_blocked")
+    private val skip = setOf(
+        "root_ok", "aod_window_blocked", "transfer_apps",
+        "update_latest", "update_notes", "update_checked", "update_notified",
+    )
 
     fun write(context: Context, sp: SharedPreferences, uri: Uri): Boolean = try {
         val json = JSONObject()

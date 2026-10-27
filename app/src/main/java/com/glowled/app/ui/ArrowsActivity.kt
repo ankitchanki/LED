@@ -74,7 +74,7 @@ class ArrowsActivity : AppCompatActivity() {
         goEdgeToEdge()
         super.onCreate(savedInstanceState)
         LedController.init(this)
-        setContentView(R.layout.activity_arrows)
+        setContentView(R.layout.activity_sub)
         preferMaxRefreshRate()
         col = findViewById(R.id.col)
         findViewById<View>(R.id.scroll).padForNavBar()

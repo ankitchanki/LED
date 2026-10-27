@@ -102,6 +102,8 @@ object LedController {
         syncBatteryWatch()
         watchDisplayState()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
+        // The job service can be missing or over its limit on some builds; updates are optional.
+        runCatching { com.glowled.app.service.UpdateCheckJob.sync(app) }
     }
 
     // SharedPreferences keeps only a weak reference, so hold the listener in a field.

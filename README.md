@@ -49,7 +49,7 @@ are switched off, so only the light itself uses power.
 | **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
 | **Colour wheel** | Every colour picker has a ring of all colours you turn with your finger, plus saturation, brightness, presets and hex. |
 | **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *Settings → Language*. |
-| **Easy updates** | Signed builds that install over each other. *Settings → Get latest* downloads the newest APK directly. Settings backup/restore to a file and a signature check. |
+| **Built-in updater** | *Settings → Updates* checks GitHub, says **Glow LED is up to date** or shows the new version with its **changelog**, then downloads it, checks it is signed with the official key and installs it without leaving the app. Every few hours it checks by itself and sends a **notification with the changelog** when a new version is out (can be turned off). Settings backup/restore to a file. |
 | **Banking-app friendly** | No root or Shizuku code. Accessibility is optional and can be turned off from *Setup*; over apps the ring is a normal overlay that banking apps can hide. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
 | **Extras** | Floating see-through **Test** pill that never hides a setting, Quick Settings tile, swipe-down live preview, first-launch tutorial, themed (monochrome) icon. |
@@ -75,6 +75,10 @@ are switched off, so only the light itself uses power.
 |:---:|:---:|:---:|
 | <img src="docs/screenshots/v2.4/12-arrows.png" width="220" alt="Per-app arrows: Set by you with Google Photos upload and Telegram download pills, Automatic with Chrome, Drive, Play Store and WhatsApp" /> | <img src="docs/screenshots/v2.4/13-arrow-app.png" width="220" alt="Google Photos arrow screen: ring preview with an up arrow, segmented control Auto, down, up, None, upload colour and Reset to Auto" /> | <img src="docs/screenshots/v2.4/14-if-unknown.png" width="220" alt="If unknown: No icon selected, Show up-down arrow, Treat as download, Treat as upload, and the order Glow LED follows" /> |
 | Set an arrow for any app; well-known apps are automatic. | Auto, ↓, ↑ or None, with a live preview of the ring. | What shows when nothing tells the direction. |
+
+| Update available | Up to date |
+|:---:|:---:|
+| <img src="docs/screenshots/v2.4/15-update.png" width="220" alt="Updates screen: version 2.9.0 is available, download size, Download and install button, What's new list, Check for updates switch" /> | <img src="docs/screenshots/v2.4/16-up-to-date.png" width="220" alt="Updates screen: Glow LED is up to date with a green tick and a Check now button" /> |
 
 | Light mode | Português (Brasil) |
 |:---:|:---:|
@@ -231,7 +235,7 @@ Without these secrets, CI signs the APK with a throwaway debug key. Such APKs ca
 
 ## Privacy
 
-Glow LED has **no internet permission**, so nothing can leave your phone. To show the tap-to-read card
+Glow LED uses the internet for **one thing only: checking GitHub for a new version** (and downloading it when you tap *Download and install*). That request carries nothing about you or your notifications; turn off *Settings → Updates → Check for updates* to stop the automatic checks. To show the tap-to-read card
 it reads the sender and the latest message text of each notification and keeps them **in memory only**:
 they are never written to storage, logged or sent anywhere, and they disappear when the notification is
 dismissed. Turn off *Screen off → Tap icon to read message* to stop reading message text entirely.

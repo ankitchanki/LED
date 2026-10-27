@@ -1,3 +1,22 @@
+# Glow LED v2.8.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Built-in updater
+- **Settings → Updates** checks GitHub and says **Glow LED is up to date**, or shows the new version
+  with its size and **what's new**.
+- **Download and install** right there: a progress bar while it downloads, a check that the file is a
+  newer Glow LED signed with the official key, then the system install screen. Your settings stay.
+- The first time, Android asks you to allow **Install unknown apps** for Glow LED; after that the
+  download starts by itself.
+- **Update notification:** Glow LED checks every few hours (only with a connection) and notifies you
+  with the changelog as soon as a new version is out. Tap it to update. *Check for updates* turns
+  this off.
+- Checking for updates is the only thing Glow LED uses the internet for.
+
+---
+
 # Glow LED v2.7.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

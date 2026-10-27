@@ -57,6 +57,7 @@ import com.glowled.app.core.LedController
 import com.glowled.app.core.LedStyle
 import com.glowled.app.core.MeterIcon
 import com.glowled.app.core.UnknownArrow
+import com.glowled.app.core.Updater
 import com.glowled.app.core.NotificationStore
 import com.glowled.app.core.PowerGuard
 import com.glowled.app.core.Prefs
@@ -110,6 +111,7 @@ class MainActivity : AppCompatActivity() {
     private var quietSub: TextView? = null
     private var arrowsSub: TextView? = null
     private var unknownSub: TextView? = null
+    private var updateSub: TextView? = null
     private var setupIncomplete = false
 
     private val prefs get() = LedController.prefs
@@ -320,6 +322,7 @@ class MainActivity : AppCompatActivity() {
         master.isChecked = prefs.enabled
         arrowsSub?.text = arrowsText()
         unknownSub?.text = unknownText()
+        updateSub?.text = updateText()
         buildSetup()
         refreshLive()
         LedController.addListener(storeListener)
@@ -678,6 +681,14 @@ class MainActivity : AppCompatActivity() {
         return if (n == 0) getString(R.string.arrows_sub_none) else getString(R.string.arrows_sub_some, n)
     }
 
+    /** "Version 2.7.0 · up to date", or the newer version the last check found. */
+    private fun updateText(): String {
+        val cur = BuildConfig.VERSION_NAME.substringBefore('-')
+        return Updater.pendingVersion()?.let { getString(R.string.upd_sub_available, it) }
+            ?: if (prefs.sp.contains(Updater.K_CHECKED)) getString(R.string.upd_sub_latest, cur)
+            else getString(R.string.upd_sub_unknown, cur)
+    }
+
     private fun unknownText(): String = getString(when (prefs.unknownArrow) {
         UnknownArrow.NONE -> R.string.unk_none
         UnknownArrow.BOTH -> R.string.unk_both
@@ -725,15 +736,15 @@ class MainActivity : AppCompatActivity() {
         ui.toggles(col, listOf(Toggle(getString(R.string.t_haptics), "haptics", true)))
         section(col, R.string.sec_tools)
         val official = AppSignature.isOfficial(this)
-        ui.grid(col, listOf(
+        updateSub = ui.grid(col, listOf(
             GridItem(R.drawable.ic_s_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub), RowIcons.ORANGE) { showTutorial() },
             GridItem(if (official) R.drawable.ic_s_verified else R.drawable.ic_s_shield,
                 getString(if (official) R.string.g_official else R.string.g_unofficial),
                 getString(R.string.g_version, BuildConfig.VERSION_NAME), if (official) RowIcons.GREEN else RowIcons.ORANGE) {
-                open(Intent(Intent.ACTION_VIEW, Uri.parse(RELEASES_URL)))
+                open(Intent(Intent.ACTION_VIEW, Uri.parse(Updater.RELEASES_PAGE)))
             },
-            GridItem(R.drawable.ic_s_download, getString(R.string.g_download), getString(R.string.g_download_sub), RowIcons.BLUE) {
-                open(Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_APK_URL)))
+            GridItem(R.drawable.ic_s_download, getString(R.string.upd_title), updateText(), RowIcons.BLUE) {
+                startActivity(Intent(this, UpdateActivity::class.java))
             },
             GridItem(R.drawable.ic_s_globe, getString(R.string.g_language), currentLanguageName(), RowIcons.INDIGO) { pickLanguage() },
             GridItem(R.drawable.ic_s_save, getString(R.string.g_backup), getString(R.string.g_backup_sub), RowIcons.CYAN) {
@@ -743,7 +754,7 @@ class MainActivity : AppCompatActivity() {
                 restoreLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
             },
             GridItem(R.drawable.ic_s_log, getString(R.string.g_log), getString(R.string.g_log_sub), RowIcons.GREY) { showLog() },
-        ))
+        )).getOrNull(2)
         col.addView(hint(getString(R.string.reach_tip)))
         col.addView(hint(getString(R.string.sig_key, AppSignature.short(AppSignature.sha256(this))) +
             " · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"))
@@ -1127,8 +1138,5 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_REACH_OPEN = "reach_open"
         // Discrete changes replay the entrance; sliders just update the ring live while dragging.
         private val REPLAY_KEYS = setOf("style", "default_color", "multi_mode", "glow", "enabled", "rotate_ring")
-        private const val RELEASES_URL = "https://github.com/ankitchanki/LED/releases"
-        /** Always the newest signed APK (updated with every release). */
-        private const val LATEST_APK_URL = "https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk"
     }
 }

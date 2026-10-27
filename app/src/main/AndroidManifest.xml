@@ -12,6 +12,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Only for the in-app updater: checking GitHub for a new release and installing it. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- Lets the per-app list see launcher apps on Android 11+ without QUERY_ALL_PACKAGES. -->
     <queries>
@@ -50,6 +53,21 @@
             android:exported="false"
             android:label="@string/title_apps"
             android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.UpdateActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <service
+            android:name=".service.UpdateCheckJob"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver
+            android:name=".core.Updater$InstallStatusReceiver"
+            android:exported="false" />
 
         <activity
             android:name=".ui.ArrowsActivity"
