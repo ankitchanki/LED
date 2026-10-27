@@ -87,7 +87,10 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
                     }
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (!dragging) startH = current
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (!dragging) {
+                startH = current
+                settle()
+            }
         }
         return dragging
     }
@@ -104,6 +107,8 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 val h = current
                 val open = if (pullingDown) h > maxReach * 0.22f else h > maxReach * 0.78f
                 animateTo(open)
+            } else {
+                settle()
             }
         }
         return true
@@ -123,7 +128,10 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
             var cancelled = false
             addListener(object : android.animation.AnimatorListenerAdapter() {
                 override fun onAnimationCancel(a: android.animation.Animator) {
+                    // A touch stopped the slide halfway: lay out where the content is now, so the
+                    // pages are never left shifted off the screen.
                     cancelled = true
+                    commit(shown)
                 }
 
                 override fun onAnimationEnd(a: android.animation.Animator) {
@@ -137,6 +145,16 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
             com.glowled.app.ui.Haptics.toggle(this, open)
             onReachChanged?.invoke(open)
         }
+    }
+
+    /**
+     * A touch that didn't turn into a pull stopped a slide halfway: finish it, so the content
+     * always ends fully open or fully closed.
+     */
+    private fun settle() {
+        if (anim?.isRunning == true) return
+        val target = if (isOpen) maxReach else 0
+        if (shown != target || committed != target) animateTo(isOpen)
     }
 
     /** Visual position only: slide the content (no layout). */

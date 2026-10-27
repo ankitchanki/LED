@@ -21,8 +21,8 @@ android {
         applicationId = "com.glowled.app"
         minSdk = 29
         targetSdk = 35
-        versionCode = 30
-        versionName = "2.8.0"
+        versionCode = 31
+        versionName = "2.8.1"
     }
 
     signingConfigs {

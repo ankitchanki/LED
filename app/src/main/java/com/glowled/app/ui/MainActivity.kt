@@ -71,7 +71,6 @@ import com.glowled.app.view.ReachLayout
 import com.glowled.app.view.AppInfoView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.activity.result.contract.ActivityResultContracts
-import com.glowled.app.util.AppSignature
 import com.glowled.app.util.OemHelper
 import com.glowled.app.util.SettingsBackup
 import com.glowled.app.view.LedView
@@ -735,17 +734,11 @@ class MainActivity : AppCompatActivity() {
             labels(R.array.theme_labels), listOf("dark", "light", "system"), "dark")
         ui.toggles(col, listOf(Toggle(getString(R.string.t_haptics), "haptics", true)))
         section(col, R.string.sec_tools)
-        val official = AppSignature.isOfficial(this)
         updateSub = ui.grid(col, listOf(
-            GridItem(R.drawable.ic_s_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub), RowIcons.ORANGE) { showTutorial() },
-            GridItem(if (official) R.drawable.ic_s_verified else R.drawable.ic_s_shield,
-                getString(if (official) R.string.g_official else R.string.g_unofficial),
-                getString(R.string.g_version, BuildConfig.VERSION_NAME), if (official) RowIcons.GREEN else RowIcons.ORANGE) {
-                open(Intent(Intent.ACTION_VIEW, Uri.parse(Updater.RELEASES_PAGE)))
-            },
             GridItem(R.drawable.ic_s_download, getString(R.string.upd_title), updateText(), RowIcons.BLUE) {
                 startActivity(Intent(this, UpdateActivity::class.java))
             },
+            GridItem(R.drawable.ic_s_play, getString(R.string.tutorial_title), getString(R.string.tutorial_sub), RowIcons.ORANGE) { showTutorial() },
             GridItem(R.drawable.ic_s_globe, getString(R.string.g_language), currentLanguageName(), RowIcons.INDIGO) { pickLanguage() },
             GridItem(R.drawable.ic_s_save, getString(R.string.g_backup), getString(R.string.g_backup_sub), RowIcons.CYAN) {
                 backupLauncher.launch("glowled-settings.json")
@@ -754,10 +747,8 @@ class MainActivity : AppCompatActivity() {
                 restoreLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
             },
             GridItem(R.drawable.ic_s_log, getString(R.string.g_log), getString(R.string.g_log_sub), RowIcons.GREY) { showLog() },
-        )).getOrNull(2)
+        )).getOrNull(0)
         col.addView(hint(getString(R.string.reach_tip)))
-        col.addView(hint(getString(R.string.sig_key, AppSignature.short(AppSignature.sha256(this))) +
-            " · ${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}"))
         return page
     }
 

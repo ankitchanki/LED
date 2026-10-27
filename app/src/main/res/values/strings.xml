@@ -128,9 +128,6 @@
     <string name="battery_hint">Still after 12 s: the light animates when it appears, then holds still, so nothing is redrawn. Dim older: a new notification glows at full strength and fades over an hour. Wake on motion: after the light times out, it shows again when you move the phone, using the motion chip (no screen or CPU time while waiting).</string>
 
     <!-- Settings tab (was More) -->
-    <string name="g_official">Official build</string>
-    <string name="g_unofficial">Other build</string>
-    <string name="g_version">Version %s</string>
     <string name="g_language">Language</string>
     <string name="g_backup">Back up</string>
     <string name="g_backup_sub">Settings to a file</string>
@@ -138,7 +135,6 @@
     <string name="g_restore_sub">From a backup</string>
     <string name="g_log">Event log</string>
     <string name="g_log_sub">View and copy</string>
-    <string name="sig_key">Key %s</string>
     <string name="log_share">Share</string>
     <string name="log_copy">Copy</string>
     <string name="log_copied">Copied</string>

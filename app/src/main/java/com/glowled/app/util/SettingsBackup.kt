@@ -13,7 +13,7 @@ object SettingsBackup {
 
     // Device-specific runtime state that shouldn't travel to a new install.
     private val skip = setOf(
-        "root_ok", "aod_window_blocked", "transfer_apps",
+        "aod_window_blocked", "transfer_apps",
         "update_latest", "update_notes", "update_checked", "update_notified",
     )
 

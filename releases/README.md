@@ -3,7 +3,7 @@
 | File | What it is |
 |---|---|
 | [`GlowLED-latest.apk`](GlowLED-latest.apk) | Always the newest version. **Download this one.** |
-| `GlowLED-v2.8.0.apk` | The same build, named by version. |
+| `GlowLED-v2.8.1.apk` | The same build, named by version. |
 | [`SHA256SUMS.txt`](SHA256SUMS.txt) | Checksums, if you want to verify the download. |
 
 ## ✅ This is a signed build
@@ -38,8 +38,8 @@ different key (the early v1.0.0–v1.2.0 GitHub releases). Fix it like this:
 
 After this one-time reinstall, every future update installs over it normally.
 
-**Check which build you have:** Glow LED → **Settings** tab. It says *Official signed build* when you
-have the right one.
+**Updating:** from v2.8.0 on, Glow LED → **Settings → Updates** downloads and installs new versions
+itself (it only accepts files signed with the official key).
 
 ## Android 13+ "Restricted setting"
 

@@ -68,8 +68,8 @@ are switched off, so only the light itself uses power.
 
 | Screen on | One-handed mode | Settings |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/v2.4/7-screen-on.png" width="220" alt="Screen on tab: While you use the phone, Charging and battery with colour per battery level, Downloads and uploads with direction arrow" /> | <img src="docs/screenshots/v2.4/9-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2.4/8-settings.png" width="220" alt="Settings tab: Appearance with app theme and haptic feedback, Tools with tutorial, official build, get latest, language, back up, restore, event log" /> |
-| Ring while on, charging ring colours, download ring with direction arrow and the Arrows settings. | Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | Appearance (theme, haptics) and Tools (tutorial, build check, latest APK, language, backup, restore, event log). |
+| <img src="docs/screenshots/v2.4/7-screen-on.png" width="220" alt="Screen on tab: While you use the phone, Charging and battery with colour per battery level, Downloads and uploads with direction arrow" /> | <img src="docs/screenshots/v2.4/9-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2.4/8-settings.png" width="220" alt="Settings tab: Appearance with app theme and haptic feedback, Tools with updates, tutorial, language, back up, restore, event log" /> |
+| Ring while on, charging ring colours, download ring with direction arrow and the Arrows settings. | Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | Appearance (theme, haptics) and Tools (updates, tutorial, language, backup, restore, event log). |
 
 | Per-app arrows | One app | If unknown |
 |:---:|:---:|:---:|
@@ -118,7 +118,7 @@ breaks off, falls straight down into the middle of the icon row and turns into t
 > 3. Install [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) again.
 > 4. *(Optional)* Glow LED → **Settings** → **Restore settings**.
 >
-> After that, updates install normally. The **Settings** tab shows *Official signed build* when you have the right one.
+> After that, updates install normally, from *Settings → Updates* inside the app.
 
 1. Download [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) and open it (allow "install unknown apps" for your browser or file manager).
 2. Open **Glow LED** and work through the **Setup** tab:

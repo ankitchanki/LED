@@ -1,3 +1,21 @@
+# Glow LED v2.8.1
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **Settings cut off / not scrolling:** touching the screen while one-handed mode was sliding could
+  leave the settings shifted up, with the lower part black and out of reach. The slide now always
+  finishes fully open or fully closed.
+
+## Cleaner
+- **Updates** is now the first row in *Settings → Tools*; the separate *Official build* row and the
+  signing-key line are gone (the updater only installs officially signed versions anyway).
+- Removed leftover code: the settings clean-up for versions before 1.8, the old signature helper
+  and unused resources.
+
+---
+
 # Glow LED v2.8.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

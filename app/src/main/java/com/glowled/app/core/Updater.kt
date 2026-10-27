@@ -8,7 +8,6 @@ import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import android.os.Build
 import com.glowled.app.BuildConfig
-import com.glowled.app.util.AppSignature
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
@@ -27,6 +26,8 @@ object Updater {
     const val RELEASES_PAGE = "https://github.com/ankitchanki/LED/releases"
     private const val APK_NAME = "GlowLED-latest.apk"
     const val ACTION_INSTALL_STATUS = "com.glowled.app.UPDATE_INSTALL_STATUS"
+    /** SHA-256 of the Glow LED release signing certificate; updates must carry it. */
+    private const val RELEASE_SHA256 = "5d04de1a96a80107ec87658382b063f15c53cfea8043f554a339f285fe0c5023"
 
     // Last result, kept in prefs so the Settings row and the notification can show it.
     const val K_LATEST = "update_latest"
@@ -167,7 +168,7 @@ object Updater {
         val certs = info.signingInfo?.apkContentsSigners ?: info.signatures ?: return false
         val sha = MessageDigest.getInstance("SHA-256")
         return certs.isNotEmpty() && certs.all {
-            sha.digest(it.toByteArray()).joinToString("") { b -> "%02x".format(b) } == AppSignature.RELEASE_SHA256
+            sha.digest(it.toByteArray()).joinToString("") { b -> "%02x".format(b) } == RELEASE_SHA256
         }
     }
 

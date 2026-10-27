@@ -98,7 +98,6 @@ object LedController {
             addAction(Intent.ACTION_POWER_DISCONNECTED)
         }
         ContextCompat.registerReceiver(app, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
-        migrate()
         syncBatteryWatch()
         watchDisplayState()
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
@@ -115,20 +114,6 @@ object LedController {
     private val prefListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
         main.removeCallbacks(prefsChanged)
         main.postDelayed(prefsChanged, 150)
-    }
-
-    /** One-time clean-up of settings from older versions. */
-    private fun migrate() {
-        val sp = prefs.sp
-        val e = sp.edit()
-        // v1.8: the old "cycle colours" default becomes the split-by-app ring.
-        if (!sp.getBoolean("mig_split_ring", false)) {
-            if (sp.getString("multi_mode", null) == "cycle") e.remove("multi_mode")
-            e.putBoolean("mig_split_ring", true)
-        }
-        // v1.8.1: drop keys no version reads any more.
-        listOf("tap_dismiss", "double_tap_off").forEach { if (sp.contains(it)) e.remove(it) }
-        e.apply()
     }
 
     // ---- listeners (AOD activity / overlay) ------------------------------------------------------
