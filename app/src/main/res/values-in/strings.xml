@@ -331,7 +331,6 @@
     <string name="upd_notif_title">Glow LED %1$s tersedia</string>
     <string name="upd_notif_action">Perbarui</string>
     <string name="selected">Dipilih</string>
-    <string name="sec_showcase">Lihat cara kerjanya</string>
     <string name="what_is_it">Apa ini?</string>
     <string name="sc_notify">Pesan baru</string>
     <string name="sc_notify_sub">Saat pesan masuk, cincin menyala di sekitar kamera dan setetes jatuh ke ikon aplikasi.</string>

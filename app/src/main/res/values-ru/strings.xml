@@ -331,7 +331,6 @@
     <string name="upd_notif_title">Доступна версия Glow LED %1$s</string>
     <string name="upd_notif_action">Обновить</string>
     <string name="selected">Выбрано</string>
-    <string name="sec_showcase">Как это выглядит</string>
     <string name="what_is_it">Что это?</string>
     <string name="sc_notify">Новое сообщение</string>
     <string name="sc_notify_sub">Когда приходит сообщение, вокруг камеры светится кольцо, а в значок приложения падает капля.</string>

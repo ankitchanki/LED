@@ -331,7 +331,6 @@
     <string name="upd_notif_title">Glow LED %1$s è disponibile</string>
     <string name="upd_notif_action">Aggiorna</string>
     <string name="selected">Selezionato</string>
-    <string name="sec_showcase">Guardalo in azione</string>
     <string name="what_is_it">Cos\'è?</string>
     <string name="sc_notify">Nuovo messaggio</string>
     <string name="sc_notify_sub">Quando arriva un messaggio, un anello si illumina intorno alla fotocamera e una goccia cade nell\'icona dell\'app.</string>

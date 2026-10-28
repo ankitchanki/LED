@@ -63,19 +63,19 @@ the light itself uses power.
 <td><img src="docs/screenshots/v2.4/3-charging.png" width="230" alt="Black screen with a green charging ring at 89 percent and a small bolt in the gap at the bottom of the ring" /></td>
 </tr>
 <tr>
-<th>Setup &amp; showcase</th><th>Style</th><th>Screen off</th>
+<th>Setup</th><th>Style</th><th>Screen off</th>
 </tr>
 <tr>
-<td><img src="docs/screenshots/v2.4/4-setup.png" width="230" alt="Setup tab: the See it in action card showing the charging ring, then permission rows with green ticks" /></td>
+<td><img src="docs/screenshots/v2.4/4-setup.png" width="230" alt="Setup tab: permission rows with coloured icons and green ticks" /></td>
 <td><img src="docs/screenshots/v2.4/5-style.png" width="230" alt="Style tab with Animation, Colour and Shape and motion sections" /></td>
 <td><img src="docs/screenshots/v2.4/6-screen-off.png" width="230" alt="Screen off tab with grouped switches and the floating Test pill" /></td>
 </tr>
 <tr>
-<th>Screen on</th><th>One-handed mode</th><th>Settings</th>
+<th>Screen on</th><th>Pull down: See it in action</th><th>Settings</th>
 </tr>
 <tr>
 <td><img src="docs/screenshots/v2.4/7-screen-on.png" width="230" alt="Screen on tab: ring while on, charging colours by battery level, downloads and uploads" /></td>
-<td><img src="docs/screenshots/v2.4/9-one-handed.png" width="230" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /></td>
+<td><img src="docs/screenshots/v2.4/9-one-handed.png" width="230" alt="Settings pulled down into thumb reach, with the See it in action showcase above them playing the charging ring" /></td>
 <td><img src="docs/screenshots/v2.4/8-settings.png" width="230" alt="Settings tab: app theme, haptics, updates, tutorial, language, backup, restore, event log" /></td>
 </tr>
 <tr>

@@ -331,7 +331,6 @@
     <string name="upd_notif_title">Glow LED %1$s mevcut</string>
     <string name="upd_notif_action">Güncelle</string>
     <string name="selected">Seçili</string>
-    <string name="sec_showcase">Nasıl çalışır</string>
     <string name="what_is_it">Bu nedir?</string>
     <string name="sc_notify">Yeni mesaj</string>
     <string name="sc_notify_sub">Mesaj gelince kameranın çevresinde bir halka parlar ve uygulama simgesine bir damla düşer.</string>

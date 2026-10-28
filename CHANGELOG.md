@@ -1,3 +1,17 @@
+# Glow LED v2.10.1
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Smoother one-handed mode, one preview
+- **No more cut-off settings:** pulling the settings down or pushing them back up only slides them;
+  the page keeps its full height the whole time, so nothing goes blank or gets cropped mid-motion.
+- **"See it in action" lives in the pull-down space** (it replaces the older live preview there),
+  and the separate card on the Setup tab is gone, so the same preview isn't shown twice. Tap it to
+  skip to the next feature.
+
+---
+
 # Glow LED v2.10.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

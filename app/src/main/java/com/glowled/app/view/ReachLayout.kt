@@ -2,6 +2,7 @@ package com.glowled.app.view
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -13,17 +14,21 @@ import kotlin.math.abs
 /**
  * One-handed mode (like One UI "reachability"): pull down anywhere on the settings while the page
  * is scrolled to the top, and the tabs and settings slide down into thumb reach. Pull up (or press
- * back) to bring them back. The space opened above them is [spacer], a child of this layout.
+ * back) to bring them back. The space opened above them shows [overlay], a view behind this layout.
  *
- * Smoothness: while dragging and animating only the [movable] views' translation changes (no
- * layout pass, so every frame is cheap even at 120 Hz). The spacer's height - and with it the
- * layout of the pages, which shrink so they stay scrollable - is set once, when the motion ends.
+ * Smoothness: the settings only ever move (translation), they are never re-laid out while moving,
+ * so every frame is cheap and nothing is cut off or blank while they slide either way. When the
+ * motion ends, [onReachHeight] lets the pages add the same amount of bottom space, so their last
+ * rows can still be scrolled into view while open.
  */
 class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     LinearLayout(context, attrs) {
 
-    /** The view that grows to push the content down. Must be a child with height 0. */
-    var spacer: View? = null
+    /** The view revealed above the settings (behind this layout, sized and placed here). */
+    var overlay: View? = null
+
+    /** Where the revealed space starts (the bottom of the header). */
+    var overlayTop: () -> Int = { 0 }
 
     /** True while the visible page can still scroll up (then a pull down scrolls it instead). */
     var canContentScrollUp: () -> Boolean = { false }
@@ -33,20 +38,23 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     var onReachChanged: ((Boolean) -> Unit)? = null
 
-    /** The spacer's laid-out height after each motion (0 = closed), e.g. to pause what's inside it. */
+    /** How far the settings are down after each motion (0 = closed). */
     var onReachHeight: ((Int) -> Unit)? = null
 
-    /** The views below the spacer that slide with the finger (not the bottom dock). */
+    /** A tap on the revealed space (it lies behind this layout, so taps are passed on from here). */
+    var onOverlayTap: (() -> Unit)? = null
+
+    /** The views below the header that slide with the finger (not the bottom dock). */
     var movable: List<View> = emptyList()
 
-    /** Height the spacer is laid out with; [shown] is where the content visually is. */
-    private var committed = 0
+    /** Where the settings visually are (their translation). */
     private var shown = 0
 
     var isOpen = false
         private set
 
     private val slop = ViewConfiguration.get(context).scaledTouchSlop
+    private val clip = Rect()
     private var downX = 0f
     private var downY = 0f
     private var startH = 0
@@ -54,18 +62,29 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private var pullingDown = false
     private var anim: ValueAnimator? = null
 
+    /** How far the settings come down when open. */
+    val reachHeight get() = maxReach
+
     /** How far the content comes down: about a third of the screen. */
     private val maxReach get() = (height * REACH_FRACTION).toInt()
 
-    private val current get() = shown
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        val o = overlay ?: return
+        // Sized once to the full reach; only its visible part (clip) changes while moving.
+        post {
+            if (o.layoutParams.height != maxReach) o.layoutParams = o.layoutParams.apply { height = maxReach }
+            setReach(shown.coerceAtMost(maxReach))
+        }
+    }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (spacer == null) return false
+        if (overlay == null) return false
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 downX = ev.x
                 downY = ev.y
-                startH = current
+                startH = shown
                 dragging = false
                 anim?.cancel()
             }
@@ -88,7 +107,7 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (!dragging) {
-                startH = current
+                startH = shown
                 settle()
             }
         }
@@ -104,10 +123,14 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (dragging) {
                 dragging = false
-                val h = current
+                val h = shown
                 val open = if (pullingDown) h > maxReach * 0.22f else h > maxReach * 0.78f
                 animateTo(open)
             } else {
+                val top = overlayTop()
+                if (ev.actionMasked == MotionEvent.ACTION_UP && shown > 0 && ev.y >= top && ev.y < top + shown) {
+                    onOverlayTap?.invoke()
+                }
                 settle()
             }
         }
@@ -121,21 +144,18 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private fun animateTo(open: Boolean) {
         anim?.cancel()
         val target = if (open) maxReach else 0
-        anim = ValueAnimator.ofInt(current, target).apply {
+        anim = ValueAnimator.ofInt(shown, target).apply {
             duration = 260
             interpolator = DecelerateInterpolator(1.6f)
             addUpdateListener { setReach(it.animatedValue as Int) }
             var cancelled = false
             addListener(object : android.animation.AnimatorListenerAdapter() {
                 override fun onAnimationCancel(a: android.animation.Animator) {
-                    // A touch stopped the slide halfway: lay out where the content is now, so the
-                    // pages are never left shifted off the screen.
                     cancelled = true
-                    commit(shown)
                 }
 
                 override fun onAnimationEnd(a: android.animation.Animator) {
-                    if (!cancelled) commit(target)
+                    if (!cancelled) onReachHeight?.invoke(target)
                 }
             })
             start()
@@ -153,34 +173,26 @@ class ReachLayout @JvmOverloads constructor(context: Context, attrs: AttributeSe
      */
     private fun settle() {
         if (anim?.isRunning == true) return
-        val target = if (isOpen) maxReach else 0
-        if (shown != target || committed != target) animateTo(isOpen)
+        if (shown != if (isOpen) maxReach else 0) animateTo(isOpen)
     }
 
-    /** Visual position only: slide the content (no layout). */
+    /** Moves the settings to [h] and reveals that much of the space above them (no layout). */
     private fun setReach(h: Int) {
-        val s = spacer ?: return
         shown = h
-        val dy = (h - committed).toFloat()
-        movable.forEach { it.translationY = dy }
-        if (committed > 0) s.alpha = if (maxReach > 0) (h / maxReach.toFloat()).coerceIn(0f, 1f) else 0f
-    }
-
-    /** The motion is over: lay the spacer out at [h] and drop the temporary translation. */
-    private fun commit(h: Int) {
-        val s = spacer ?: return
-        val opening = committed == 0 && h > 0
-        committed = h
-        shown = h
-        if (s.layoutParams.height != h) s.layoutParams = s.layoutParams.apply { height = h }
-        movable.forEach { it.translationY = 0f }
-        if (opening) {
-            s.alpha = 0f
-            s.animate().alpha(1f).setDuration(180).start()
-        } else {
-            s.alpha = if (h > 0) 1f else 0f
+        movable.forEach { it.translationY = h.toFloat() }
+        val o = overlay ?: return
+        if (h <= 0) {
+            o.visibility = View.INVISIBLE
+            return
         }
-        onReachHeight?.invoke(h)
+        // Show the part of the space the settings have uncovered, anchored to its bottom edge, so it
+        // slides in with them.
+        val full = o.height.takeIf { it > 0 } ?: maxReach
+        o.translationY = overlayTop().toFloat() - (full - h)
+        clip.set(0, full - h, o.width, full)
+        o.clipBounds = clip
+        o.alpha = (h / maxReach.toFloat()).coerceIn(0f, 1f)
+        o.visibility = View.VISIBLE
     }
 
     companion object {

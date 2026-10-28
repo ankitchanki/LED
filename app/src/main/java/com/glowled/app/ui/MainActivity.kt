@@ -11,7 +11,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -68,7 +67,6 @@ import com.glowled.app.ui.SettingsUi.Toggle
 import com.glowled.app.ui.SettingsUi.ColorItem
 import com.glowled.app.ui.SettingsUi.GridItem
 import com.glowled.app.view.ReachLayout
-import com.glowled.app.view.AppInfoView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.activity.result.contract.ActivityResultContracts
 import com.glowled.app.util.OemHelper
@@ -104,8 +102,9 @@ class MainActivity : AppCompatActivity() {
     private var pageViews: List<View> = emptyList()
     private val meterPreviewEnd = Runnable { setMeters(null, 0) }
     /** Live preview of the screen-off light in the one-handed space. */
-    private var previewLed: LedView? = null
-    private var previewIcons: AppInfoView? = null
+    private var showcase: com.glowled.app.view.ShowcaseView? = null
+    /** Bottom space every page keeps (navigation bar + Test pill), before one-handed mode adds more. */
+    private var baseClearance = 0
     private val previewApps by lazy { AodSession.sampleApps(this) }
     private var quietSub: TextView? = null
     private var arrowsSub: TextView? = null
@@ -124,12 +123,9 @@ class MainActivity : AppCompatActivity() {
         // A new method choice gets a fresh chance to use the flicker-free lock-screen window.
         if (key == "aod_method") prefs.sp.edit().remove(LedController.PREF_WINDOW_BLOCKED).apply()
         configureCameraLed()
-        configurePreviewRing()
-        if (key in PREVIEW_ICON_KEYS) bindPreviewIcons()
         if (key == "droplet" && prefs.droplet) {
             // Show what the setting does: on the real camera, and in the one-handed preview.
             cameraLed.playDropletBelow(prefs.defaultColor, DROP_PREVIEW_DP * density, retract = true)
-            playPreviewDroplet()
         }
         if (key == "app_theme") applyAppTheme(prefs.appTheme)
         // Visual feedback right on the camera when the look changes.
@@ -200,7 +196,8 @@ class MainActivity : AppCompatActivity() {
     /** One-handed mode: pull the settings down into thumb reach; back or a swipe up returns. */
     private fun setupReach() {
         reach = findViewById(R.id.root)
-        reach.spacer = findViewById(R.id.reachSpace)
+        reach.overlay = findViewById(R.id.reachSpace)
+        reach.overlayTop = { findViewById<View>(R.id.header).bottom }
         reach.canContentScrollUp = { pageViews.getOrNull(pager.currentItem)?.canScrollVertically(-1) == true }
         val back = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() = reach.close()
@@ -208,13 +205,10 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, back)
         val state = getSharedPreferences(UI_STATE, MODE_PRIVATE)
         buildReachPreview(findViewById(R.id.reachPreview))
-        // Only animate the preview while it can be seen.
         reach.movable = listOf(tabs, pager)
-        reach.onReachHeight = { h ->
-            previewLed?.visibility = if (h > 0) View.VISIBLE else View.INVISIBLE
-            // Just opened: show the droplet falling into the app icon once it's laid out.
-            if (h > 0) previewLed?.postDelayed({ playPreviewDroplet() }, PREVIEW_DROP_DELAY_MS)
-        }
+        // While open the pages sit lower, so they get as much extra room at the bottom to scroll.
+        reach.onReachHeight = { h -> ui.setBottomClearance(baseClearance + h) }
+        reach.onOverlayTap = { showcase?.next() }
         reach.onReachChanged = { open ->
             back.isEnabled = open
             state.edit().putBoolean(KEY_REACH_OPEN, open).apply()
@@ -223,79 +217,15 @@ class MainActivity : AppCompatActivity() {
         if (state.getBoolean(KEY_REACH_OPEN, false)) reach.post { reach.open() }
     }
 
-    /**
-     * The one-handed space shows a small black "screen" with the ring around a camera dot and the
-     * app icons, drawn by the same code as the real always-on light and updated with every change.
-     */
+    /** The one-handed space shows the "See it in action" showcase of every feature. */
     private fun buildReachPreview(host: FrameLayout) {
-        val card = MaterialCardView(this).apply {
-            setCardBackgroundColor(Color.BLACK)
-            radius = 28 * density
-            strokeWidth = dp(1)
-            strokeColor = getColor(R.color.glass_stroke)
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+        showcase = com.glowled.app.view.ShowcaseView(this, previewApps).also {
+            host.addView(it, FrameLayout.LayoutParams(-1, -1))
         }
-        val inner = FrameLayout(this)
-        inner.addView(View(this).apply {
-            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0xFF101014.toInt()) }
-        }, FrameLayout.LayoutParams(dp(PREVIEW_HOLE_DP), dp(PREVIEW_HOLE_DP), Gravity.CENTER_HORIZONTAL or Gravity.TOP).apply {
-            topMargin = dp(PREVIEW_CAM_DP - PREVIEW_HOLE_DP / 2)
-        })
-        val led = LedView(this).apply {
-            useScreenCoords = false
-            uncapped = true
-            visibility = View.INVISIBLE
-        }
-        inner.addView(led, FrameLayout.LayoutParams(-1, -1))
-        val icons = AppInfoView(this)
-        inner.addView(icons, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER_HORIZONTAL or Gravity.TOP).apply {
-            topMargin = dp(PREVIEW_CAM_DP + 30)
-        })
-        card.addView(inner, ViewGroup.LayoutParams(-1, -1))
-        host.addView(card, FrameLayout.LayoutParams(-1, -1))
-        previewLed = led
-        previewIcons = icons
-        bindPreviewIcons()
-        // The ring is centred on the card's width: re-centre when that changes, after the layout
-        // pass (configuring inside it would only take effect a frame later).
-        led.addOnLayoutChangeListener { _, l, _, r, _, ol, _, or, _ -> if (r - l != or - ol) led.post { configurePreviewRing() } }
-    }
-
-    private fun configurePreviewRing() {
-        val led = previewLed ?: return
-        if (led.width == 0) return
-        val hole = dp(PREVIEW_HOLE_DP).toFloat()
-        led.configure(prefs, Geometry(CutoutShape.CIRCLE, led.width / 2f, dp(PREVIEW_CAM_DP).toFloat(), hole, hole), previewColors())
-    }
-
-    /** Sample app icons in the AOD style chosen; only re-bound when a setting changes. */
-    private fun bindPreviewIcons() {
-        previewIcons?.apply {
-            monochrome = prefs.aodIcons
-            // One app, like a single new notification: the droplet falls into it.
-            bind(previewApps.take(1))
-            alpha = 1f
-            visibility = if (prefs.aodEnabled && prefs.showAppInfo) View.VISIBLE else View.INVISIBLE
-        }
-    }
-
-    /** Preview of the droplet: a drop stretches out of the camera and turns into the app icon. */
-    private fun playPreviewDroplet() {
-        val led = previewLed ?: return
-        val icons = previewIcons ?: return
-        if (led.visibility != View.VISIBLE || led.width == 0 || icons.width == 0) return
-        if (!prefs.droplet || !prefs.aodEnabled || !prefs.showAppInfo) return
-        icons.prepareDrop()
-        led.playDroplet(
-            previewApps.firstOrNull()?.color ?: prefs.defaultColor,
-            targetY = icons.top + icons.iconCenterY(),
-            targetX = icons.left + icons.newestCenterX(),
-        ) { icons.popNewest() }
     }
 
     private fun setMeters(fraction: Float?, color: Int, icon: MeterIcon = MeterIcon.NONE) {
         if (::cameraLed.isInitialized) cameraLed.setMeter(fraction, color, icon)
-        previewLed?.setMeter(fraction, color, icon)
     }
 
     private fun applyInsets() {
@@ -310,7 +240,8 @@ class MainActivity : AppCompatActivity() {
             // with enough empty space that their last row can always be scrolled clear of it.
             (pill.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = bars.bottom + dp(PILL_GAP_DP)
             pill.requestLayout()
-            ui.setBottomClearance(bars.bottom + dp(PILL_GAP_DP) + pillHeight + dp(8))
+            baseClearance = bars.bottom + dp(PILL_GAP_DP) + pillHeight + dp(8)
+            ui.setBottomClearance(baseClearance + if (::reach.isInitialized && reach.isOpen) reach.reachHeight else 0)
             insets
         }
     }
@@ -376,7 +307,6 @@ class MainActivity : AppCompatActivity() {
             start()
         }
         cameraLed.restartAnimation()
-        previewLed?.restartAnimation()
     }
 
     /** Shows the charging / download ring on the real camera for a moment while it's being set up. */
@@ -456,9 +386,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun pageSetup(): View {
         val (page, col) = ui.page()
-        section(col, R.string.sec_showcase, first = true)
-        col.addView(com.glowled.app.view.ShowcaseView(this, previewApps),
-            LinearLayout.LayoutParams(-1, dp(SHOWCASE_DP)).apply { setMargins(dp(4), 0, dp(4), dp(10)) })
         val head = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -1158,14 +1085,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TEST_CHANNEL = "test"
-        private const val SHOWCASE_DP = 210
         /** How long after scrolling stops the Test pill comes back. */
         private const val PILL_RETURN_MS = 450L
         private const val METER_PREVIEW_MS = 3500L
-        private const val PREVIEW_CAM_DP = 30
-        private const val PREVIEW_HOLE_DP = 14
-        private val PREVIEW_ICON_KEYS = setOf("aod_icons", "show_app_info", "aod_enabled")
-        private const val PREVIEW_DROP_DELAY_MS = 220L
         private const val PILL_GAP_DP = 12
         private const val DROP_PREVIEW_DP = 26f
         private const val UI_STATE = "ui_state"

@@ -90,11 +90,14 @@ class ShowcaseView(context: Context, private val apps: List<NotificationStore.Ap
         addView(dots, LayoutParams(-2, -2, Gravity.TOP or Gravity.END).apply { setMargins(0, dp(20), dp(14), 0) })
         isClickable = true
         isFocusable = true
-        setOnClickListener {
-            com.glowled.app.ui.Haptics.click(it)
-            removeCallbacks(next)
-            next.run()
-        }
+        setOnClickListener { next() }
+    }
+
+    /** Skips to the next feature. */
+    fun next() {
+        com.glowled.app.ui.Haptics.click(this)
+        removeCallbacks(next)
+        next.run()
     }
 
     override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) {

@@ -331,7 +331,6 @@
     <string name="upd_notif_title">Glow LED %1$s 可用</string>
     <string name="upd_notif_action">更新</string>
     <string name="selected">已选择</string>
-    <string name="sec_showcase">看看效果</string>
     <string name="what_is_it">这是什么？</string>
     <string name="sc_notify">新消息</string>
     <string name="sc_notify_sub">收到消息时，摄像头周围亮起光环，一滴水珠落入应用图标。</string>

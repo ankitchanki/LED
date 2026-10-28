@@ -6,6 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<!-- One-handed mode: the space revealed above the settings when you pull them down. It sits
+     behind them and never changes the layout; its height and position are set in code. -->
+<LinearLayout
+    android:id="@+id/reachSpace"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_gravity="top"
+    android:visibility="invisible"
+    android:gravity="bottom|center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="12dp">
+
+    <!-- "See it in action" showcase (filled in code). -->
+    <FrameLayout
+        android:id="@+id/reachPreview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/reachHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:text="@string/reach_hint"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="@color/text_secondary" />
+</LinearLayout>
+
+
 <com.glowled.app.view.ReachLayout
     android:id="@+id/root"
     android:layout_width="match_parent"
@@ -52,36 +85,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/master_on" />
-    </LinearLayout>
-
-    <!-- One-handed mode: grows when you pull the settings down, pushing them into thumb reach. -->
-    <LinearLayout
-        android:id="@+id/reachSpace"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:alpha="0"
-        android:gravity="bottom|center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="12dp">
-
-        <!-- Live preview of the screen-off light (filled in code), updates as settings change. -->
-        <FrameLayout
-            android:id="@+id/reachPreview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="8dp" />
-
-        <TextView
-            android:id="@+id/reachHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center"
-            android:text="@string/reach_hint"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/text_secondary" />
     </LinearLayout>
 
     <!-- Tabs as pills; the chosen one sits on a rounded highlight that slides between them. -->
