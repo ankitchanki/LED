@@ -167,6 +167,7 @@ class MainActivity : AppCompatActivity() {
         pager = findViewById(R.id.pager)
         tabs = findViewById(R.id.tabs)
         ui = SettingsUi(this, prefs.sp)
+        ui.onScroll = { tuckTestPill() }
 
         applyInsets()
 
@@ -325,6 +326,7 @@ class MainActivity : AppCompatActivity() {
         buildSetup()
         refreshLive()
         LedController.addListener(storeListener)
+        NotifyListenerService.forceReconnect(this)
         cameraLed.post { playCameraIntro() }
     }
 
@@ -454,6 +456,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun pageSetup(): View {
         val (page, col) = ui.page()
+        section(col, R.string.sec_showcase, first = true)
+        col.addView(com.glowled.app.view.ShowcaseView(this, previewApps),
+            LinearLayout.LayoutParams(-1, dp(SHOWCASE_DP)).apply { setMargins(dp(4), 0, dp(4), dp(10)) })
         val head = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -1095,6 +1100,25 @@ class MainActivity : AppCompatActivity() {
 
     // ---- test notification ---------------------------------------------------------------------
 
+    private var pillTucked = false
+    private val showTestPill = Runnable {
+        pillTucked = false
+        findViewById<View>(R.id.btnTest).animate().translationY(0f).alpha(1f)
+            .setDuration(220).setInterpolator(android.view.animation.DecelerateInterpolator()).start()
+    }
+
+    /** While the settings scroll, the Test pill slides out of the way; it comes back once they stop. */
+    private fun tuckTestPill() {
+        val pill = findViewById<View>(R.id.btnTest)
+        pill.removeCallbacks(showTestPill)
+        if (!pillTucked) {
+            pillTucked = true
+            val away = pill.height + (pill.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+            pill.animate().translationY(away.toFloat()).alpha(0f).setDuration(160).start()
+        }
+        pill.postDelayed(showTestPill, PILL_RETURN_MS)
+    }
+
     private fun sendTest() {
         if (!NotifyListenerService.isEnabled(this)) {
             Toast.makeText(this, R.string.need_listener_first, Toast.LENGTH_SHORT).show()
@@ -1107,13 +1131,13 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             return
         }
-        if (NotifyListenerService.instance == null) {
-            // Access is granted but the system dropped the connection (e.g. after a crash or an
-            // OEM task killer): ask it to bind again, otherwise the test would never be seen.
-            android.service.notification.NotificationListenerService.requestRebind(
-                android.content.ComponentName(this, NotifyListenerService::class.java),
-            )
-            com.glowled.app.core.DebugLog.add("Test: notification access was disconnected - reconnecting")
+        val connected = NotifyListenerService.instance != null
+        if (!connected) {
+            // Access is granted but the system dropped the connection (after an update, a crash
+            // or an OEM task killer): bind it again, and show the test light directly meanwhile.
+            NotifyListenerService.forceReconnect(this)
+            com.glowled.app.core.DebugLog.add("Test: notification access was disconnected - reconnecting; showing the test light directly")
+            LedController.showTestLight(getString(R.string.test_title), getString(R.string.test_text))
         }
         val nm = getSystemService(NotificationManager::class.java)
         if (nm.getNotificationChannel(TEST_CHANNEL) == null) {
@@ -1134,6 +1158,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TEST_CHANNEL = "test"
+        private const val SHOWCASE_DP = 210
+        /** How long after scrolling stops the Test pill comes back. */
+        private const val PILL_RETURN_MS = 450L
         private const val METER_PREVIEW_MS = 3500L
         private const val PREVIEW_CAM_DP = 30
         private const val PREVIEW_HOLE_DP = 14

@@ -48,6 +48,9 @@ class UpdateActivity : AppCompatActivity() {
     private lateinit var statusTitle: TextView
     private lateinit var statusSub: TextView
     private lateinit var bar: LinearProgressIndicator
+    private lateinit var ring: com.glowled.app.view.ArrowRingView
+    private lateinit var appIcon: ImageView
+    private var bob: android.animation.ValueAnimator? = null
     private lateinit var button: TextView
     private lateinit var notesHead: TextView
     private lateinit var notesCard: View
@@ -87,6 +90,7 @@ class UpdateActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        bob?.cancel()
         cancelled = true
         Updater.onInstallResult = null
         prefs.sp.unregisterOnSharedPreferenceChangeListener(prefListener)
@@ -129,10 +133,21 @@ class UpdateActivity : AppCompatActivity() {
             gravity = Gravity.CENTER_HORIZONTAL
             setPadding(0, dp(4), 0, dp(18))
         }
-        top.addView(ImageView(this).apply {
+        // The app icon, with a ring around it that fills as the update downloads.
+        val ringBox = android.widget.FrameLayout(this)
+        ring = com.glowled.app.view.ArrowRingView(this).apply {
+            color = getColor(R.color.accent)
+            icon = com.glowled.app.core.MeterIcon.NONE
+            fraction = 0f
+            alpha = 0f
+        }
+        ringBox.addView(ring, android.widget.FrameLayout.LayoutParams(-1, -1))
+        appIcon = ImageView(this).apply {
             setImageResource(R.mipmap.ic_launcher)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-        }, LinearLayout.LayoutParams(dp(72), dp(72)))
+        }
+        ringBox.addView(appIcon, android.widget.FrameLayout.LayoutParams(dp(64), dp(64), Gravity.CENTER))
+        top.addView(ringBox, LinearLayout.LayoutParams(dp(108), dp(108)))
         top.addView(TextView(this).apply {
             text = getString(R.string.upd_installed, BuildConfig.VERSION_NAME.substringBefore('-'))
             gravity = Gravity.CENTER
@@ -265,6 +280,7 @@ class UpdateActivity : AppCompatActivity() {
         bar.visibility = if (state == State.DOWNLOADING || state == State.INSTALLING) View.VISIBLE else View.GONE
         bar.isIndeterminate = state == State.INSTALLING
         if (state == State.DOWNLOADING) bar.setProgressCompat(progress, true)
+        renderRing(progress)
         button.visibility = when (state) {
             State.AVAILABLE, State.FAILED, State.LATEST, State.DOWNLOADING -> View.VISIBLE
             else -> View.GONE
@@ -284,6 +300,31 @@ class UpdateActivity : AppCompatActivity() {
         val showNotes = text.isNotEmpty() && state != State.CHECKING && state != State.FAILED
         notesHead.visibility = if (showNotes) View.VISIBLE else View.GONE
         notesCard.visibility = if (showNotes) View.VISIBLE else View.GONE
+    }
+
+    /** Ring around the icon: fills with the download, full while installing; the icon gently bobs. */
+    private fun renderRing(progress: Int) {
+        val busy = state == State.DOWNLOADING || state == State.INSTALLING
+        ring.animate().alpha(if (busy) 1f else 0f).setDuration(200).start()
+        ring.fraction = if (state == State.INSTALLING) 1f else progress / 100f
+        if (busy && bob == null) {
+            bob = android.animation.ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = 1400
+                repeatCount = android.animation.ValueAnimator.INFINITE
+                repeatMode = android.animation.ValueAnimator.REVERSE
+                interpolator = android.view.animation.AccelerateDecelerateInterpolator()
+                addUpdateListener {
+                    val f = it.animatedValue as Float
+                    appIcon.scaleX = 0.92f + 0.08f * f
+                    appIcon.scaleY = 0.92f + 0.08f * f
+                }
+                start()
+            }
+        } else if (!busy) {
+            bob?.cancel()
+            bob = null
+            appIcon.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+        }
     }
 
     private fun onButton() = when (state) {

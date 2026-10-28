@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Glow LED %1$s tersedia</string>
     <string name="upd_notif_action">Perbarui</string>
     <string name="selected">Dipilih</string>
+    <string name="sec_showcase">Lihat cara kerjanya</string>
+    <string name="what_is_it">Apa ini?</string>
+    <string name="sc_notify">Pesan baru</string>
+    <string name="sc_notify_sub">Saat pesan masuk, cincin menyala di sekitar kamera dan setetes jatuh ke ikon aplikasi.</string>
+    <string name="sc_multi">Beberapa aplikasi</string>
+    <string name="sc_multi_sub">Setiap aplikasi punya warnanya sendiri di cincin.</string>
+    <string name="sc_charge">Mengisi daya</string>
+    <string name="sc_charge_sub" formatted="false">Cincin terisi sesuai level baterai; petir menyala setiap 1%.</string>
+    <string name="sc_download">Mengunduh</string>
+    <string name="sc_download_sub">Unduhan mengisi cincin, dengan panah ↓.</string>
+    <string name="sc_upload">Mengunggah</string>
+    <string name="sc_upload_sub">Unggahan mengisi cincin, dengan panah ↑.</string>
 </resources>

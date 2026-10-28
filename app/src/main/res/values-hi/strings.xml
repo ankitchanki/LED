@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Glow LED %1$s उपलब्ध है</string>
     <string name="upd_notif_action">अपडेट करें</string>
     <string name="selected">चुना गया</string>
+    <string name="sec_showcase">काम करते हुए देखें</string>
+    <string name="what_is_it">यह क्या है?</string>
+    <string name="sc_notify">नया मैसेज</string>
+    <string name="sc_notify_sub">मैसेज आने पर कैमरे के चारों ओर रिंग चमकती है और एक बूंद ऐप के आइकॉन में गिरती है।</string>
+    <string name="sc_multi">कई ऐप</string>
+    <string name="sc_multi_sub">हर ऐप का रिंग पर अपना रंग होता है।</string>
+    <string name="sc_charge">चार्जिंग</string>
+    <string name="sc_charge_sub" formatted="false">रिंग बैटरी लेवल जितनी भरती है; हर 1% पर बोल्ट चमकता है।</string>
+    <string name="sc_download">डाउनलोड</string>
+    <string name="sc_download_sub">डाउनलोड रिंग को ↓ तीर के साथ भरता है।</string>
+    <string name="sc_upload">अपलोड</string>
+    <string name="sc_upload_sub">अपलोड रिंग को ↑ तीर के साथ भरता है।</string>
 </resources>

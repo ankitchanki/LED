@@ -1,246 +1,232 @@
-<p align="center">
-  <img src="docs/icon.png" width="128" alt="Glow LED icon" />
-</p>
+<div align="center">
 
-<h1 align="center">Glow LED</h1>
+<img src="docs/icon.png" width="112" alt="Glow LED icon" />
 
-<p align="center">
-  A notification light for AMOLED phones. It glows around your camera hole, works on any brand, and uses very little battery.<br/>
-  Android 10 and up · 13 languages.
-</p>
+# Glow LED
 
-<p align="center">
-  <a href="https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk"><b>⬇ Download the latest APK</b></a>
-  &nbsp;·&nbsp; ✅ signed build &nbsp;·&nbsp; <a href="releases/">all downloads &amp; install help</a>
-</p>
+**The notification light your phone forgot.**<br/>
+A soft ring glows around the camera hole when something needs you, on any brand, at almost no battery cost.
 
-<p align="center">
-  <img src="docs/screenshots/v2.4/overview.png" alt="Glow LED screenshots: always-on icons, message peek with Reply and Mark as read, charging ring with a bolt, Screen off settings, one-handed mode, Settings tab" />
-</p>
+<a href="https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk"><img src="https://img.shields.io/badge/Download-latest%20APK-00E5FF?style=for-the-badge&logo=android&logoColor=black" alt="Download the latest APK" /></a>
+
+<img src="https://img.shields.io/github/v/release/ankitchanki/LED?style=flat-square&label=version&color=00E5FF" alt="Latest version" />
+<img src="https://img.shields.io/badge/Android-10%2B-34A853?style=flat-square&logo=android&logoColor=white" alt="Android 10 and up" />
+<img src="https://img.shields.io/badge/languages-13-5E5CE6?style=flat-square" alt="13 languages" />
+<img src="https://img.shields.io/badge/license-MIT-8E8E93?style=flat-square" alt="MIT license" />
+
+<br/><br/>
+
+<img src="docs/screenshots/v2.4/showcase.gif" width="420" alt="Animated showcase: a new message ring with a droplet, a ring split into three app colours, the charging ring with a bolt rising percent by percent, a download ring with a down arrow and an upload ring with an up arrow, each labelled with a one-line explanation" />
+
+<br/>
+
+<img src="docs/screenshots/v2.4/overview.png" alt="Glow LED screenshots: always-on icons, message peek with Reply and Mark as read, charging ring with a bolt, Screen off settings, one-handed mode, Settings tab" />
+
+</div>
 
 ---
 
-Most phones no longer have a notification LED. Glow LED draws one around the front camera
-(punch-hole, pill, notch, or a plain dot on phones without a cutout). It shows while the screen is on,
-on the lock screen, and while the phone is "off", using a black always-on screen. On AMOLED, black pixels
-are switched off, so only the light itself uses power.
+## Why Glow LED
 
-## Features
+Most phones dropped the notification LED. Glow LED draws one around the front camera (punch-hole,
+pill, notch, or a dot on phones without a cutout): while you use the phone, on the lock screen, and
+while the screen is "off", on a pure black screen. On AMOLED black pixels are switched off, so only
+the light itself uses power.
 
-| | |
-|---|---|
-| **Cutout aware** | Detects the camera punch-hole, pill or notch automatically (exact shape on Android 12+). Fine-tune by dragging, with sliders, or in 1 px steps. Keeps its position when the screen resolution changes (Samsung FHD+/QHD+). |
-| **11 animations** | Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static ring, Edge lighting, Edge pulse, Twin orbit, Sparkle. Adjustable speed, thickness, gap, intensity and glow. |
-| **Colours** | Per-app colour you pick, or the app's own notification colour, or a colour taken from its icon. With WhatsApp + Telegram + Instagram waiting, the ring splits into each app's colour (or cycles, or shows only the newest). |
-| **Screen off (always-on)** | Black screen at minimum brightness and the lowest refresh rate, flicker-free (on Xiaomi/HyperOS the panel only wakes after the black frame is drawn, so there is no lock-screen flash). Timeout, optional reminder pulses, pocket detection, burn-in protection. Double-tap to wake, tap to show the app. |
-| **App under the camera** | One UI AOD-style monochrome glyphs under the ring (grey; the newest in its notification colour), or full-colour app icons; tap one to read who sent what (text, or 📷 Photo / 🎥 Video / 🎤 Voice / 📄 Document) and tap the card to open the chat. A liquid droplet drips from the camera when a notification arrives. Double-tap to wake. |
-| **Screen on** | A small light around the camera, also over the lock screen. |
-| **Charging ring** | While charging, the ring fills with your battery level from the top, in your own colour per level (0–19 %, 20–79 %, 80–100 %), with a small **⚡ bolt in the gap at the bottom middle** of the ring. Every time the battery goes up 1 % (88 → 89 %) the bolt **flares brighter** for a moment. Plug in while the phone is locked or the screen is off and the ring shows for 5 seconds; turn on *Charging when off* to keep it on the black screen the whole time. Optional battery % under *Screen on → Charging & battery*. |
-| **Download ring** | A download, upload or install with a progress notification shows a gauge or spinner around the camera, with just a small **↓ / ↑ arrow** sitting in the ring's bottom gap (no letters). App colours or your own upload/download colours. Appears on screen-on and active AOD views. |
-| **Assign arrows** | *Screen on → Arrows*, laid out like iPhone settings. **Per-app arrows:** pick **Auto, ↓, ↑ or None** for any app, with a live ring preview; well-known apps already know their way (Play Store and browsers ↓, Google Photos backup ↑). **If unknown:** no icon (default), ↕, or treat as download/upload. Order: your choice → words in the notification → known app → *If unknown*. |
-| **Reply & Mark as read** | Tap an app icon on the always-on screen, then **Reply** (type and send without opening the app; asks to unlock first) or **Mark as read**, using the app's own notification buttons. |
-| **Filters** | Turn individual apps on or off. Ignores silent, ongoing and progress notifications and group summaries. Respects Do Not Disturb. Can clear after you unlock. |
-| **Battery** | Event-driven, so nothing runs in the background checking for notifications. 30 fps cap (configurable). Static and blink styles only redraw when they change. No foreground service. **Still ring:** after 12 s on the always-on screen the animation holds still, so the screen isn't redrawn at all. **Dim older notifications:** fresh ones glow at full strength, then fade over an hour (you see new vs old at a glance, and fewer lit pixels). **Light up when the phone moves:** after the light times out it waits on the phone's motion chip instead of waking the screen on a timer. Low-battery cut-off, quiet hours, pause during calls. |
-| **Any brand** | Shortcuts to the autostart/background settings on Xiaomi, Redmi, POCO, Samsung, OnePlus, OPPO, realme, vivo, iQOO, Huawei, Honor, ASUS, Tecno and Infinix. Reconnects itself if the system drops it. |
-| **Organised settings** | Everything is on the home screen in swipeable tabs (Setup, Style, Screen off, Screen on, Alerts, Battery, Settings), each split into short named sections: *Style* → Animation · Colour · Shape & motion; *Screen off* → When to light up · On the black screen · Messages · Gestures & protection · Timing & brightness; *Screen on* → While you use the phone · Charging & battery · Downloads & uploads; *Alerts* → Apps · Filters; *Battery* → Power saving · Quiet hours; *Settings* → Appearance · Tools. No menus. |
-| **iPhone-style settings** | Every tab is a grouped list like iPhone Settings: rounded groups, a small coloured icon on each row, sliding on/off switches, segmented controls for short choices and a value row for longer ones. Tabs are pills with a highlight that slides between them. Setup shows each permission as a row with a green tick or an orange **Allow**. |
-| **One-handed mode** | Pull the settings down and the tabs and tiles slide into thumb reach (like One UI). The space above shows a **live preview** of the screen-off light (with the droplet falling into the app icon) that changes as you adjust settings. Swipe up or press back to return. |
-| **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Settings → App theme*. Runs at your display's full refresh rate (120 Hz). |
-| **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
-| **Colour wheel** | Every colour picker has a ring of all colours you turn with your finger, plus saturation, brightness, presets and hex. |
-| **13 languages** | English, Español, Français, Deutsch, Italiano, Português (Brasil), Русский, Türkçe, العربية (right-to-left), हिन्दी, Bahasa Indonesia, 日本語 and 简体中文. Follows the phone language, or pick one in *Settings → Language*. |
-| **Built-in updater** | *Settings → Updates* checks GitHub, says **Glow LED is up to date** or shows the new version with its **changelog**, then downloads it, checks it is signed with the official key and installs it without leaving the app. Every few hours it checks by itself and sends a **notification with the changelog** when a new version is out (can be turned off). Settings backup/restore to a file. |
-| **Banking-app friendly** | No root or Shizuku code. Accessibility is optional and can be turned off from *Setup*; over apps the ring is a normal overlay that banking apps can hide. |
-| **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |
-| **Extras** | Floating see-through **Test** pill that never hides a setting, Quick Settings tile, swipe-down live preview, first-launch tutorial, themed (monochrome) icon. |
+<table>
+<tr>
+<td width="33%" valign="top"><b>🔔 Notifications</b><br/>A ring in each app's colour, split when several apps are waiting. A drop falls into the app's icon when a message arrives.</td>
+<td width="33%" valign="top"><b>🌙 Screen off</b><br/>Black always-on screen with AOD-style app icons. Tap one to read the message, <b>Reply</b> or <b>Mark as read</b>.</td>
+<td width="33%" valign="top"><b>⚡ Charging</b><br/>The ring fills with your battery level, with a bolt that flares on every 1 %.</td>
+</tr>
+<tr>
+<td valign="top"><b>↓ Downloads &amp; uploads</b><br/>Progress fills the ring with a small arrow. Set the arrow per app; well-known apps already know their way.</td>
+<td valign="top"><b>🎨 11 animations</b><br/>Pulse, Breathe, Blink, Heartbeat, Spinner, Rainbow, Static, Edge lighting, Edge pulse, Twin orbit, Sparkle.</td>
+<td valign="top"><b>🔋 Battery first</b><br/>Event-driven, no foreground service, frame cap, a still ring after 12 s and lights that wait for the phone to move.</td>
+</tr>
+<tr>
+<td valign="top"><b>📱 iPhone-style settings</b><br/>Grouped lists, sliding switches, one-handed pull-down, light mode, haptics, 120 Hz.</td>
+<td valign="top"><b>⬆ Built-in updater</b><br/>Checks for new versions, shows the changelog and installs inside the app. A notification tells you when one is out.</td>
+<td valign="top"><b>🌍 13 languages</b><br/>English, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, العربية, हिन्दी, Indonesia, 日本語, 简体中文.</td>
+</tr>
+</table>
 
 ## Screenshots
 
-| Always-on light | Tap an icon: Reply / Mark as read | Charging (screen off) |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/v2.4/1-always-on.png" width="220" alt="Black always-on screen with a split colour ring around the camera and grey AOD-style app glyphs below it, the newest in green" /> | <img src="docs/screenshots/v2.4/2-tap-to-read.png" width="220" alt="Message peek under the icons, left-aligned, with Reply and Mark as read buttons" /> | <img src="docs/screenshots/v2.4/3-charging.png" width="220" alt="Black screen with a green charging ring at 89 percent around the camera and a small bolt in the gap at the bottom of the ring" /> |
-| Ring split into each app's colour; grey AOD-style glyphs below it, the newest in its notification colour. Everything else stays black. | Who sent what, left-aligned on pure black. **Reply** right there or **Mark as read**. | Plug in and the ring fills with the battery level, with a bolt at the bottom middle. |
+<table>
+<tr>
+<th>Always-on light</th><th>Tap to read</th><th>Charging</th>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v2.4/1-always-on.png" width="230" alt="Black always-on screen with a split colour ring around the camera and grey AOD-style app glyphs below it, the newest in green" /></td>
+<td><img src="docs/screenshots/v2.4/2-tap-to-read.png" width="230" alt="Message peek under the icons with Reply and Mark as read buttons" /></td>
+<td><img src="docs/screenshots/v2.4/3-charging.png" width="230" alt="Black screen with a green charging ring at 89 percent and a small bolt in the gap at the bottom of the ring" /></td>
+</tr>
+<tr>
+<th>Setup &amp; showcase</th><th>Style</th><th>Screen off</th>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v2.4/4-setup.png" width="230" alt="Setup tab: the See it in action card showing the charging ring, then permission rows with green ticks" /></td>
+<td><img src="docs/screenshots/v2.4/5-style.png" width="230" alt="Style tab with Animation, Colour and Shape and motion sections" /></td>
+<td><img src="docs/screenshots/v2.4/6-screen-off.png" width="230" alt="Screen off tab with grouped switches and the floating Test pill" /></td>
+</tr>
+<tr>
+<th>Screen on</th><th>One-handed mode</th><th>Settings</th>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v2.4/7-screen-on.png" width="230" alt="Screen on tab: ring while on, charging colours by battery level, downloads and uploads" /></td>
+<td><img src="docs/screenshots/v2.4/9-one-handed.png" width="230" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /></td>
+<td><img src="docs/screenshots/v2.4/8-settings.png" width="230" alt="Settings tab: app theme, haptics, updates, tutorial, language, backup, restore, event log" /></td>
+</tr>
+<tr>
+<th>Per-app arrows</th><th>One app</th><th>If unknown</th>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v2.4/12-arrows.png" width="230" alt="Per-app arrows list with Set by you and Automatic sections" /></td>
+<td><img src="docs/screenshots/v2.4/13-arrow-app.png" width="230" alt="Google Photos arrow screen with ring preview and Auto, down, up, None choices" /></td>
+<td><img src="docs/screenshots/v2.4/14-if-unknown.png" width="230" alt="If unknown: No icon, Show up-down arrow, Treat as download, Treat as upload" /></td>
+</tr>
+<tr>
+<th>Update available</th><th>Up to date</th><th>Light mode</th>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v2.4/15-update.png" width="230" alt="Updates screen: a new version is available, with Download and install and What's new" /></td>
+<td><img src="docs/screenshots/v2.4/16-up-to-date.png" width="230" alt="Updates screen: Glow LED is up to date" /></td>
+<td><img src="docs/screenshots/v2.4/10-light.png" width="230" alt="Screen off tab in light mode" /></td>
+</tr>
+</table>
 
-| Setup | Style | Screen off |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/v2.4/4-setup.png" width="220" alt="Setup tab: grouped permission rows with coloured icons and green ticks, All set" /> | <img src="docs/screenshots/v2.4/5-style.png" width="220" alt="Style tab with Animation, Colour and Shape and motion sections" /> | <img src="docs/screenshots/v2.4/6-screen-off.png" width="220" alt="Screen off tab with sections When to light up, On the black screen, Messages, Gestures and protection, Timing and brightness, and the floating Test pill" /> |
-| Each permission is a row with a green tick; important ones first, Accessibility and Autostart (both optional) last. | Animation, colour, shape & motion. | Settings grouped by what they do; the see-through **Test** pill floats above. |
+<details>
+<summary><b>More: rings, bolt flare, droplet, Português</b></summary>
+<br/>
 
-| Screen on | One-handed mode | Settings |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/v2.4/7-screen-on.png" width="220" alt="Screen on tab: While you use the phone, Charging and battery with colour per battery level, Downloads and uploads with direction arrow" /> | <img src="docs/screenshots/v2.4/9-one-handed.png" width="220" alt="Settings pulled down into thumb reach with a live preview of the screen-off light above" /> | <img src="docs/screenshots/v2.4/8-settings.png" width="220" alt="Settings tab: Appearance with app theme and haptic feedback, Tools with updates, tutorial, language, back up, restore, event log" /> |
-| Ring while on, charging ring colours, download ring with direction arrow and the Arrows settings. | Pull down: tabs and tiles come into thumb reach, with a live preview of the light above. | Appearance (theme, haptics) and Tools (updates, tutorial, language, backup, restore, event log). |
+**Rings with icons:** charging (bolt), download (↓), upload (↑) and an optional ↕ for an unknown
+direction. The icon sits in a small gap at the bottom of the ring, in the ring's colour.
 
-| Per-app arrows | One app | If unknown |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/v2.4/12-arrows.png" width="220" alt="Per-app arrows: Set by you with Google Photos upload and Telegram download pills, Automatic with Chrome, Drive, Play Store and WhatsApp" /> | <img src="docs/screenshots/v2.4/13-arrow-app.png" width="220" alt="Google Photos arrow screen: ring preview with an up arrow, segmented control Auto, down, up, None, upload colour and Reset to Auto" /> | <img src="docs/screenshots/v2.4/14-if-unknown.png" width="220" alt="If unknown: No icon selected, Show up-down arrow, Treat as download, Treat as upload, and the order Glow LED follows" /> |
-| Set an arrow for any app; well-known apps are automatic. | Auto, ↓, ↑ or None, with a live preview of the ring. | What shows when nothing tells the direction. |
+<img src="docs/screenshots/v2.4/gauges.png" width="600" alt="Five rings: charging rings with bolts, a blue download ring, a green upload ring and a ring with an up-down arrow" />
 
-| Update available | Up to date |
-|:---:|:---:|
-| <img src="docs/screenshots/v2.4/15-update.png" width="220" alt="Updates screen: version 2.9.0 is available, download size, Download and install button, What's new list, Check for updates switch" /> | <img src="docs/screenshots/v2.4/16-up-to-date.png" width="220" alt="Updates screen: Glow LED is up to date with a green tick and a Check now button" /> |
+**Bolt flare:** each time the battery goes up 1 %, the bolt grows and glows for a moment (left: resting, right: flaring).
 
-| Light mode | Português (Brasil) |
-|:---:|:---:|
-| <img src="docs/screenshots/v2.4/10-light.png" width="220" alt="Screen off tab in light mode: white grouped rows with coloured icons and switches" /> | <img src="docs/screenshots/v2.4/11-portugues.png" width="220" alt="Screen off tab in Brazilian Portuguese" /> |
+<img src="docs/screenshots/v2.4/bolt-flare.png" width="300" alt="The charging bolt at rest and while flaring" />
 
-**Rings with icons:** charging at 42 % and 89 % (bolt), download (↓), upload (↑), and ↕ (optional, for an unknown direction). The icon sits in a small gap
-at the bottom middle of the ring, in the ring's colour.
+**Droplet:** a drop in the app's colour stretches out of the camera, falls into the icon row and becomes the app's icon.
 
-<img src="docs/screenshots/v2.4/gauges.png" width="600" alt="Five rings: amber charging ring at 42 percent with bolt, green charging ring with bolt, blue download ring with down arrow, green upload ring with up arrow, green ring with up-down arrow for an unknown direction" />
+<img src="docs/screenshots/v2.4/droplet.gif" width="420" alt="Animation: the ring grows out of the camera and a green drop falls into the app's glyph" />
 
-**Bolt flare:** each time the battery goes up by 1 %, the bolt grows and glows brighter for about a second (left: resting, right: flaring).
+**Português (Brasil)**
 
-<img src="docs/screenshots/v2.4/bolt-flare.png" width="300" alt="The charging bolt at rest and while flaring, larger and brighter" />
+<img src="docs/screenshots/v2.4/11-portugues.png" width="230" alt="Screen off tab in Brazilian Portuguese" />
 
-**Droplet:** when a notification arrives, a liquid drop in the app's colour stretches out of the camera,
-breaks off, falls straight down into the middle of the icon row and turns into the app's icon.
-
-<img src="docs/screenshots/v2.4/droplet.gif" width="450" alt="Animation: the ring grows out of the camera, a green drop stretches out, falls into the middle of the icon row and turns into that app's glyph in the same colour; older apps are grey AOD-style glyphs" />
-
-## How it works (for users)
-
-1. A notification arrives and Glow LED picks its colour (your choice per app, the app's colour, or its icon colour).
-2. **Screen on:** a small ring glows around the camera.
-3. **Screen off:** the screen wakes to pure black at minimum brightness. The ring grows out of the camera and the app icons drop in below it.
-4. **Double-tap** to wake to the lock screen, **tap** to show which app it is. After your chosen time (or when you clear the notification) the screen turns off again.
+</details>
 
 ## Install
 
-> ✅ **Signed build.** Every APK in [`releases/`](releases/) is signed with the official Glow LED key
-> (SHA-256 `5D:04:DE:1A…0C:50:23`), so each new version installs **over** the previous one and keeps
-> your settings.
->
-> **"App not installed" / "Invalid package" when updating?** Your phone has an older build signed
-> with a different key (the early v1.0.0–v1.2.0 GitHub releases). This is a one-time fix:
-> 1. *(Optional)* Glow LED → **Settings** → **Back up settings**.
-> 2. Uninstall the old app: long-press **Glow LED** → **App info** → **Uninstall**.
-> 3. Install [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) again.
-> 4. *(Optional)* Glow LED → **Settings** → **Restore settings**.
->
-> After that, updates install normally, from *Settings → Updates* inside the app.
+1. Download **[GlowLED-latest.apk](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk)** and open it.
+2. Open Glow LED and go through **Setup**: *Notification access* (required), *Display over other apps*,
+   *Unrestricted battery*, and on Xiaomi/OPPO/vivo and similar *Autostart*. *Accessibility* is optional.
+3. **Style → Camera position → Auto-detect**, then tap the floating **Test** pill and turn the screen off.
 
-1. Download [`GlowLED-latest.apk`](https://github.com/ankitchanki/LED/releases/latest/download/GlowLED-latest.apk) and open it (allow "install unknown apps" for your browser or file manager).
-2. Open **Glow LED** and work through the **Setup** tab:
-   - **Notification access** (required): lets the app know a notification arrived. Nothing leaves your phone.
-   - **Display over other apps**: lets the light appear while the screen is off. This alone is enough.
-   - **Accessibility** (optional): makes the light unblockable on strict ROMs (HyperOS, ColorOS...) and switches the screen off instantly when the light times out. It reads no screen content. If a banking app complains, turn it off from the same row.
-   - **Unrestricted battery** and, on Xiaomi/OPPO/vivo/Huawei and similar, **Autostart**.
-3. In the **Style** tab tap **Camera position**, then **Auto-detect**, adjust if needed, and **Save**.
-4. Tap the floating **Test** pill, then turn the screen off.
-5. For a live preview without locking, scroll any settings page to the top and **swipe down**; swipe up or press Back to close. Reopen **Settings → Tutorial** for all gestures and features.
+Later versions install from **Settings → Updates**, inside the app. Every APK is signed with the
+official key (SHA-256 `5D:04:DE:1A…0C:50:23`), so updates keep your settings.
 
-The screen-off view wakes the panel and draws black; it is not native hardware AOD. OLED pixels can switch off at black, while LCD panels keep their backlight on and may look grey in a dark room. Transfer detection requires a progress notification; direction is shown as unknown when the notification does not identify upload or download.
+<details>
+<summary><b>"App blocked to protect your device" (Play Protect)</b></summary>
+<br/>
 
-> **Android 13+ "Restricted setting" dialog:** apps installed from an APK can't enable accessibility straight away.
-> Open *Settings → Apps → Glow LED → ⋮ (top right) → Allow restricted settings*, then enable it again.
+In India and some other countries, Play Protect blocks apps installed from a browser, messaging app
+or file manager when they ask for Notification access, which Glow LED needs. It is not a warning
+about the app's code. Either:
 
-## "App blocked to protect your device" (Google Play Protect)
+- **On the phone:** Play Store → profile picture → **Play Protect** → ⚙ → turn off **Scan apps with
+  Play Protect** → install → turn it **back on** straight away.
+- **With a computer:** `adb install GlowLED-latest.apk`, then turn Developer options off again.
 
-In India and some other countries, Play Protect's *enhanced fraud protection* stops apps installed
-from a **browser, messaging app or file manager** if they ask for **Notification access** or
-**Accessibility**. Glow LED needs Notification access to know a notification arrived, so it can't
-avoid this check. It is not a virus warning about this app's code. Two ways to install:
+</details>
 
-1. **With a computer:** `adb install GlowLED-latest.apk` (needs USB debugging only for that
-   moment; turn Developer options off again afterwards, as many banking apps require).
-2. **On the phone:** Play Store → your profile picture → **Play Protect** → ⚙ → turn off
-   **Scan apps with Play Protect** → install the APK → turn the scan **back on** straight away.
+<details>
+<summary><b>Android 13+ "Restricted setting"</b></summary>
+<br/>
 
-## Banking apps
+Apps installed from an APK can't turn on Accessibility straight away. Open *Settings → Apps →
+Glow LED → ⋮ → Allow restricted settings*, then try again.
 
-Glow LED has no root or Shizuku code. Some banking apps still refuse to open when:
-- **Developer options / USB or wireless debugging** are on: turn them off in Settings.
-- **An accessibility service from outside the Play Store** is on: Glow LED's accessibility is
-  optional; *Setup → Accessibility → Turn off* switches it off (the light keeps working).
+</details>
 
-The screen-on ring is a normal "display over other apps" window over apps, so banking apps that
-hide overlays can hide it. A "Play Integrity" failure comes from the phone itself (unlocked
-bootloader or root), not from installed apps.
+<details>
+<summary><b>"App not installed" when updating</b></summary>
+<br/>
 
-## How it works
+Your phone has an early build signed with a different key (v1.0.0–v1.2.0). Back up your settings
+(*Settings → Back up*), uninstall Glow LED, install the latest APK and restore. Only needed once.
 
-```
-NotificationListenerService ──► NotificationStore ──► LedController
-   (system-bound, no polling)     (unseen notifications,     │
-                                   one colour each)          ├── screen ON  → OverlayHost → LedView (small window around the camera)
-                                                             └── screen OFF → AodActivity → LedView (black, min brightness, low Hz)
-```
+</details>
 
-* **Turning the screen on and off:** with Accessibility enabled, the always-on screen is a full-screen
-  accessibility overlay (`AodOverlay`) and the panel is woken with a short wake lock. That isn't an
-  activity start, so ROMs that block background activities (HyperOS/MIUI, ColorOS, OriginOS) can't stop it.
-  Without Accessibility, `AodActivity` (`showWhenLocked` + `turnScreenOn`) is launched through the overlay
-  permission, with a full-screen-intent fallback. When the light times out, the accessibility service locks
-  the screen (`GLOBAL_ACTION_LOCK_SCREEN`) so the panel switches off straight away.
-* **Rendering:** `LedView` builds one `Path` for the cutout shape and animates with `PathMeasure` segments.
-  It allocates nothing per frame and schedules frames only as often as needed: never for static styles,
-  only on the on/off switch for blink, and at the fps cap for the rest.
-* **Cutout detection:** `Display.getCutout()` (API 29), plus `DisplayCutout.getCutoutPath()` on API 31+ for
-  the exact hole. Punch-hole bounding boxes that reach the top edge are corrected heuristically.
-  The position is saved in pixels together with the screen width at the time, so it scales when the resolution changes.
+<details>
+<summary><b>Banking apps</b></summary>
+<br/>
 
-## Build
+Glow LED has no root or Shizuku code. Some banking apps refuse to open while **Developer options /
+debugging** are on, or while an **accessibility service from outside the Play Store** is on. Glow
+LED's accessibility is optional: *Setup → Accessibility → Turn off*. Over apps the ring is a normal
+overlay that banking apps can hide. A "Play Integrity" failure comes from the phone (unlocked
+bootloader or root), not from apps.
 
-Requirements: JDK 17+, Android SDK 35.
-
-```bash
-./gradlew assembleDebug          # debug APK
-./gradlew testDebugUnitTest      # unit tests
-./gradlew lintDebug              # lint
-./gradlew assembleRelease        # release APK (see signing below)
-```
-
-### Release signing
-
-Locally, create `keystore.properties` in the project root (it is git-ignored):
-
-```properties
-storeFile=/absolute/path/to/glowled-release.jks
-storePassword=...
-keyAlias=glowled
-keyPassword=...
-```
-
-On GitHub Actions, add these repository secrets (*Settings → Secrets and variables → Actions*):
-
-| Secret | Value |
-|---|---|
-| `GLOWLED_KEYSTORE_BASE64` | `base64 -w0 glowled-release.jks` |
-| `GLOWLED_KEYSTORE_PASSWORD` | keystore password |
-| `GLOWLED_KEY_ALIAS` | `glowled` |
-| `GLOWLED_KEY_PASSWORD` | key password |
-
-Without these secrets, CI signs the APK with a throwaway debug key. Such APKs can't be installed over a properly signed release.
-
-### Making a release
-
-1. Bump `versionCode` / `versionName` in `app/build.gradle.kts` and update `CHANGELOG.md`.
-2. Push to `main`. The **Build & Release** workflow tests, builds and signs the app, then creates the
-   `v<versionName>` tag and GitHub Release with the APK and a SHA-256 checksum.
-3. To rebuild an existing release (e.g. after adding the signing secrets), run the workflow from the
-   *Actions* tab → *Build & Release* → *Run workflow*. The APK on the release is replaced.
+</details>
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
-| Test does nothing, or the lock screen flashes first (Xiaomi/HyperOS) | Set *Screen off → Screen-off method* to **Auto**, enable the **Accessibility overlay**, then the **Xiaomi lock-screen permissions** step. Check *Settings → Event log*: it says why the light was skipped. |
-| Light stops after a while | Set battery to *Unrestricted* and allow *Autostart* (Setup list). On Xiaomi also lock the app in Recents. |
-| Screen doesn't turn on when a notification arrives | Enable the accessibility overlay. On Xiaomi, also allow *Show on lock screen* and *Display pop-up windows while running in background* (the Autostart button opens that page). |
-| Ring is slightly off-centre | *Camera position*, then nudge with the arrows. Some phones report a cutout box larger than the hole. |
-| Screen stays on after the light times out | That happens without the accessibility service: the screen then turns off at your normal screen timeout. Enable accessibility for an instant switch-off. |
-| Nothing for one app | *Alerts → Apps*: check the app is on. Silent notifications are ignored unless you turn off *Alerts → Ignore silent*. |
-| No charging ring when I plug in with the screen off | Turn on *Screen on → Charging ring* and *Screen off → Screen-off light*. It shows for 5 s; turn on *Charging when off* to keep it. |
+| Test does nothing | Make sure *Notification access* shows a tick in Setup. Glow LED reconnects it by itself after an update; *Settings → Event log* says why a light was skipped. |
+| The lock screen flashes before the light (Xiaomi/HyperOS) | *Screen off → Screen-off method* → **Auto**, turn on Accessibility, then the Xiaomi lock-screen step. |
+| The light stops after a while | Battery *Unrestricted* and *Autostart* on (Setup). On Xiaomi also lock the app in Recents. |
+| The ring is slightly off-centre | *Style → Camera position*, then nudge with the arrows. |
+| The screen stays on after the light | Without Accessibility the screen turns off at your normal timeout. |
+| Nothing for one app | *Alerts → Apps*: check it is on; silent notifications are ignored unless you turn off *Ignore silent*. |
+| No charging ring with the screen off | Turn on *Charging ring* and *Screen-off light*; *Charging when off* keeps it on. |
 
 ## Privacy
 
-Glow LED uses the internet for **one thing only: checking GitHub for a new version** (and downloading it when you tap *Download and install*). That request carries nothing about you or your notifications; turn off *Settings → Updates → Check for updates* to stop the automatic checks. To show the tap-to-read card
-it reads the sender and the latest message text of each notification and keeps them **in memory only**:
-they are never written to storage, logged or sent anywhere, and they disappear when the notification is
-dismissed. Turn off *Screen off → Tap icon to read message* to stop reading message text entirely.
-Notifications an app marks as secret never show their content.
+Glow LED uses the internet for **one thing only: checking GitHub for a new version** and
+downloading it when you ask. Message text for the tap-to-read card stays **in memory only**: never
+stored, logged or sent, and gone when the notification is. Turn off *Tap to read* to stop reading
+message text at all.
 
-## License
+<details>
+<summary><b>How it works (for developers)</b></summary>
+<br/>
 
-[MIT](LICENSE)
+```
+NotificationListenerService ──► NotificationStore ──► LedController
+   (system-bound, no polling)     (unseen notifications,     │
+                                   one colour each)          ├── screen ON  → OverlayHost → LedView
+                                                             └── screen OFF → AodOverlay / AodActivity → LedView
+```
+
+- **Screen on and off:** with Accessibility the always-on screen is an accessibility overlay and the
+  panel wakes only after its first black frame (no lock-screen flash on HyperOS). Without it,
+  `AodActivity` (`showWhenLocked` + `turnScreenOn`) is used.
+- **Rendering:** `LedView` builds one `Path` for the cutout and animates `PathMeasure` segments,
+  allocating nothing per frame and drawing only as often as the style needs.
+- **Cutout:** `Display.getCutout()`, plus `getCutoutPath()` on Android 12+ for the exact hole; the
+  position scales when the screen resolution changes.
+- **Updater:** reads the latest GitHub release, checks the APK is newer and signed with the release
+  key, and installs it with `PackageInstaller`.
+
+**Build** (JDK 17+, Android SDK 35):
+
+```bash
+./gradlew assembleDebug        # debug APK
+./gradlew testDebugUnitTest    # unit tests
+./gradlew lintDebug            # lint
+```
+
+</details>
+
+---
+
+<div align="center">
+
+[Changelog](CHANGELOG.md) · [All downloads](releases/) · [MIT License](LICENSE)
+
+</div>

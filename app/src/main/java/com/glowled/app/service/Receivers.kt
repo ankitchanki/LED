@@ -13,6 +13,8 @@ class BootReceiver : BroadcastReceiver() {
         }
         LedController.init(context)
         NotifyListenerService.rebind(context)
+        // After an update the old binding is gone; make sure the listener comes back.
+        if (intent.action == Intent.ACTION_MY_PACKAGE_REPLACED) NotifyListenerService.forceReconnect(context)
     }
 }
 

@@ -1,3 +1,28 @@
+# Glow LED v2.10.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## Fixes
+- **Test works again after an update:** HyperOS sometimes leaves notification access disconnected
+  after Glow LED updates, so the test notification was never seen ("0 unread"). Glow LED now
+  reconnects it properly (also right after an update and whenever you open the app), and if it is
+  still disconnected, **Test** shows the light directly.
+
+## New
+- **See it in action:** a card at the top of *Setup* plays every feature in turn: a new message with
+  the droplet, several apps, charging, a download and an upload. Each has a label and a short
+  "What is it?" line; tap to skip ahead.
+- **Update progress ring:** while an update downloads, a ring around the app icon fills with the
+  progress and the icon gently pulses.
+- **Test pill steps aside while you scroll** and comes back as soon as you stop.
+
+## Project
+- Fresh README with an animated showcase and a cleaner layout; the release-signing and CI notes
+  are gone from it.
+
+---
+
 # Glow LED v2.9.0
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

@@ -331,4 +331,16 @@
     <string name="upd_notif_title">‏Glow LED %1$s متاح</string>
     <string name="upd_notif_action">تحديث</string>
     <string name="selected">محدَّد</string>
+    <string name="sec_showcase">شاهده أثناء العمل</string>
+    <string name="what_is_it">ما هذا؟</string>
+    <string name="sc_notify">رسالة جديدة</string>
+    <string name="sc_notify_sub">عند وصول رسالة تتوهج حلقة حول الكاميرا وتسقط قطرة في رمز التطبيق.</string>
+    <string name="sc_multi">عدة تطبيقات</string>
+    <string name="sc_multi_sub">لكل تطبيق ينتظر لونه الخاص على الحلقة.</string>
+    <string name="sc_charge">الشحن</string>
+    <string name="sc_charge_sub" formatted="false">تمتلئ الحلقة بمستوى البطارية ويتوهج البرق مع كل 1%.</string>
+    <string name="sc_download">التنزيل</string>
+    <string name="sc_download_sub">يملأ التنزيل الحلقة مع سهم ↓.</string>
+    <string name="sc_upload">الرفع</string>
+    <string name="sc_upload_sub">يملأ الرفع الحلقة مع سهم ↑.</string>
 </resources>

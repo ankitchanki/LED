@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Glow LED %1$s disponível</string>
     <string name="upd_notif_action">Atualizar</string>
     <string name="selected">Selecionado</string>
+    <string name="sec_showcase">Veja em ação</string>
+    <string name="what_is_it">O que é?</string>
+    <string name="sc_notify">Nova mensagem</string>
+    <string name="sc_notify_sub">Quando chega uma mensagem, um anel brilha em volta da câmera e uma gota cai no ícone do app.</string>
+    <string name="sc_multi">Vários apps</string>
+    <string name="sc_multi_sub">Cada app pendente ganha sua própria cor no anel.</string>
+    <string name="sc_charge">Carregando</string>
+    <string name="sc_charge_sub" formatted="false">O anel enche com o nível da bateria; o raio brilha a cada 1%.</string>
+    <string name="sc_download">Baixando</string>
+    <string name="sc_download_sub">Um download enche o anel, com uma seta ↓.</string>
+    <string name="sc_upload">Enviando</string>
+    <string name="sc_upload_sub">Um envio enche o anel, com uma seta ↑.</string>
 </resources>

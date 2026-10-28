@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Доступна версия Glow LED %1$s</string>
     <string name="upd_notif_action">Обновить</string>
     <string name="selected">Выбрано</string>
+    <string name="sec_showcase">Как это выглядит</string>
+    <string name="what_is_it">Что это?</string>
+    <string name="sc_notify">Новое сообщение</string>
+    <string name="sc_notify_sub">Когда приходит сообщение, вокруг камеры светится кольцо, а в значок приложения падает капля.</string>
+    <string name="sc_multi">Несколько приложений</string>
+    <string name="sc_multi_sub">У каждого приложения свой цвет на кольце.</string>
+    <string name="sc_charge">Зарядка</string>
+    <string name="sc_charge_sub" formatted="false">Кольцо заполняется по уровню заряда; молния вспыхивает на каждом 1%.</string>
+    <string name="sc_download">Загрузка</string>
+    <string name="sc_download_sub">Загрузка заполняет кольцо, со стрелкой ↓.</string>
+    <string name="sc_upload">Отправка</string>
+    <string name="sc_upload_sub">Отправка заполняет кольцо, со стрелкой ↑.</string>
 </resources>

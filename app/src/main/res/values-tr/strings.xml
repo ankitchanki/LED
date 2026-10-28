@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Glow LED %1$s mevcut</string>
     <string name="upd_notif_action">Güncelle</string>
     <string name="selected">Seçili</string>
+    <string name="sec_showcase">Nasıl çalışır</string>
+    <string name="what_is_it">Bu nedir?</string>
+    <string name="sc_notify">Yeni mesaj</string>
+    <string name="sc_notify_sub">Mesaj gelince kameranın çevresinde bir halka parlar ve uygulama simgesine bir damla düşer.</string>
+    <string name="sc_multi">Birden çok uygulama</string>
+    <string name="sc_multi_sub">Bekleyen her uygulamanın halkada kendi rengi olur.</string>
+    <string name="sc_charge">Şarj oluyor</string>
+    <string name="sc_charge_sub" formatted="false">Halka pil seviyesiyle dolar; şimşek her %1\'de parlar.</string>
+    <string name="sc_download">İndiriliyor</string>
+    <string name="sc_download_sub">İndirme halkayı ↓ okuyla doldurur.</string>
+    <string name="sc_upload">Yükleniyor</string>
+    <string name="sc_upload_sub">Yükleme halkayı ↑ okuyla doldurur.</string>
 </resources>

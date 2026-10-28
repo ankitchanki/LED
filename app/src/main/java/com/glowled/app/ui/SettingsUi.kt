@@ -83,6 +83,9 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
         pageCols.forEach { it.setPadding(it.paddingLeft, it.paddingTop, it.paddingRight, dp(12) + px) }
     }
 
+    /** Called while any page scrolls (the Test pill steps aside meanwhile). */
+    var onScroll: (() -> Unit)? = null
+
     /** A pager page: scrolls only if its content is taller than the space available. */
     fun page(): Pair<View, LinearLayout> {
         val col = LinearLayout(context).apply {
@@ -94,6 +97,7 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
             isFillViewport = true
             overScrollMode = View.OVER_SCROLL_NEVER
             isVerticalScrollBarEnabled = false
+            setOnScrollChangeListener { _: NestedScrollView, _, y, _, oldY -> if (y != oldY) onScroll?.invoke() }
             addView(col)
             layoutParams = ViewGroup.LayoutParams(-1, -1)
         }

@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Glow LED %1$s を利用できます</string>
     <string name="upd_notif_action">更新</string>
     <string name="selected">選択済み</string>
+    <string name="sec_showcase">動作を見る</string>
+    <string name="what_is_it">これは？</string>
+    <string name="sc_notify">新しいメッセージ</string>
+    <string name="sc_notify_sub">メッセージが届くとカメラの周りにリングが光り、しずくがアプリのアイコンに落ちます。</string>
+    <string name="sc_multi">複数のアプリ</string>
+    <string name="sc_multi_sub">アプリごとにリングの色が分かれます。</string>
+    <string name="sc_charge">充電中</string>
+    <string name="sc_charge_sub" formatted="false">リングが電池残量まで満ち、1% 増えるたびに稲妻が光ります。</string>
+    <string name="sc_download">ダウンロード</string>
+    <string name="sc_download_sub">ダウンロード中はリングが満ちていき、↓ 矢印が付きます。</string>
+    <string name="sc_upload">アップロード</string>
+    <string name="sc_upload_sub">アップロード中はリングが満ちていき、↑ 矢印が付きます。</string>
 </resources>

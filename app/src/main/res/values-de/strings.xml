@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Glow LED %1$s ist verfügbar</string>
     <string name="upd_notif_action">Aktualisieren</string>
     <string name="selected">Ausgewählt</string>
+    <string name="sec_showcase">So sieht es aus</string>
+    <string name="what_is_it">Was ist das?</string>
+    <string name="sc_notify">Neue Nachricht</string>
+    <string name="sc_notify_sub">Kommt eine Nachricht, leuchtet ein Ring um die Kamera und ein Tropfen fällt in das App-Symbol.</string>
+    <string name="sc_multi">Mehrere Apps</string>
+    <string name="sc_multi_sub">Jede wartende App hat ihre eigene Farbe im Ring.</string>
+    <string name="sc_charge">Laden</string>
+    <string name="sc_charge_sub" formatted="false">Der Ring füllt sich mit dem Akkustand; der Blitz leuchtet bei jedem 1 % auf.</string>
+    <string name="sc_download">Download</string>
+    <string name="sc_download_sub">Ein Download füllt den Ring, mit einem ↓-Pfeil.</string>
+    <string name="sc_upload">Upload</string>
+    <string name="sc_upload_sub">Ein Upload füllt den Ring, mit einem ↑-Pfeil.</string>
 </resources>

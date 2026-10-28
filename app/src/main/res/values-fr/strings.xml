@@ -331,4 +331,16 @@
     <string name="upd_notif_title">Glow LED %1$s est disponible</string>
     <string name="upd_notif_action">Mettre à jour</string>
     <string name="selected">Sélectionné</string>
+    <string name="sec_showcase">Voir en action</string>
+    <string name="what_is_it">C\'est quoi ?</string>
+    <string name="sc_notify">Nouveau message</string>
+    <string name="sc_notify_sub">À l\'arrivée d\'un message, un anneau s\'allume autour de la caméra et une goutte tombe dans l\'icône de l\'appli.</string>
+    <string name="sc_multi">Plusieurs applis</string>
+    <string name="sc_multi_sub">Chaque appli en attente a sa propre couleur sur l\'anneau.</string>
+    <string name="sc_charge">En charge</string>
+    <string name="sc_charge_sub" formatted="false">L\'anneau se remplit avec le niveau de batterie ; l\'éclair brille à chaque 1 %.</string>
+    <string name="sc_download">Téléchargement</string>
+    <string name="sc_download_sub">Un téléchargement remplit l\'anneau, avec une flèche ↓.</string>
+    <string name="sc_upload">Envoi</string>
+    <string name="sc_upload_sub">Un envoi remplit l\'anneau, avec une flèche ↑.</string>
 </resources>

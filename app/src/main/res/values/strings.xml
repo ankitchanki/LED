@@ -332,4 +332,16 @@
     <string name="upd_notif_title">Glow LED %1$s is available</string>
     <string name="upd_notif_action">Update</string>
     <string name="selected">Selected</string>
+    <string name="sec_showcase">See it in action</string>
+    <string name="what_is_it">What is it?</string>
+    <string name="sc_notify">New message</string>
+    <string name="sc_notify_sub">When a message arrives, a ring glows around the camera and a drop falls into the app\'s icon.</string>
+    <string name="sc_multi">Several apps</string>
+    <string name="sc_multi_sub">Each waiting app gets its own colour on the ring.</string>
+    <string name="sc_charge">Charging</string>
+    <string name="sc_charge_sub" formatted="false">The ring fills with your battery level; the bolt flares on every 1%.</string>
+    <string name="sc_download">Downloading</string>
+    <string name="sc_download_sub">A download fills the ring, with a ↓ arrow.</string>
+    <string name="sc_upload">Uploading</string>
+    <string name="sc_upload_sub">An upload fills the ring, with a ↑ arrow.</string>
 </resources>

@@ -129,6 +129,20 @@ object LedController {
 
     // ---- events -----------------------------------------------------------------------------------
 
+    /**
+     * The test light without the notification listener (when the system has disconnected it):
+     * the same entry the listener would add, removed again after a minute.
+     */
+    fun showTestLight(title: String, text: String) {
+        val key = "glowled-test-direct"
+        NotificationStore.put(
+            NotificationStore.Entry(key, app.packageName, prefs.defaultColor, System.currentTimeMillis(), title, listOf(text)),
+            alert = true,
+        )
+        onNotificationsChanged(newPost = true)
+        main.postDelayed({ if (NotificationStore.remove(key)) onNotificationsChanged(false) }, 60_000)
+    }
+
     fun onNotificationsChanged(newPost: Boolean) = main.post {
         if (newPost) {
             suppressed = false

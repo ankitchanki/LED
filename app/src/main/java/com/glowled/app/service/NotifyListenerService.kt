@@ -3,6 +3,7 @@ package com.glowled.app.service
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.ComponentName
+import android.content.pm.PackageManager
 import android.content.Context
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
@@ -178,6 +179,24 @@ class NotifyListenerService : NotificationListenerService() {
             if (isEnabled(context)) {
                 requestRebind(ComponentName(context, NotifyListenerService::class.java))
             }
+        }
+
+        /**
+         * Access is granted but nothing is connected: HyperOS often ignores [requestRebind] after
+         * an app update. Switching the service component off and on again makes the system bind
+         * it afresh.
+         */
+        fun forceReconnect(context: Context) {
+            if (!isEnabled(context) || instance != null) return
+            val cn = ComponentName(context, NotifyListenerService::class.java)
+            val pm = context.packageManager
+            try {
+                pm.setComponentEnabledSetting(cn, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+                pm.setComponentEnabledSetting(cn, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP)
+            } catch (e: Exception) {
+                com.glowled.app.core.DebugLog.add("Reconnect failed: ${e.message}")
+            }
+            requestRebind(cn)
         }
     }
 }
