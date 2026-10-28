@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Glow LED インジケーター</string>
+    <string name="accessibility_desc">ロック画面でカメラの周りに通知ライトを表示し、常時表示ライトのタイムアウト後に画面を再びオフにします。Glow LED が画面の内容を読み取ったり、操作を監視したりすることはありません。</string>
+    <string name="channel_launcher">常時表示ランチャー</string>
+    <string name="channel_test">テスト通知</string>
+    <string name="title_apps">アプリと色</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED はオンです</string>
+    <string name="master_off">Glow LED はオフです</string>
+    <string name="status_waiting">通知を待機中</string>
+    <string name="status_active">%d 件の通知で点灯中</string>
+    <string name="status_blocked">一時停止中: %s</string>
+    <string name="status_need_listener">開始するには通知へのアクセスを許可してください</string>
+    <string name="block_quiet">おやすみ時間</string>
+    <string name="block_battery">電池残量低下</string>
+    <string name="block_call">通話中</string>
+    <string name="reach_hint">上にスワイプするか戻るボタンで元に戻ります</string>
+    <string name="reach_tip">ヒント: 設定を下に引き下げると、親指で操作しやすくなります（片手モード）。</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">通知へのアクセス</string>
+    <string name="perm_overlay_short">他のアプリの上に表示</string>
+    <string name="perm_a11y_short">ユーザー補助</string>
+    <string name="perm_battery_short">電池の制限なし</string>
+    <string name="perm_miui_short">Xiaomi ロック画面</string>
+    <string name="perm_oem_short">自動起動</string>
+    <string name="perm_listener">通知へのアクセス</string>
+    <string name="perm_listener_desc">必須。通知が届いたことを Glow LED が検知できるようにします。データがスマートフォンの外に送信されることはありません。</string>
+    <string name="perm_a11y">ユーザー補助（省略可、最も確実）</string>
+    <string name="perm_a11y_desc">必須ではありません。ライトのタイムアウト後に画面を即座にオフにする機能と、どのメーカーのスマートフォンでもブロックされないライトが追加されます。不要な場合はスキップできます。</string>
+    <string name="perm_overlay">他のアプリの上に重ねて表示</string>
+    <string name="perm_overlay_desc">画面がオフのときにライトを表示できるようにします。これだけで十分で、ユーザー補助は不要です。</string>
+    <string name="perm_post">通知</string>
+    <string name="perm_post_desc">テスト通知と予備のランチャーに必要です。</string>
+    <string name="perm_battery">電池の制限なし</string>
+    <string name="perm_battery_desc">システムによって Glow LED が終了されるのを防ぎます。アプリ自体はバックグラウンドで電力をほとんど消費しません。</string>
+    <string name="perm_oem">自動起動（%s）</string>
+    <string name="perm_oem_desc">お使いのスマートフォンのメーカーには独自のアプリ終了機能があります。Glow LED の自動起動とバックグラウンドでの実行を許可してください。</string>
+    <string name="perm_miui">Xiaomi ロック画面の権限</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: 「ロック画面に表示」と「バックグラウンドで実行中にポップアップ ウィンドウを表示」をオンにしてください。</string>
+    <string name="restricted_hint">Android 13 以降: APK ファイルからインストールしたアプリでは、通知へのアクセスとユーザー補助が「制限付き設定」になります。これは Android の仕様で、不具合ではありません。スイッチがグレー表示の場合は、アプリ情報 → ⋮（右上）→ 制限付き設定を許可 を選択してから、もう一度お試しください。</string>
+    <string name="setup_intro">一度だけ許可してください。許可しないとライトを表示できません。</string>
+    <string name="setup_progress">%1$d / %2$d</string>
+    <string name="setup_all_done">設定完了</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">テスト</string>
+    <string name="tab_setup">セットアップ</string>
+    <string name="tab_style">スタイル</string>
+    <string name="tab_off">画面オフ</string>
+    <string name="tab_on">画面オン</string>
+    <string name="tab_alerts">通知</string>
+    <string name="tab_battery">電池</string>
+    <string name="tab_log">設定</string>
+
+    <!-- Style -->
+    <string name="action_cutout">カメラの位置</string>
+    <string name="tile_cutout_sub">リングの位置合わせ</string>
+    <string name="custom_colour">カスタムカラー</string>
+    <string name="chips_multi">複数の通知</string>
+    <string name="s_speed">速度</string>
+    <string name="s_intensity">強度</string>
+    <string name="s_thickness">太さ</string>
+    <string name="s_gap">間隔</string>
+    <string name="s_edge">画面の角</string>
+    <string name="t_glow">ソフトグロー</string>
+    <string name="t_rotate">リングを回転</string>
+    <string name="t_notif_colour">通知の色</string>
+    <string name="t_haptics">触覚フィードバック</string>
+    <string name="chips_app_theme">アプリのテーマ</string>
+    <string name="t_icon_colour">アプリアイコンの色</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">画面オフ時のライト</string>
+    <string name="t_on_screen_off">画面オフ時</string>
+    <string name="t_on_new">新しい通知時</string>
+    <string name="t_pocket">ポケット検出</string>
+    <string name="t_double_tap">ダブルタップで起動</string>
+    <string name="t_burn_in">焼き付き防止</string>
+    <string name="t_app_icons">アプリアイコン</string>
+    <string name="t_keep_icons">アイコンを常に表示</string>
+    <string name="t_aod_icons">AOD 風アイコン</string>
+    <string name="t_tap_read">タップして読む</string>
+    <string name="t_peek_actions">返信ボタン</string>
+    <string name="t_droplet">しずく</string>
+    <string name="chips_method">画面オフの方式</string>
+    <string name="chips_off_delay">画面オフ後にライトを開始</string>
+    <string name="chips_timeout">ライトの点灯時間</string>
+    <string name="chips_remind">その後のリマインダー</string>
+    <string name="s_brightness">明るさ</string>
+    <string name="s_reminder">リマインダー</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">使用中のリング</string>
+    <string name="t_lock_only">ロック画面のみ</string>
+    <string name="t_charge">充電リング</string>
+    <string name="t_progress">ダウンロード リング</string>
+    <string name="charge_colours">電池残量ごとの充電リングの色</string>
+    <string name="c_low" formatted="false">0～19%</string>
+    <string name="c_mid" formatted="false">20～79%</string>
+    <string name="c_high" formatted="false">80～100%</string>
+    <string name="progress_colour">ダウンロード リングの色</string>
+    <string name="c_progress">ダウンロードの色（自動 = アプリの色）</string>
+    <string name="screen_on_hint">使用中のリング: スマートフォンの使用中にカメラの周りに小さなリングを表示します。充電リング: 充電中に電池残量に合わせてリングが満ちていきます。ダウンロード リング: ダウンロードの進行状況を表示します。どちらもロック画面でも動作します。横向きでは非表示になります（エッジライティングを除く）。</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">アプリと色</string>
+    <string name="apps_sub">アプリのオン / オフと色の選択</string>
+    <string name="chips_which_apps">対象アプリ</string>
+    <string name="t_ignore_silent">サイレント通知を無視</string>
+    <string name="t_dnd">サイレント モードに従う</string>
+    <string name="t_clear_unlock">ロック解除時に消去</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">アニメーションのフレームレート</string>
+    <string name="s_min_battery">電池残量がこれ未満で一時停止</string>
+    <string name="t_low_refresh">最低リフレッシュレート</string>
+    <string name="t_eco">12 秒後に静止</string>
+    <string name="t_age_fade">古い通知を暗く</string>
+    <string name="t_motion">動かすと再表示</string>
+    <string name="t_quiet">おやすみ時間</string>
+    <string name="quiet_time">おやすみ時間の時刻</string>
+    <string name="quiet_start">おやすみ時間の開始</string>
+    <string name="quiet_end">おやすみ時間の終了</string>
+    <string name="battery_hint">12 秒後に静止: ライトは表示時にアニメーションし、その後静止するため再描画が発生しません。古い通知を暗く: 新しい通知は最大の明るさで光り、1 時間かけて薄くなります。動かすと再表示: ライトのタイムアウト後、スマートフォンを動かすとモーション チップを使って再び表示します（待機中は画面も CPU も使用しません）。</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">言語</string>
+    <string name="g_backup">バックアップ</string>
+    <string name="g_backup_sub">設定をファイルに保存</string>
+    <string name="g_restore">復元</string>
+    <string name="g_restore_sub">バックアップから</string>
+    <string name="g_log">イベントログ</string>
+    <string name="g_log_sub">表示とコピー</string>
+    <string name="log_share">共有</string>
+    <string name="log_copy">コピー</string>
+    <string name="log_copied">コピーしました</string>
+    <string name="state_on">オン</string>
+    <string name="state_off">オフ</string>
+    <string name="close">閉じる</string>
+    <string name="lang_system">システムのデフォルト</string>
+    <string name="backup_done">設定を保存しました</string>
+    <string name="backup_failed">バックアップを保存できませんでした</string>
+    <string name="restore_done">%d 件の設定を復元しました</string>
+    <string name="restore_failed">このファイルは Glow LED のバックアップではありません</string>
+
+    <!-- Test -->
+    <string name="test_title">Glow LED テスト</string>
+    <string name="test_text">画面をオフにするとライトが表示されます。この通知をスワイプすると消去できます。</string>
+    <string name="test_sent">テストを送信しました。画面をオフにしてください。</string>
+    <string name="need_listener_first">先に通知へのアクセスを許可してください</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">新しい通知</string>
+    <string name="peek_hidden">内容は非表示です</string>
+    <string name="peek_more">他 %d 件</string>
+    <string name="peek_reply">返信</string>
+    <string name="peek_mark_read">既読にする</string>
+    <string name="peek_dismiss">閉じる</string>
+    <string name="kind_photo">📷 写真</string>
+    <string name="kind_video">🎥 動画</string>
+    <string name="kind_voice">🎤 音声メッセージ</string>
+    <string name="kind_document">📄 ドキュメント</string>
+    <string name="reply_to">%s に返信</string>
+    <string name="reply_hint">メッセージ</string>
+    <string name="reply_send">送信</string>
+    <string name="reply_sent">送信しました</string>
+    <string name="reply_failed">返信を送信できませんでした</string>
+    <string name="reply_unavailable">この通知にはここから返信できなくなりました</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">自動検出</string>
+    <string name="cut_save">保存</string>
+    <string name="cut_reset">リセット</string>
+    <string name="cut_hint">画面上をドラッグして移動します。矢印で 1 ピクセルずつ調整できます。</string>
+    <string name="cut_none">このスマートフォンはカメラの切り欠きを報告していません。従来の LED ドットを使用します。</string>
+    <string name="cut_detected">%s の切り欠きを検出しました</string>
+    <string name="cut_saved">カメラの位置を保存しました</string>
+    <string name="cut_rotate">切り欠きを検出するには、スマートフォンを縦向きに持ってください</string>
+    <string name="cd_left">左に移動</string>
+    <string name="cd_up">上に移動</string>
+    <string name="cd_down">下に移動</string>
+    <string name="cd_right">右に移動</string>
+    <string name="shape_circle">パンチホール</string>
+    <string name="shape_pill">ピル型</string>
+    <string name="shape_notch">ノッチ</string>
+    <string name="shape_dot">LED ドット</string>
+    <string name="label_x">水平</string>
+    <string name="label_y">垂直</string>
+    <string name="label_w">幅</string>
+    <string name="label_h">高さ</string>
+    <string name="label_gap">カメラとの間隔</string>
+    <string name="label_thickness">リングの太さ</string>
+    <string name="label_animate">アニメーション</string>
+
+    <!-- Apps -->
+    <string name="apps_search">アプリを検索</string>
+    <string name="apps_auto">自動</string>
+    <string name="apps_loading">アプリを読み込んでいます…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">色を選択</string>
+    <string name="color_wheel">カラーホイール: 回して色を選択</string>
+    <string name="color_saturation">彩度</string>
+    <string name="color_brightness">明るさ</string>
+    <string name="color_auto">自動</string>
+    <string name="color_hex">16 進数（#RRGGBB）</string>
+    <string name="ok">OK</string>
+    <string name="cancel">キャンセル</string>
+    <string name="setup_open">設定を開く</string>
+    <string name="tutorial_title">チュートリアル</string>
+    <string name="tutorial_sub">ジェスチャーと機能</string>
+    <string name="tutorial_step">クイックガイド · %1$d / %2$d</string>
+    <string name="tutorial_next">次へ</string>
+    <string name="tutorial_back">戻る</string>
+    <string name="tutorial_done">OK</string>
+    <string name="tutorial_later">ガイドを閉じる</string>
+    <string name="tutorial_swipe">設定ページが一番上までスクロールされた状態で下にスワイプすると、LED のライブ プレビューが表示され、コントロールに指が届きやすくなります。上にスワイプするか戻るボタンを押すと閉じます。左右にスワイプするとタブを切り替えられます。このガイドは [設定] → [チュートリアル] からもう一度開けます。</string>
+    <string name="tutorial_test">フローティングの [テスト] ボタンをタップし、電源ボタンを押してデバイスをロックします。通知へのアクセスと画面オフ時のライトが有効な場合、Glow LED は少し待ってから黒い通知画面を表示します。下にスワイプしてプレビューを表示すると、デバイスをロックせずにスタイルを試せます。</string>
+    <string name="tutorial_setup">[セットアップ] のカードを開き、通知へのアクセスと、「他のアプリの上に重ねて表示」または「ユーザー補助」のいずれかを有効にします。ユーザー補助では画面を即座にオフにすることもできます。Xiaomi など制限の厳しいデバイスでは、自動起動と電池の制限を確認してください。進行状況バーに、残りの必要な権限が表示されます。</string>
+    <string name="tutorial_styles">[スタイル] には「ツイン オービット」や「スパークル」など 11 種類のアニメーションがあります。色、速度、サイズ、グロー、複数アプリのモードを選択できます。[カメラの位置] でカメラ周りのリングを調整します。アプリのテーマと触覚フィードバックは [設定] タブにあります。これらによって黒い通知画面の背景が変わることはありません。</string>
+    <string name="tutorial_transfers">アプリが進行状況の通知を表示すると、リングに転送の進行状況が表示され、リングの下部に小さな矢印が付きます: ↑ アップロード、↓ ダウンロード、↕ 方向不明。割合のない進行中の転送はスピナーで表示されます。アプリの色を使うか、[画面オン] でアップロード / ダウンロードの色を選択できます。進行状況の通知がない転送は検出できません。</string>
+    <string name="tutorial_battery" formatted="false">充電中は、電池残量に合わせてリングが低・中・高の色で満ちていき、リングの下部に小さな稲妻マークが表示され、電池が 1% 増えるたびに光ります。スマートフォンのロック中に充電器を接続すると数秒間表示されます。転送の表示が優先されます。リングの下の電池残量 % 表示は任意です（[画面オン] → [充電と電池]）。</string>
+    <string name="tutorial_messages">黒い通知画面でアプリアイコンをタップすると、通知を読んだり、アプリが対応していれば返信や既読にしたりできます。返信にはロック解除が必要な場合があります。ダブルタップするとロック画面が表示されます。[通知] では、許可するアプリ、アプリごとの色、サイレント通知、サイレント モードを設定できます。</string>
+    <string name="tutorial_power">画面オフ表示はディスプレイを点灯させて黒を描画するもので、デバイス本来のハードウェア AOD ではありません。OLED では黒いピクセルは消灯しますが、LCD ではバックライトが光ることがあります。[電池] には、おやすみ時間、電池残量低下時の保護、フレームレートの制限、モーション リマインダーがあります。[設定] には、バックアップ、復元、言語、イベントログもあります。</string>
+    <string name="t_battery_indicator" formatted="false">電池残量 %</string>
+    <string name="t_charge_aod">画面オフ時の充電表示</string>
+    <string name="t_progress_initials" formatted="false">方向の矢印</string>
+    <string name="t_progress_app_color" formatted="false">転送アプリの色</string>
+    <string name="c_upload">アップロード</string>
+    <string name="c_download">ダウンロード</string>
+    <string name="transfer_hint">アプリの色で転送を識別できます（WhatsApp は緑、Instagram はピンク）。アプリの色をオフにすると、アップロード / ダウンロードの色が使われます。カスタムの進行状況の色はその両方より優先されます。検出には進行状況の通知が必要です。アプリごとの矢印や、方向が不明なときの表示は [矢印] で設定できます。</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">アニメーション</string>
+    <string name="sec_colour">色</string>
+    <string name="sec_shape">形状と動き</string>
+    <string name="sec_when">点灯するタイミング</string>
+    <string name="sec_black">黒い画面上</string>
+    <string name="sec_messages">メッセージ</string>
+    <string name="sec_gestures">ジェスチャーと保護</string>
+    <string name="sec_timing">タイミングと明るさ</string>
+    <string name="sec_ring_on">スマートフォンの使用中</string>
+    <string name="sec_charging">充電と電池</string>
+    <string name="sec_transfers">ダウンロードとアップロード</string>
+    <string name="sec_apps">アプリ</string>
+    <string name="sec_filters">フィルタ</string>
+    <string name="sec_power">省電力</string>
+    <string name="sec_appearance">外観</string>
+    <string name="sec_tools">ツール</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">アプリごとの矢印</string>
+    <string name="arrows_sub_some">手動設定: %1$d · その他は自動</string>
+    <string name="arrows_sub_none">すべて自動</string>
+    <string name="unknown_title">不明な場合</string>
+    <string name="sec_arrows">矢印</string>
+    <string name="sec_set_by_you">手動設定</string>
+    <string name="sec_auto_apps">自動</string>
+    <string name="sec_search_results">すべてのアプリ</string>
+    <string name="arrow_sub_always">常に</string>
+    <string name="arrow_sub_known">既知のアプリ</string>
+    <string name="arrow_sub_text">通知から判断</string>
+    <string name="arrow_auto">自動</string>
+    <string name="arrow_download">ダウンロード</string>
+    <string name="arrow_upload">アップロード</string>
+    <string name="arrow_none">矢印なし</string>
+    <string name="arrows_footer">最初にダウンロードまたはアップロードを行ったアプリが、よく知られたアプリとともにここに表示されます。その他のアプリを設定するには検索してください。</string>
+    <string name="arrows_empty">一致するアプリはありません</string>
+    <string name="arrow_status_active">転送中</string>
+    <string name="arrow_status_idle">現在転送はありません</string>
+    <string name="sec_arrow_on_ring">リング上の矢印</string>
+    <string name="seg_none">なし</string>
+    <string name="arrow_explain_known">自動では、まず通知のテキストを読み取り、次にこのアプリの通常の方向（%1$s）を使用します。</string>
+    <string name="arrow_explain_text">自動では、通知のテキストを読み取ります。方向が記載されていない場合は「不明な場合」の設定（%1$s）に従います。</string>
+    <string name="arrow_explain_down">%1$s からの転送は、通知の内容にかかわらずすべて ↓ で表示されます。</string>
+    <string name="arrow_explain_up">%1$s からの転送は、通知の内容にかかわらずすべて ↑ で表示されます。</string>
+    <string name="arrow_explain_none">%1$s では矢印なしでリングを表示します。色は引き続き方向に従います。</string>
+    <string name="sec_ring_colour">リングの色</string>
+    <string name="ring_colour_app">アプリの色</string>
+    <string name="ring_colour_upload">アップロードの色</string>
+    <string name="ring_colour_download">ダウンロードの色</string>
+    <string name="reset_auto">自動にリセット</string>
+    <string name="unknown_intro">通知にアップロードかダウンロードかが記載されておらず、アプリに個別の矢印が設定されていない場合。</string>
+    <string name="unk_none">アイコンなし</string>
+    <string name="unk_none_sub">リングのみ</string>
+    <string name="unk_both">↕ を表示</string>
+    <string name="unk_both_sub">転送中、方向不明</string>
+    <string name="unk_down">ダウンロードとして扱う</string>
+    <string name="unk_down_sub">ほとんどの転送はダウンロードです</string>
+    <string name="unk_up">アップロードとして扱う</string>
+    <string name="unk_up_sub">バックアップの多いスマートフォン向け</string>
+    <string name="sec_order">Glow LED の判断順序</string>
+    <string name="order_1">アプリに対するあなたの選択</string>
+    <string name="order_2">通知内の語句</string>
+    <string name="order_3">既知のアプリ（Play Store ↓、フォト ↑…）</string>
+    <string name="order_4">この設定</string>
+    <string name="setup_optional">省略可</string>
+    <string name="setup_allow">許可</string>
+    <string name="a11y_banking">一部の銀行アプリや決済アプリは、Play Store 以外から入手したユーザー補助サービスがオンになっていると起動しません。お使いのアプリがそうなる場合は、これをオフにしてください。Glow LED はロック画面ウィンドウで引き続き動作します（Xiaomi ではライトの前に一瞬画面が光ることがあります）。</string>
+    <string name="a11y_turn_off">オフにする</string>
+    <string name="upd_title">アップデート</string>
+    <string name="upd_sub_latest">バージョン %1$s · 最新です</string>
+    <string name="upd_sub_available">バージョン %1$s を利用できます</string>
+    <string name="upd_sub_unknown">バージョン %1$s · タップして確認</string>
+    <string name="upd_installed">インストール済み: バージョン %1$s</string>
+    <string name="upd_checking">アップデートを確認しています…</string>
+    <string name="upd_latest">Glow LED は最新です</string>
+    <string name="upd_latest_sub">最新バージョン %1$s を使用しています。</string>
+    <string name="upd_available">バージョン %1$s を利用できます</string>
+    <string name="upd_size">ダウンロード サイズ %1$s · 公式の鍵で署名済み</string>
+    <string name="upd_failed_title">アップデートを確認できませんでした</string>
+    <string name="upd_failed">インターネット接続を確認して、もう一度お試しください。</string>
+    <string name="upd_retry">再試行</string>
+    <string name="upd_check_now">今すぐ確認</string>
+    <string name="upd_whats_new">%1$s の新機能</string>
+    <string name="upd_install">ダウンロードしてインストール</string>
+    <string name="upd_downloading">ダウンロード中… %1$d%%</string>
+    <string name="upd_installing">インストールしています…</string>
+    <string name="upd_installing_sub">次の画面で確認してください。Glow LED は設定を保持したまま再起動します。</string>
+    <string name="upd_verify_failed">ダウンロードしたファイルが公式の鍵で署名された新しい Glow LED ではないため、インストールしませんでした。</string>
+    <string name="upd_download_failed">ダウンロードに失敗しました。もう一度お試しください。</string>
+    <string name="upd_install_failed">インストールに失敗しました: %1$s</string>
+    <string name="upd_allow_title">アップデートのインストールを許可</string>
+    <string name="upd_allow_msg">Glow LED が自分でアップデートをインストールするには、「不明なアプリのインストール」が必要です。Glow LED に対してオンにしてから戻ってください。ダウンロードが自動的に始まります。</string>
+    <string name="upd_auto">アップデートを確認</string>
+    <string name="upd_all_releases">すべてのリリース</string>
+    <string name="upd_auto_note">Glow LED は数時間ごとに GitHub を確認し、新しいバージョンが公開されると変更履歴とともに通知します。インターネットを使用するのはこの目的だけです。</string>
+    <string name="channel_updates">アプリのアップデート</string>
+    <string name="upd_notif_title">Glow LED %1$s を利用できます</string>
+    <string name="upd_notif_action">更新</string>
+    <string name="selected">選択済み</string>
+</resources>

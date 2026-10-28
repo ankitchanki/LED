@@ -1,3 +1,18 @@
+# Glow LED v2.9.0
+
+✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and
+later and keeps your settings.
+
+## 11 new languages
+- Glow LED now speaks **13 languages**: English, Español, Français, Deutsch, Italiano,
+  Português (Brasil), Русский, Türkçe, العربية, हिन्दी, Bahasa Indonesia, 日本語 and 简体中文.
+- It follows the phone language, or pick one in *Settings → Language* (each name is written in its
+  own language). Android 13+ also lists them under *Settings → Apps → Glow LED → Language*.
+- Arabic is laid out right to left.
+- Segmented choices wrap to a second line in longer languages instead of being cut off.
+
+---
+
 # Glow LED v2.8.1
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

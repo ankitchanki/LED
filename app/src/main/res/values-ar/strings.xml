@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">مؤشر Glow LED</string>
+    <string name="accessibility_desc">يرسم ضوء الإشعارات حول الكاميرا على شاشة القفل ويُطفئ الشاشة مجددًا بعد انتهاء مهلة الضوء الدائم. لا يقرأ Glow LED محتوى الشاشة ولا يراقب إجراءاتك.</string>
+    <string name="channel_launcher">مشغّل العرض الدائم</string>
+    <string name="channel_test">إشعارات تجريبية</string>
+    <string name="title_apps">التطبيقات والألوان</string>
+
+    <!-- Header and status -->
+    <string name="master_on">‏Glow LED مفعّل</string>
+    <string name="master_off">‏Glow LED متوقف</string>
+    <string name="status_waiting">في انتظار الإشعارات</string>
+    <string name="status_active">يضيء لـ %d من الإشعارات</string>
+    <string name="status_blocked">متوقف مؤقتًا: %s</string>
+    <string name="status_need_listener">امنح إذن الوصول إلى الإشعارات للبدء</string>
+    <string name="block_quiet">ساعات الهدوء</string>
+    <string name="block_battery">بطارية منخفضة</string>
+    <string name="block_call">في مكالمة</string>
+    <string name="reach_hint">مرّر لأعلى أو اضغط رجوع للعودة</string>
+    <string name="reach_tip">نصيحة: اسحب الإعدادات لأسفل للوصول إليها بإبهامك (وضع اليد الواحدة).</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">الوصول إلى الإشعارات</string>
+    <string name="perm_overlay_short">الظهور فوق التطبيقات</string>
+    <string name="perm_a11y_short">تسهيل الاستخدام</string>
+    <string name="perm_battery_short">بطارية غير مقيّدة</string>
+    <string name="perm_miui_short">شاشة قفل Xiaomi</string>
+    <string name="perm_oem_short">التشغيل التلقائي</string>
+    <string name="perm_listener">الوصول إلى الإشعارات</string>
+    <string name="perm_listener_desc">مطلوب. يتيح لـ Glow LED معرفة وقت وصول إشعار. لا يغادر أي شيء هاتفك.</string>
+    <string name="perm_a11y">تسهيل الاستخدام (اختياري، الأكثر موثوقية)</string>
+    <string name="perm_a11y_desc">غير مطلوب. يضيف: إطفاء الشاشة فورًا بعد انتهاء مهلة الضوء، وضوءًا لا يمكن لأي علامة تجارية للهواتف حظره. تخطَّه إن أردت.</string>
+    <string name="perm_overlay">الظهور فوق التطبيقات الأخرى</string>
+    <string name="perm_overlay_desc">يتيح ظهور الضوء عندما تكون الشاشة مطفأة. يكفي وحده - لا حاجة إلى تسهيل الاستخدام.</string>
+    <string name="perm_post">الإشعارات</string>
+    <string name="perm_post_desc">مطلوب للإشعار التجريبي والمشغّل الاحتياطي.</string>
+    <string name="perm_battery">بطارية غير مقيّدة</string>
+    <string name="perm_battery_desc">يمنع النظام من إيقاف Glow LED. لا يستهلك التطبيق نفسه أي طاقة تقريبًا في الخلفية.</string>
+    <string name="perm_oem">التشغيل التلقائي (%s)</string>
+    <string name="perm_oem_desc">لدى العلامة التجارية لهاتفك أداة إضافية لإيقاف التطبيقات. اسمح لـ Glow LED بالتشغيل التلقائي والعمل في الخلفية.</string>
+    <string name="perm_miui">أذونات شاشة القفل في Xiaomi</string>
+    <string name="perm_miui_desc">‏HyperOS/MIUI: فعّل \"العرض على شاشة القفل\" و\"عرض النوافذ المنبثقة أثناء التشغيل في الخلفية\".</string>
+    <string name="restricted_hint">‏Android 13 والإصدارات الأحدث: تحصل التطبيقات المثبّتة من ملف APK على \"إعدادات محظورة\" للوصول إلى الإشعارات وتسهيل الاستخدام. هذه قاعدة في Android وليست خطأً. إذا كان المفتاح رماديًا: معلومات التطبيق ← ⋮ (أعلى اليمين) ← السماح بالإعدادات المحظورة، ثم حاول مجددًا.</string>
+    <string name="setup_intro">امنح هذه الأذونات مرة واحدة. بدونها لا يمكن أن يظهر الضوء.</string>
+    <string name="setup_progress">%1$d من %2$d</string>
+    <string name="setup_all_done">كل شيء جاهز</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">تجربة</string>
+    <string name="tab_setup">الإعداد</string>
+    <string name="tab_style">النمط</string>
+    <string name="tab_off">الشاشة مطفأة</string>
+    <string name="tab_on">الشاشة مضاءة</string>
+    <string name="tab_alerts">التنبيهات</string>
+    <string name="tab_battery">البطارية</string>
+    <string name="tab_log">الإعدادات</string>
+
+    <!-- Style -->
+    <string name="action_cutout">موضع الكاميرا</string>
+    <string name="tile_cutout_sub">محاذاة الحلقة</string>
+    <string name="custom_colour">لون مخصّص</string>
+    <string name="chips_multi">عدة إشعارات</string>
+    <string name="s_speed">السرعة</string>
+    <string name="s_intensity">الشدة</string>
+    <string name="s_thickness">السُمك</string>
+    <string name="s_gap">المسافة</string>
+    <string name="s_edge">زوايا الحواف</string>
+    <string name="t_glow">توهج ناعم</string>
+    <string name="t_rotate">تدوير الحلقة</string>
+    <string name="t_notif_colour">لون الإشعار</string>
+    <string name="t_haptics">الاهتزاز عند اللمس</string>
+    <string name="chips_app_theme">مظهر التطبيق</string>
+    <string name="t_icon_colour">لون رمز التطبيق</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">الضوء والشاشة مطفأة</string>
+    <string name="t_on_screen_off">عند إطفاء الشاشة</string>
+    <string name="t_on_new">عند تنبيه جديد</string>
+    <string name="t_pocket">رصد الجيب</string>
+    <string name="t_double_tap">النقر مرتين للتنشيط</string>
+    <string name="t_burn_in">حماية من الاحتراق</string>
+    <string name="t_app_icons">رموز التطبيقات</string>
+    <string name="t_keep_icons">إبقاء الرموز</string>
+    <string name="t_aod_icons">رموز بنمط AOD</string>
+    <string name="t_tap_read">انقر للقراءة</string>
+    <string name="t_peek_actions">أزرار الرد</string>
+    <string name="t_droplet">قطرة</string>
+    <string name="chips_method">طريقة إطفاء الشاشة</string>
+    <string name="chips_off_delay">بدء الضوء بعد إطفاء الشاشة</string>
+    <string name="chips_timeout">إبقاء الضوء مضاءً لمدة</string>
+    <string name="chips_remind">ذكّرني بعد ذلك</string>
+    <string name="s_brightness">السطوع</string>
+    <string name="s_reminder">التذكير</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">حلقة أثناء التشغيل</string>
+    <string name="t_lock_only">شاشة القفل فقط</string>
+    <string name="t_charge">حلقة الشحن</string>
+    <string name="t_progress">حلقة التنزيل</string>
+    <string name="charge_colours">لون حلقة الشحن حسب مستوى البطارية</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">لون حلقة التنزيل</string>
+    <string name="c_progress">لون التنزيل (تلقائي = لون التطبيق)</string>
+    <string name="screen_on_hint">حلقة أثناء التشغيل: حلقة صغيرة حول الكاميرا أثناء استخدام الهاتف. حلقة الشحن: تمتلئ بمستوى البطارية أثناء الشحن. حلقة التنزيل: تعرض مدى تقدّم التنزيل. تعمل كلتاهما أيضًا على شاشة القفل، وتُخفيان في الوضع الأفقي (باستثناء إضاءة الحواف).</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">التطبيقات والألوان</string>
+    <string name="apps_sub">تفعيل التطبيقات أو إيقافها واختيار الألوان</string>
+    <string name="chips_which_apps">أي التطبيقات</string>
+    <string name="t_ignore_silent">تجاهل الصامتة</string>
+    <string name="t_dnd">احترام عدم الإزعاج</string>
+    <string name="t_clear_unlock">المسح عند فتح القفل</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">معدل إطارات الحركة</string>
+    <string name="s_min_battery">الإيقاف تحت مستوى البطارية</string>
+    <string name="t_low_refresh">أدنى معدل تحديث</string>
+    <string name="t_eco">ثابت بعد 12 ث</string>
+    <string name="t_age_fade">تعتيم الأقدم</string>
+    <string name="t_motion">التنشيط بالحركة</string>
+    <string name="t_quiet">ساعات الهدوء</string>
+    <string name="quiet_time">وقت ساعات الهدوء</string>
+    <string name="quiet_start">بداية ساعات الهدوء</string>
+    <string name="quiet_end">نهاية ساعات الهدوء</string>
+    <string name="battery_hint">ثابت بعد 12 ث: يتحرك الضوء عند ظهوره ثم يثبت، فلا يُعاد رسم أي شيء. تعتيم الأقدم: يتوهج الإشعار الجديد بكامل قوته ثم يخفت على مدى ساعة. التنشيط بالحركة: بعد انتهاء مهلة الضوء، يظهر مجددًا عند تحريك الهاتف باستخدام شريحة الحركة (دون استخدام الشاشة أو المعالج أثناء الانتظار).</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">اللغة</string>
+    <string name="g_backup">نسخ احتياطي</string>
+    <string name="g_backup_sub">الإعدادات إلى ملف</string>
+    <string name="g_restore">استعادة</string>
+    <string name="g_restore_sub">من نسخة احتياطية</string>
+    <string name="g_log">سجل الأحداث</string>
+    <string name="g_log_sub">العرض والنسخ</string>
+    <string name="log_share">مشاركة</string>
+    <string name="log_copy">نسخ</string>
+    <string name="log_copied">تم النسخ</string>
+    <string name="state_on">مفعّل</string>
+    <string name="state_off">متوقف</string>
+    <string name="close">إغلاق</string>
+    <string name="lang_system">إعداد النظام التلقائي</string>
+    <string name="backup_done">تم حفظ الإعدادات</string>
+    <string name="backup_failed">تعذّر حفظ النسخة الاحتياطية</string>
+    <string name="restore_done">تمت استعادة %d من الإعدادات</string>
+    <string name="restore_failed">هذا الملف ليس نسخة احتياطية من Glow LED</string>
+
+    <!-- Test -->
+    <string name="test_title">تجربة Glow LED</string>
+    <string name="test_text">أطفئ الشاشة لرؤية الضوء. مرّر هذا الإشعار لمسحه.</string>
+    <string name="test_sent">تم إرسال التجربة. أطفئ الشاشة الآن.</string>
+    <string name="need_listener_first">امنح إذن الوصول إلى الإشعارات أولاً</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">إشعار جديد</string>
+    <string name="peek_hidden">المحتوى مخفي</string>
+    <string name="peek_more">+%d أخرى</string>
+    <string name="peek_reply">رد</string>
+    <string name="peek_mark_read">وضع علامة مقروء</string>
+    <string name="peek_dismiss">تجاهل</string>
+    <string name="kind_photo">📷 صورة</string>
+    <string name="kind_video">🎥 فيديو</string>
+    <string name="kind_voice">🎤 رسالة صوتية</string>
+    <string name="kind_document">📄 مستند</string>
+    <string name="reply_to">الرد على %s</string>
+    <string name="reply_hint">رسالة</string>
+    <string name="reply_send">إرسال</string>
+    <string name="reply_sent">تم الإرسال</string>
+    <string name="reply_failed">تعذّر إرسال الرد</string>
+    <string name="reply_unavailable">لم يعد بالإمكان الرد على هذا الإشعار من هنا</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">رصد تلقائي</string>
+    <string name="cut_save">حفظ</string>
+    <string name="cut_reset">إعادة ضبط</string>
+    <string name="cut_hint">اسحب على الشاشة للتحريك. استخدم الأسهم للتحريك بمقدار بكسل واحد.</string>
+    <string name="cut_none">لا يُبلغ هذا الهاتف عن فتحة للكاميرا. سيتم استخدام نقطة LED تقليدية.</string>
+    <string name="cut_detected">تم رصد فتحة من نوع %s</string>
+    <string name="cut_saved">تم حفظ موضع الكاميرا</string>
+    <string name="cut_rotate">أمسك الهاتف عموديًا لرصد الفتحة</string>
+    <string name="cd_left">تحريك لليسار</string>
+    <string name="cd_up">تحريك لأعلى</string>
+    <string name="cd_down">تحريك لأسفل</string>
+    <string name="cd_right">تحريك لليمين</string>
+    <string name="shape_circle">ثقب</string>
+    <string name="shape_pill">كبسولة</string>
+    <string name="shape_notch">نتوء</string>
+    <string name="shape_dot">نقطة LED</string>
+    <string name="label_x">أفقي</string>
+    <string name="label_y">رأسي</string>
+    <string name="label_w">العرض</string>
+    <string name="label_h">الارتفاع</string>
+    <string name="label_gap">المسافة من الكاميرا</string>
+    <string name="label_thickness">سُمك الحلقة</string>
+    <string name="label_animate">تحريك</string>
+
+    <!-- Apps -->
+    <string name="apps_search">البحث في التطبيقات</string>
+    <string name="apps_auto">تلقائي</string>
+    <string name="apps_loading">جارٍ تحميل التطبيقات…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">اختيار اللون</string>
+    <string name="color_wheel">عجلة الألوان: أدِرها لاختيار لون</string>
+    <string name="color_saturation">التشبّع</string>
+    <string name="color_brightness">السطوع</string>
+    <string name="color_auto">تلقائي</string>
+    <string name="color_hex">سداسي عشري (#RRGGBB)</string>
+    <string name="ok">حسنًا</string>
+    <string name="cancel">إلغاء</string>
+    <string name="setup_open">فتح الإعدادات</string>
+    <string name="tutorial_title">الدليل التعليمي</string>
+    <string name="tutorial_sub">الإيماءات والميزات</string>
+    <string name="tutorial_step">دليل سريع · %1$d / %2$d</string>
+    <string name="tutorial_next">التالي</string>
+    <string name="tutorial_back">رجوع</string>
+    <string name="tutorial_done">حسنًا، فهمت</string>
+    <string name="tutorial_later">إغلاق الدليل</string>
+    <string name="tutorial_swipe">مرّر لأسفل على صفحة إعدادات عندما تكون في أعلاها لإظهار معاينة LED المباشرة وتقريب عناصر التحكم إلى متناولك. مرّر لأعلى أو اضغط رجوع لإغلاقها. مرّر يمينًا أو يسارًا لتبديل علامات التبويب. يمكنك إعادة فتح هذا الدليل من الإعدادات ← الدليل التعليمي.</string>
+    <string name="tutorial_test">انقر على زر \"تجربة\" العائم، ثم اضغط زر التشغيل لقفل الجهاز. عند تفعيل الوصول إلى الإشعارات والإضاءة والشاشة مطفأة، ينتظر Glow LED لحظة ثم يعرض شاشة الإشعارات السوداء. تتيح لك المعاينة بالتمرير لأسفل تجربة الأنماط دون قفل الجهاز.</string>
+    <string name="tutorial_setup">افتح بطاقات الإعداد لتفعيل الوصول إلى الإشعارات وإما الظهور فوق التطبيقات الأخرى أو تسهيل الاستخدام. يمكن لتسهيل الاستخدام أيضًا إطفاء الشاشة فورًا. على أجهزة Xiaomi وغيرها من الأجهزة الصارمة، تحقق من التشغيل التلقائي وقيود البطارية. يعرض شريط التقدم الأذونات المطلوبة المتبقية.</string>
+    <string name="tutorial_styles">يقدّم النمط 11 حركة، منها المدار المزدوج والبريق. اختر اللون والسرعة والحجم والتوهج ووضع التطبيقات المتعددة. يضبط موضع الكاميرا الحلقة حول الكاميرا. يوجد مظهر التطبيق والاهتزاز عند اللمس في علامة تبويب الإعدادات، ولا يغيّران أبدًا الخلفية السوداء للإشعارات.</string>
+    <string name="tutorial_transfers">عندما ينشر تطبيق إشعار تقدّم، تعرض الحلقة مدى تقدّم النقل، مع سهم صغير أسفل الحلقة: ↑ رفع، ↓ تنزيل، ↕ اتجاه غير معروف. يُستخدم مؤشر دوّار للتقدّم المتحرك بلا نسبة مئوية. استخدم ألوان التطبيقات، أو اختر ألوان الرفع والتنزيل في الشاشة مضاءة. لا يمكن رصد عمليات النقل التي ليس لها إشعار تقدّم.</string>
+    <string name="tutorial_battery" formatted="false">أثناء الشحن، تمتلئ الحلقة بمستوى البطارية بألوانك المنخفضة والمتوسطة والعالية، مع صاعقة صغيرة أسفل الحلقة تتوهج كلما زادت البطارية بنسبة واحد بالمئة. يؤدي توصيل الشاحن أثناء قفل الهاتف إلى عرضها لبضع ثوانٍ، وتكون الأولوية لعمليات النقل. نسبة البطارية % أسفل الحلقة اختيارية (الشاشة مضاءة ← الشحن والبطارية).</string>
+    <string name="tutorial_messages">على شاشة الإشعارات السوداء، انقر على رمز تطبيق لقراءة إشعاره أو الرد عليه أو وضع علامة مقروء عليه عندما يدعم التطبيق هذه الإجراءات. قد يتطلب الرد فتح القفل. انقر مرتين لإظهار شاشة القفل. يتحكم قسم التنبيهات في التطبيقات المسموح بها وألوان كل تطبيق والإشعارات الصامتة وعدم الإزعاج.</string>
+    <string name="tutorial_power">يُنشّط عرض الشاشة المطفأة الشاشة ويرسم اللون الأسود، وهو ليس ميزة AOD الأصلية في عتاد الجهاز. تنطفئ وحدات البكسل السوداء في شاشات OLED، لكن الإضاءة الخلفية لشاشات LCD قد تظل متوهجة. يقدّم قسم البطارية ساعات الهدوء والحماية من انخفاض البطارية وحدود معدل الإطارات والتذكيرات بالحركة. ويحتوي قسم الإعدادات أيضًا على النسخ الاحتياطي والاستعادة واللغة وسجل الأحداث.</string>
+    <string name="t_battery_indicator" formatted="false">نسبة البطارية %</string>
+    <string name="t_charge_aod">الشحن والشاشة مطفأة</string>
+    <string name="t_progress_initials" formatted="false">سهم الاتجاه</string>
+    <string name="t_progress_app_color" formatted="false">لون تطبيق النقل</string>
+    <string name="c_upload">رفع</string>
+    <string name="c_download">تنزيل</string>
+    <string name="transfer_hint">تميّز ألوان التطبيقات عمليات النقل (WhatsApp أخضر، Instagram وردي). أوقف لون التطبيق لاستخدام ألوان الرفع والتنزيل، ويتجاوز لون التقدّم المخصّص كليهما. يتطلب الرصد إشعار تقدّم. اضبط السهم لكل تطبيق، أو ما يظهر عندما يكون الاتجاه غير معروف، من قسم الأسهم.</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">الحركة</string>
+    <string name="sec_colour">اللون</string>
+    <string name="sec_shape">الشكل والحركة</string>
+    <string name="sec_when">متى يضيء</string>
+    <string name="sec_black">على الشاشة السوداء</string>
+    <string name="sec_messages">الرسائل</string>
+    <string name="sec_gestures">الإيماءات والحماية</string>
+    <string name="sec_timing">التوقيت والسطوع</string>
+    <string name="sec_ring_on">أثناء استخدام الهاتف</string>
+    <string name="sec_charging">الشحن والبطارية</string>
+    <string name="sec_transfers">التنزيلات وعمليات الرفع</string>
+    <string name="sec_apps">التطبيقات</string>
+    <string name="sec_filters">الفلاتر</string>
+    <string name="sec_power">توفير الطاقة</string>
+    <string name="sec_appearance">المظهر</string>
+    <string name="sec_tools">الأدوات</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">أسهم لكل تطبيق</string>
+    <string name="arrows_sub_some">ضبطتَها بنفسك: %1$d · والباقي تلقائي</string>
+    <string name="arrows_sub_none">الكل تلقائي</string>
+    <string name="unknown_title">إذا كان غير معروف</string>
+    <string name="sec_arrows">الأسهم</string>
+    <string name="sec_set_by_you">ضبطتَها بنفسك</string>
+    <string name="sec_auto_apps">تلقائي</string>
+    <string name="sec_search_results">كل التطبيقات</string>
+    <string name="arrow_sub_always">دائمًا</string>
+    <string name="arrow_sub_known">تطبيق معروف</string>
+    <string name="arrow_sub_text">يقرأ الإشعار</string>
+    <string name="arrow_auto">تلقائي</string>
+    <string name="arrow_download">تنزيل</string>
+    <string name="arrow_upload">رفع</string>
+    <string name="arrow_none">بلا سهم</string>
+    <string name="arrows_footer">تظهر التطبيقات هنا بعد أول تنزيل أو رفع لها، إلى جانب التطبيقات المعروفة. ابحث لضبط أي تطبيق آخر.</string>
+    <string name="arrows_empty">لا يوجد تطبيق مطابق</string>
+    <string name="arrow_status_active">جارٍ النقل الآن</string>
+    <string name="arrow_status_idle">لا يوجد نقل حاليًا</string>
+    <string name="sec_arrow_on_ring">السهم على الحلقة</string>
+    <string name="seg_none">لا شيء</string>
+    <string name="arrow_explain_known">يقرأ الوضع التلقائي نص الإشعار أولاً، ثم يستخدم الاتجاه المعتاد لهذا التطبيق (%1$s).</string>
+    <string name="arrow_explain_text">يقرأ الوضع التلقائي نص الإشعار. وعندما لا يذكر شيئًا، يحسم إعداد \"إذا كان غير معروف\" الأمر (%1$s).</string>
+    <string name="arrow_explain_down">كل عملية نقل من %1$s تعرض ↓، أيًا كان ما يقوله إشعارها.</string>
+    <string name="arrow_explain_up">كل عملية نقل من %1$s تعرض ↑، أيًا كان ما يقوله إشعارها.</string>
+    <string name="arrow_explain_none">يعرض %1$s الحلقة بلا سهم. ويظل اللون يتبع الاتجاه.</string>
+    <string name="sec_ring_colour">لون الحلقة</string>
+    <string name="ring_colour_app">لون التطبيق</string>
+    <string name="ring_colour_upload">لون الرفع</string>
+    <string name="ring_colour_download">لون التنزيل</string>
+    <string name="reset_auto">إعادة الضبط إلى تلقائي</string>
+    <string name="unknown_intro">عندما لا يذكر الإشعار رفعًا أو تنزيلاً، وليس للتطبيق سهم خاص به.</string>
+    <string name="unk_none">بلا رمز</string>
+    <string name="unk_none_sub">الحلقة فقط</string>
+    <string name="unk_both">عرض ↕</string>
+    <string name="unk_both_sub">يتحرك، والاتجاه غير معروف</string>
+    <string name="unk_down">اعتباره تنزيلاً</string>
+    <string name="unk_down_sub">معظم عمليات النقل تنزيلات</string>
+    <string name="unk_up">اعتباره رفعًا</string>
+    <string name="unk_up_sub">للهواتف التي تنسخ احتياطيًا كثيرًا</string>
+    <string name="sec_order">الترتيب الذي يتبعه Glow LED</string>
+    <string name="order_1">اختيارك للتطبيق</string>
+    <string name="order_2">الكلمات في الإشعار</string>
+    <string name="order_3">تطبيق معروف (Play Store ↓، Photos ↑…)</string>
+    <string name="order_4">هذا الإعداد</string>
+    <string name="setup_optional">اختياري</string>
+    <string name="setup_allow">سماح</string>
+    <string name="a11y_banking">ترفض بعض تطبيقات البنوك والدفع العمل أثناء تفعيل خدمة تسهيل استخدام من خارج Play Store. إذا حدث ذلك مع أحد تطبيقاتك، فأوقف هذا الخيار: سيواصل Glow LED العمل باستخدام نافذة شاشة القفل (على Xiaomi قد ترى وميضًا قصيرًا قبل الضوء).</string>
+    <string name="a11y_turn_off">إيقاف</string>
+    <string name="upd_title">التحديثات</string>
+    <string name="upd_sub_latest">الإصدار %1$s · محدَّث</string>
+    <string name="upd_sub_available">الإصدار %1$s متاح</string>
+    <string name="upd_sub_unknown">الإصدار %1$s · انقر للتحقق</string>
+    <string name="upd_installed">المثبّت: الإصدار %1$s</string>
+    <string name="upd_checking">جارٍ البحث عن تحديثات…</string>
+    <string name="upd_latest">‏Glow LED محدَّث</string>
+    <string name="upd_latest_sub">لديك أحدث إصدار، %1$s.</string>
+    <string name="upd_available">الإصدار %1$s متاح</string>
+    <string name="upd_size">حجم التنزيل %1$s · موقَّع بالمفتاح الرسمي</string>
+    <string name="upd_failed_title">تعذّر البحث عن تحديثات</string>
+    <string name="upd_failed">تحقق من اتصالك بالإنترنت وحاول مجددًا.</string>
+    <string name="upd_retry">إعادة المحاولة</string>
+    <string name="upd_check_now">التحقق الآن</string>
+    <string name="upd_whats_new">الجديد في %1$s</string>
+    <string name="upd_install">تنزيل وتثبيت</string>
+    <string name="upd_downloading">جارٍ التنزيل… %1$d%%</string>
+    <string name="upd_installing">جارٍ التثبيت…</string>
+    <string name="upd_installing_sub">أكّد في الشاشة التالية. سيُعاد تشغيل Glow LED بإعداداتك.</string>
+    <string name="upd_verify_failed">الملف الذي تم تنزيله ليس إصدارًا أحدث من Glow LED موقَّعًا بالمفتاح الرسمي، لذا لم يتم تثبيته.</string>
+    <string name="upd_download_failed">تعذّر التنزيل. حاول مجددًا.</string>
+    <string name="upd_install_failed">تعذّر التثبيت: %1$s</string>
+    <string name="upd_allow_title">السماح بتثبيت التحديثات</string>
+    <string name="upd_allow_msg">لتثبيت التحديثات بنفسه، يحتاج Glow LED إلى إذن \"تثبيت التطبيقات غير المعروفة\". فعّله لـ Glow LED ثم عُد: سيبدأ التنزيل تلقائيًا.</string>
+    <string name="upd_auto">البحث عن تحديثات</string>
+    <string name="upd_all_releases">كل الإصدارات</string>
+    <string name="upd_auto_note">يستعلم Glow LED من GitHub كل بضع ساعات ويُعلمك بسجل التغييرات عند صدور إصدار جديد. هذا هو الاستخدام الوحيد للإنترنت.</string>
+    <string name="channel_updates">تحديثات التطبيق</string>
+    <string name="upd_notif_title">‏Glow LED %1$s متاح</string>
+    <string name="upd_notif_action">تحديث</string>
+    <string name="selected">محدَّد</string>
+</resources>

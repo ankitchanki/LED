@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Glow LED göstergesi</string>
+    <string name="accessibility_desc">Kilit ekranında kameranın çevresine bildirim ışığını çizer ve sürekli açık ışığın süresi dolunca ekranı yeniden kapatır. Glow LED ekran içeriğini okumaz ve işlemlerinizi izlemez.</string>
+    <string name="channel_launcher">Sürekli açık başlatıcı</string>
+    <string name="channel_test">Test bildirimleri</string>
+    <string name="title_apps">Uygulamalar ve renkler</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED açık</string>
+    <string name="master_off">Glow LED kapalı</string>
+    <string name="status_waiting">Bildirimler bekleniyor</string>
+    <string name="status_active">Yanan bildirim sayısı: %d</string>
+    <string name="status_blocked">Duraklatıldı: %s</string>
+    <string name="status_need_listener">Başlamak için bildirim erişimi verin</string>
+    <string name="block_quiet">sessiz saatler</string>
+    <string name="block_battery">düşük pil</string>
+    <string name="block_call">görüşmede</string>
+    <string name="reach_hint">Geri dönmek için yukarı kaydırın veya geri tuşuna basın</string>
+    <string name="reach_tip">İpucu: ayarları başparmağınızla ulaşmak için aşağı çekin (tek el modu).</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">Bildirim erişimi</string>
+    <string name="perm_overlay_short">Üstte göster</string>
+    <string name="perm_a11y_short">Erişilebilirlik</string>
+    <string name="perm_battery_short">Pil kısıtlamasız</string>
+    <string name="perm_miui_short">Xiaomi kilit ekranı</string>
+    <string name="perm_oem_short">Otomatik başlatma</string>
+    <string name="perm_listener">Bildirim erişimi</string>
+    <string name="perm_listener_desc">Gerekli. Glow LED\'in bir bildirim geldiğini bilmesini sağlar. Hiçbir veri telefonunuzdan çıkmaz.</string>
+    <string name="perm_a11y">Erişilebilirlik (isteğe bağlı, en güvenilir)</string>
+    <string name="perm_a11y_desc">Gerekli değil. Şunları ekler: ışığın süresi dolunca ekranın anında kapanması ve hiçbir telefon markasının engelleyemeyeceği bir ışık. İsterseniz atlayın.</string>
+    <string name="perm_overlay">Diğer uygulamaların üzerinde göster</string>
+    <string name="perm_overlay_desc">Ekran kapalıyken ışığın görünmesini sağlar. Tek başına yeterli - Erişilebilirlik gerekmez.</string>
+    <string name="perm_post">Bildirimler</string>
+    <string name="perm_post_desc">Test bildirimi ve yedek başlatıcı için gerekli.</string>
+    <string name="perm_battery">Kısıtlamasız pil</string>
+    <string name="perm_battery_desc">Sistemin Glow LED\'i kapatmasını engeller. Uygulama arka planda neredeyse hiç güç kullanmaz.</string>
+    <string name="perm_oem">Otomatik başlatma (%s)</string>
+    <string name="perm_oem_desc">Telefonunuzun markasında ek bir uygulama kapatıcı var. Glow LED\'in otomatik başlamasına ve arka planda çalışmasına izin verin.</string>
+    <string name="perm_miui">Xiaomi kilit ekranı izinleri</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: \"Kilit ekranında göster\" ve \"Arka planda çalışırken açılır pencereleri göster\" seçeneklerini açın.</string>
+    <string name="restricted_hint">Android 13+: APK dosyasından yüklenen uygulamalar, Bildirim erişimi ve Erişilebilirlik için \"kısıtlanmış ayarlar\" alır. Bu bir hata değil, Android kuralıdır. Bir anahtar griyse: Uygulama bilgileri → ⋮ (sağ üst) → Kısıtlanmış ayarlara izin ver, ardından tekrar deneyin.</string>
+    <string name="setup_intro">Bunları bir kez verin. Bunlar olmadan ışık görünemez.</string>
+    <string name="setup_progress">%1$d / %2$d</string>
+    <string name="setup_all_done">Her şey hazır</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">Test</string>
+    <string name="tab_setup">Kurulum</string>
+    <string name="tab_style">Stil</string>
+    <string name="tab_off">Ekran kapalı</string>
+    <string name="tab_on">Ekran açık</string>
+    <string name="tab_alerts">Uyarılar</string>
+    <string name="tab_battery">Pil</string>
+    <string name="tab_log">Ayarlar</string>
+
+    <!-- Style -->
+    <string name="action_cutout">Kamera konumu</string>
+    <string name="tile_cutout_sub">Halkayı hizala</string>
+    <string name="custom_colour">Özel renk</string>
+    <string name="chips_multi">Birden çok bildirim</string>
+    <string name="s_speed">Hız</string>
+    <string name="s_intensity">Yoğunluk</string>
+    <string name="s_thickness">Kalınlık</string>
+    <string name="s_gap">Boşluk</string>
+    <string name="s_edge">Kenar köşeleri</string>
+    <string name="t_glow">Yumuşak parıltı</string>
+    <string name="t_rotate">Halkayı döndür</string>
+    <string name="t_notif_colour">Bildirim rengi</string>
+    <string name="t_haptics">Dokunsal geri bildirim</string>
+    <string name="chips_app_theme">Uygulama teması</string>
+    <string name="t_icon_colour">Uygulama simgesi rengi</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">Ekran kapalı ışığı</string>
+    <string name="t_on_screen_off">Ekran kapanınca</string>
+    <string name="t_on_new">Yeni uyarıda</string>
+    <string name="t_pocket">Cep algılama</string>
+    <string name="t_double_tap">Çift dokunarak uyandır</string>
+    <string name="t_burn_in">Yanma koruması</string>
+    <string name="t_app_icons">Uygulama simgeleri</string>
+    <string name="t_keep_icons">Simgeleri açık tut</string>
+    <string name="t_aod_icons">AOD tarzı simgeler</string>
+    <string name="t_tap_read">Okumak için dokun</string>
+    <string name="t_peek_actions">Yanıt düğmeleri</string>
+    <string name="t_droplet">Damla</string>
+    <string name="chips_method">Ekran kapalı yöntemi</string>
+    <string name="chips_off_delay">Ekran kapandıktan sonra ışığı başlat</string>
+    <string name="chips_timeout">Işığı açık tutma süresi</string>
+    <string name="chips_remind">Sonrasında hatırlat</string>
+    <string name="s_brightness">Parlaklık</string>
+    <string name="s_reminder">Hatırlatıcı</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">Açıkken halka</string>
+    <string name="t_lock_only">Yalnızca kilit ekranı</string>
+    <string name="t_charge">Şarj halkası</string>
+    <string name="t_progress">İndirme halkası</string>
+    <string name="charge_colours">Pil seviyesine göre şarj halkası rengi</string>
+    <string name="c_low" formatted="false">%0–19</string>
+    <string name="c_mid" formatted="false">%20–79</string>
+    <string name="c_high" formatted="false">%80–100</string>
+    <string name="progress_colour">İndirme halkası rengi</string>
+    <string name="c_progress">İndirme rengi (Otomatik = uygulama rengi)</string>
+    <string name="screen_on_hint">Açıkken halka: telefonu kullanırken kameranın çevresinde küçük bir halka. Şarj halkası: şarj sırasında pil seviyenizle dolar. İndirme halkası: bir indirmenin ne kadar ilerlediğini gösterir. İkisi de kilit ekranında çalışır; yatay modda gizlenir (kenar aydınlatması hariç).</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">Uygulamalar ve renkler</string>
+    <string name="apps_sub">Uygulamaları aç/kapat, renk seç</string>
+    <string name="chips_which_apps">Hangi uygulamalar</string>
+    <string name="t_ignore_silent">Sessizleri yok say</string>
+    <string name="t_dnd">Rahatsız Etmeyin\'e uy</string>
+    <string name="t_clear_unlock">Kilit açılınca temizle</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">Animasyon kare hızı</string>
+    <string name="s_min_battery">Bu pil seviyesinin altında duraklat</string>
+    <string name="t_low_refresh">En düşük yenileme</string>
+    <string name="t_eco">12 sn sonra sabit</string>
+    <string name="t_age_fade">Eskileri soldur</string>
+    <string name="t_motion">Hareketle uyan</string>
+    <string name="t_quiet">Sessiz saatler</string>
+    <string name="quiet_time">Sessiz saatlerin zamanı</string>
+    <string name="quiet_start">Sessiz saatler başlangıcı</string>
+    <string name="quiet_end">Sessiz saatler bitişi</string>
+    <string name="battery_hint">12 sn sonra sabit: ışık belirdiğinde canlanır, sonra sabit kalır; böylece hiçbir şey yeniden çizilmez. Eskileri soldur: yeni bir bildirim tam güçte parlar ve bir saat içinde solar. Hareketle uyan: ışığın süresi dolduktan sonra, telefonu hareket ettirdiğinizde hareket çipi sayesinde yeniden görünür (beklerken ekran veya işlemci süresi harcanmaz).</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">Dil</string>
+    <string name="g_backup">Yedekle</string>
+    <string name="g_backup_sub">Ayarları dosyaya</string>
+    <string name="g_restore">Geri yükle</string>
+    <string name="g_restore_sub">Bir yedekten</string>
+    <string name="g_log">Olay günlüğü</string>
+    <string name="g_log_sub">Görüntüle ve kopyala</string>
+    <string name="log_share">Paylaş</string>
+    <string name="log_copy">Kopyala</string>
+    <string name="log_copied">Kopyalandı</string>
+    <string name="state_on">Açık</string>
+    <string name="state_off">Kapalı</string>
+    <string name="close">Kapat</string>
+    <string name="lang_system">Sistem varsayılanı</string>
+    <string name="backup_done">Ayarlar kaydedildi</string>
+    <string name="backup_failed">Yedek kaydedilemedi</string>
+    <string name="restore_done">Geri yüklenen ayar sayısı: %d</string>
+    <string name="restore_failed">Bu dosya bir Glow LED yedeği değil</string>
+
+    <!-- Test -->
+    <string name="test_title">Glow LED testi</string>
+    <string name="test_text">Işığı görmek için ekranı kapatın. Temizlemek için bunu kaydırarak kapatın.</string>
+    <string name="test_sent">Test gönderildi. Şimdi ekranı kapatın.</string>
+    <string name="need_listener_first">Önce bildirim erişimi verin</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">Yeni bildirim</string>
+    <string name="peek_hidden">İçerik gizli</string>
+    <string name="peek_more">+%d tane daha</string>
+    <string name="peek_reply">Yanıtla</string>
+    <string name="peek_mark_read">Okundu olarak işaretle</string>
+    <string name="peek_dismiss">Kapat</string>
+    <string name="kind_photo">📷 Fotoğraf</string>
+    <string name="kind_video">🎥 Video</string>
+    <string name="kind_voice">🎤 Sesli mesaj</string>
+    <string name="kind_document">📄 Belge</string>
+    <string name="reply_to">Yanıtla: %s</string>
+    <string name="reply_hint">Mesaj</string>
+    <string name="reply_send">Gönder</string>
+    <string name="reply_sent">Gönderildi</string>
+    <string name="reply_failed">Yanıt gönderilemedi</string>
+    <string name="reply_unavailable">Bu bildirim artık buradan yanıtlanamıyor</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">Otomatik algıla</string>
+    <string name="cut_save">Kaydet</string>
+    <string name="cut_reset">Sıfırla</string>
+    <string name="cut_hint">Taşımak için ekranda sürükleyin. Tek piksellik adımlar için okları kullanın.</string>
+    <string name="cut_none">Bu telefon bir kamera kesiği bildirmiyor. Klasik LED noktası kullanılıyor.</string>
+    <string name="cut_detected">Algılanan kesik: %s</string>
+    <string name="cut_saved">Kamera konumu kaydedildi</string>
+    <string name="cut_rotate">Kesiği algılamak için telefonu dik tutun</string>
+    <string name="cd_left">Sola taşı</string>
+    <string name="cd_up">Yukarı taşı</string>
+    <string name="cd_down">Aşağı taşı</string>
+    <string name="cd_right">Sağa taşı</string>
+    <string name="shape_circle">Delikli ekran</string>
+    <string name="shape_pill">Hap</string>
+    <string name="shape_notch">Çentik</string>
+    <string name="shape_dot">LED noktası</string>
+    <string name="label_x">Yatay</string>
+    <string name="label_y">Dikey</string>
+    <string name="label_w">Genişlik</string>
+    <string name="label_h">Yükseklik</string>
+    <string name="label_gap">Kameraya uzaklık</string>
+    <string name="label_thickness">Halka kalınlığı</string>
+    <string name="label_animate">Canlandır</string>
+
+    <!-- Apps -->
+    <string name="apps_search">Uygulama ara</string>
+    <string name="apps_auto">Otomatik</string>
+    <string name="apps_loading">Uygulamalar yükleniyor…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">Renk seçin</string>
+    <string name="color_wheel">Renk çarkı: renk seçmek için çevirin</string>
+    <string name="color_saturation">Doygunluk</string>
+    <string name="color_brightness">Parlaklık</string>
+    <string name="color_auto">Otomatik</string>
+    <string name="color_hex">Hex (#RRGGBB)</string>
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
+    <string name="setup_open">Ayarları aç</string>
+    <string name="tutorial_title">Eğitim</string>
+    <string name="tutorial_sub">Hareketler ve özellikler</string>
+    <string name="tutorial_step">Hızlı rehber · %1$d / %2$d</string>
+    <string name="tutorial_next">İleri</string>
+    <string name="tutorial_back">Geri</string>
+    <string name="tutorial_done">Anladım</string>
+    <string name="tutorial_later">Rehberi kapat</string>
+    <string name="tutorial_swipe">Bir ayar sayfası en üste kaydırılmışken aşağı kaydırarak canlı LED önizlemesini açın ve kontrolleri erişebileceğiniz yere getirin. Kapatmak için yukarı kaydırın veya Geri\'ye basın. Sekme değiştirmek için sola veya sağa kaydırın. Bu rehberi Ayarlar → Eğitim bölümünden yeniden açabilirsiniz.</string>
+    <string name="tutorial_test">Kayan Test düğmesine dokunun, ardından cihazı kilitlemek için güç düğmesine basın. Bildirim erişimi ve ekran kapalı ışığı etkinse Glow LED kısa bir süre bekler, sonra siyah bildirim ekranını gösterir. Aşağı kaydırma önizlemesi, cihazı kilitlemeden stilleri denemenizi sağlar.</string>
+    <string name="tutorial_setup">Bildirim erişimini ve Diğer uygulamaların üzerinde göster ya da Erişilebilirlik iznini etkinleştirmek için Kurulum kartlarını açın. Erişilebilirlik ekranı hemen kapatabilir de. Xiaomi ve diğer katı cihazlarda otomatik başlatma ve pil kısıtlamalarını kontrol edin. İlerleme çubuğu hangi gerekli izinlerin kaldığını gösterir.</string>
+    <string name="tutorial_styles">Stil, İkiz yörünge ve Işıltı dahil 11 animasyon sunar. Renk, hız, boyut, parıltı ve çoklu uygulama modunu seçin. Kamera konumu, kameranızın çevresindeki halkayı ayarlar. Uygulama teması ve dokunsal geri bildirim Ayarlar sekmesindedir; siyah bildirim arka planını asla değiştirmezler.</string>
+    <string name="tutorial_transfers">Bir uygulama ilerleme bildirimi yayınladığında halka, aktarımın ne kadar ilerlediğini gösterir; halkanın altında küçük bir ok bulunur: ↑ yükleme, ↓ indirme, ↕ yön bilinmiyor. Yüzdesi olmayan ilerlemede dönen bir gösterge kullanılır. Uygulama renklerini kullanın veya Ekran açık bölümünde yükleme/indirme renklerini seçin. İlerleme bildirimi olmayan aktarımlar algılanamaz.</string>
+    <string name="tutorial_battery" formatted="false">Şarj sırasında halka, düşük, orta ve yüksek renklerinizle pil seviyenize göre dolar; halkanın altında, pil her yüzde arttığında parlayan küçük bir şimşek bulunur. Telefon kilitliyken şarja takmak bunu birkaç saniye gösterir; aktarımların önceliği vardır. Halkanın altında pil yüzdesi isteğe bağlıdır (Ekran açık → Şarj ve pil).</string>
+    <string name="tutorial_messages">Siyah bildirim ekranında bir uygulama simgesine dokunarak bildirimini okuyun; uygulama destekliyorsa yanıtlayın veya okundu olarak işaretleyin. Yanıtlamak için kilidi açmak gerekebilir. Kilit ekranını göstermek için çift dokunun. Uyarılar; izin verilen uygulamaları, uygulama başına renkleri, sessiz bildirimleri ve Rahatsız Etmeyin\'i yönetir.</string>
+    <string name="tutorial_power">Ekran kapalı görünümü ekranı uyandırır ve siyah çizer; cihazın yerel donanım AOD özelliği değildir. OLED\'de siyah pikseller kapanır, ancak LCD arka ışıkları yine de parlayabilir. Pil bölümü; sessiz saatler, düşük pil koruması, kare hızı sınırları ve hareket hatırlatıcıları sunar. Ayarlar ayrıca yedekleme, geri yükleme, dil ve olay günlüğünü içerir.</string>
+    <string name="t_battery_indicator" formatted="false">Pil %</string>
+    <string name="t_charge_aod">Kapalıyken şarj</string>
+    <string name="t_progress_initials" formatted="false">Yön oku</string>
+    <string name="t_progress_app_color" formatted="false">Aktarım uygulama rengi</string>
+    <string name="c_upload">Yükleme</string>
+    <string name="c_download">İndirme</string>
+    <string name="transfer_hint">Uygulama renkleri aktarımları tanımlar (WhatsApp yeşil, Instagram pembe). Yükleme/indirme renklerini kullanmak için uygulama rengini kapatın; özel bir ilerleme rengi ikisini de geçersiz kılar. Algılama için ilerleme bildirimi gerekir. Oku uygulama başına veya yön bilinmediğinde ne gösterileceğini Oklar bölümünden ayarlayın.</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">Animasyon</string>
+    <string name="sec_colour">Renk</string>
+    <string name="sec_shape">Şekil ve hareket</string>
+    <string name="sec_when">Ne zaman yansın</string>
+    <string name="sec_black">Siyah ekranda</string>
+    <string name="sec_messages">Mesajlar</string>
+    <string name="sec_gestures">Hareketler ve koruma</string>
+    <string name="sec_timing">Zamanlama ve parlaklık</string>
+    <string name="sec_ring_on">Telefonu kullanırken</string>
+    <string name="sec_charging">Şarj ve pil</string>
+    <string name="sec_transfers">İndirmeler ve yüklemeler</string>
+    <string name="sec_apps">Uygulamalar</string>
+    <string name="sec_filters">Filtreler</string>
+    <string name="sec_power">Güç tasarrufu</string>
+    <string name="sec_appearance">Görünüm</string>
+    <string name="sec_tools">Araçlar</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">Uygulama başına oklar</string>
+    <string name="arrows_sub_some">Sizin ayarladığınız: %1$d · gerisi otomatik</string>
+    <string name="arrows_sub_none">Tümü otomatik</string>
+    <string name="unknown_title">Bilinmiyorsa</string>
+    <string name="sec_arrows">Oklar</string>
+    <string name="sec_set_by_you">Sizin ayarladıklarınız</string>
+    <string name="sec_auto_apps">Otomatik</string>
+    <string name="sec_search_results">Tüm uygulamalar</string>
+    <string name="arrow_sub_always">Her zaman</string>
+    <string name="arrow_sub_known">Bilinen uygulama</string>
+    <string name="arrow_sub_text">Bildirimi okur</string>
+    <string name="arrow_auto">Otomatik</string>
+    <string name="arrow_download">İndirme</string>
+    <string name="arrow_upload">Yükleme</string>
+    <string name="arrow_none">Ok yok</string>
+    <string name="arrows_footer">Uygulamalar, ilk indirme veya yüklemelerinden sonra bilinen uygulamalarla birlikte burada görünür. Başka bir uygulamayı ayarlamak için arayın.</string>
+    <string name="arrows_empty">Eşleşen uygulama yok</string>
+    <string name="arrow_status_active">Şu anda aktarılıyor</string>
+    <string name="arrow_status_idle">Şu anda aktarım yok</string>
+    <string name="sec_arrow_on_ring">Halkadaki ok</string>
+    <string name="seg_none">Yok</string>
+    <string name="arrow_explain_known">Otomatik önce bildirim metnini okur, ardından bu uygulamanın olağan yönünü kullanır (%1$s).</string>
+    <string name="arrow_explain_text">Otomatik bildirim metnini okur. Metin bir şey söylemiyorsa “Bilinmiyorsa” ayarı karar verir (%1$s).</string>
+    <string name="arrow_explain_down">Bildirimi ne derse desin, bu uygulamanın her aktarımı ↓ gösterir: %1$s</string>
+    <string name="arrow_explain_up">Bildirimi ne derse desin, bu uygulamanın her aktarımı ↑ gösterir: %1$s</string>
+    <string name="arrow_explain_none">Halka ok olmadan gösterilir: %1$s. Renk yine de yönü izler.</string>
+    <string name="sec_ring_colour">Halka rengi</string>
+    <string name="ring_colour_app">Uygulama rengi</string>
+    <string name="ring_colour_upload">Yükleme rengi</string>
+    <string name="ring_colour_download">İndirme rengi</string>
+    <string name="reset_auto">Otomatiğe sıfırla</string>
+    <string name="unknown_intro">Bildirim yükleme veya indirme demediğinde ve uygulamanın kendi oku olmadığında.</string>
+    <string name="unk_none">Simge yok</string>
+    <string name="unk_none_sub">Yalnızca halka</string>
+    <string name="unk_both">↕ göster</string>
+    <string name="unk_both_sub">Hareket var, yön bilinmiyor</string>
+    <string name="unk_down">İndirme say</string>
+    <string name="unk_down_sub">Aktarımların çoğu indirmedir</string>
+    <string name="unk_up">Yükleme say</string>
+    <string name="unk_up_sub">Çok yedekleme yapan telefonlar için</string>
+    <string name="sec_order">Glow LED\'in izlediği sıra</string>
+    <string name="order_1">Uygulama için seçiminiz</string>
+    <string name="order_2">Bildirimdeki kelimeler</string>
+    <string name="order_3">Bilinen uygulama (Play Store ↓, Fotoğraflar ↑…)</string>
+    <string name="order_4">Bu ayar</string>
+    <string name="setup_optional">İsteğe bağlı</string>
+    <string name="setup_allow">İzin ver</string>
+    <string name="a11y_banking">Bazı bankacılık ve ödeme uygulamaları, Play Store dışından bir erişilebilirlik hizmeti açıkken açılmayı reddeder. Sizinkilerden biri böyle yaparsa bunu kapatın: Glow LED kilit ekranı penceresiyle çalışmaya devam eder (Xiaomi\'de ışıktan önce kısa bir parlama görebilirsiniz).</string>
+    <string name="a11y_turn_off">Kapat</string>
+    <string name="upd_title">Güncellemeler</string>
+    <string name="upd_sub_latest">Sürüm %1$s · güncel</string>
+    <string name="upd_sub_available">Sürüm %1$s mevcut</string>
+    <string name="upd_sub_unknown">Sürüm %1$s · kontrol için dokunun</string>
+    <string name="upd_installed">Yüklü: sürüm %1$s</string>
+    <string name="upd_checking">Güncellemeler kontrol ediliyor…</string>
+    <string name="upd_latest">Glow LED güncel</string>
+    <string name="upd_latest_sub">En son sürüme sahipsiniz: %1$s.</string>
+    <string name="upd_available">Sürüm %1$s mevcut</string>
+    <string name="upd_size">İndirme boyutu %1$s · resmi anahtarla imzalı</string>
+    <string name="upd_failed_title">Güncellemeler kontrol edilemedi</string>
+    <string name="upd_failed">İnternet bağlantınızı kontrol edip tekrar deneyin.</string>
+    <string name="upd_retry">Tekrar dene</string>
+    <string name="upd_check_now">Şimdi kontrol et</string>
+    <string name="upd_whats_new">Yenilikler: %1$s</string>
+    <string name="upd_install">İndir ve yükle</string>
+    <string name="upd_downloading">İndiriliyor… %%%1$d</string>
+    <string name="upd_installing">Yükleniyor…</string>
+    <string name="upd_installing_sub">Sonraki ekranda onaylayın. Glow LED ayarlarınızla yeniden başlar.</string>
+    <string name="upd_verify_failed">İndirilen dosya, resmi anahtarla imzalanmış daha yeni bir Glow LED değil; bu yüzden yüklenmedi.</string>
+    <string name="upd_download_failed">İndirme başarısız oldu. Tekrar deneyin.</string>
+    <string name="upd_install_failed">Yükleme başarısız: %1$s</string>
+    <string name="upd_allow_title">Güncelleme yüklemeye izin ver</string>
+    <string name="upd_allow_msg">Güncellemeleri kendisi yükleyebilmesi için Glow LED\'in “Bilinmeyen uygulamaları yükle” iznine ihtiyacı var. Glow LED için açın, sonra geri dönün: indirme kendiliğinden başlar.</string>
+    <string name="upd_auto">Güncellemeleri kontrol et</string>
+    <string name="upd_all_releases">Tüm sürümler</string>
+    <string name="upd_auto_note">Glow LED birkaç saatte bir GitHub\'a sorar ve yeni bir sürüm çıktığında değişiklik günlüğüyle sizi bilgilendirir. İnterneti yalnızca bunun için kullanır.</string>
+    <string name="channel_updates">Uygulama güncellemeleri</string>
+    <string name="upd_notif_title">Glow LED %1$s mevcut</string>
+    <string name="upd_notif_action">Güncelle</string>
+    <string name="selected">Seçili</string>
+</resources>

@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Indikator Glow LED</string>
+    <string name="accessibility_desc">Menampilkan lampu notifikasi di sekitar kamera pada layar kunci dan mematikan layar lagi setelah lampu selalu aktif habis waktunya. Glow LED tidak membaca konten layar atau mengamati tindakan Anda.</string>
+    <string name="channel_launcher">Peluncur selalu aktif</string>
+    <string name="channel_test">Notifikasi uji</string>
+    <string name="title_apps">Aplikasi &amp; warna</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED aktif</string>
+    <string name="master_off">Glow LED nonaktif</string>
+    <string name="status_waiting">Menunggu notifikasi</string>
+    <string name="status_active">Menyala untuk %d notifikasi</string>
+    <string name="status_blocked">Dijeda: %s</string>
+    <string name="status_need_listener">Beri akses notifikasi untuk memulai</string>
+    <string name="block_quiet">jam tenang</string>
+    <string name="block_battery">baterai lemah</string>
+    <string name="block_call">sedang menelepon</string>
+    <string name="reach_hint">Geser ke atas atau tekan kembali untuk kembali</string>
+    <string name="reach_tip">Tips: tarik pengaturan ke bawah agar terjangkau ibu jari (mode satu tangan).</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">Akses notifikasi</string>
+    <string name="perm_overlay_short">Di atas aplikasi lain</string>
+    <string name="perm_a11y_short">Aksesibilitas</string>
+    <string name="perm_battery_short">Baterai tak dibatasi</string>
+    <string name="perm_miui_short">Layar kunci Xiaomi</string>
+    <string name="perm_oem_short">Mulai otomatis</string>
+    <string name="perm_listener">Akses notifikasi</string>
+    <string name="perm_listener_desc">Wajib. Memberi tahu Glow LED saat notifikasi masuk. Tidak ada data yang keluar dari ponsel Anda.</string>
+    <string name="perm_a11y">Aksesibilitas (opsional, paling andal)</string>
+    <string name="perm_a11y_desc">Tidak wajib. Menambahkan: layar mati seketika setelah lampu habis waktunya, dan lampu yang tidak dapat diblokir merek ponsel mana pun. Lewati jika Anda mau.</string>
+    <string name="perm_overlay">Tampilkan di atas aplikasi lain</string>
+    <string name="perm_overlay_desc">Memungkinkan lampu muncul saat layar mati. Sudah cukup sendiri - tidak perlu Aksesibilitas.</string>
+    <string name="perm_post">Notifikasi</string>
+    <string name="perm_post_desc">Diperlukan untuk notifikasi uji dan peluncur cadangan.</string>
+    <string name="perm_battery">Baterai tidak dibatasi</string>
+    <string name="perm_battery_desc">Mencegah sistem menghentikan Glow LED. Aplikasi ini hampir tidak memakai daya di latar belakang.</string>
+    <string name="perm_oem">Mulai otomatis (%s)</string>
+    <string name="perm_oem_desc">Merek ponsel Anda punya penghenti aplikasi tambahan. Izinkan Glow LED memulai otomatis dan berjalan di latar belakang.</string>
+    <string name="perm_miui">Izin layar kunci Xiaomi</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: aktifkan \"Tampilkan di layar kunci\" dan \"Tampilkan jendela pop-up saat berjalan di latar belakang\".</string>
+    <string name="restricted_hint">Android 13+: aplikasi yang diinstal dari file APK mendapat \"setelan terbatas\" untuk Akses notifikasi dan Aksesibilitas. Ini aturan Android, bukan bug. Jika tombol berwarna abu-abu: Info aplikasi → ⋮ (kanan atas) → Izinkan setelan terbatas, lalu coba lagi.</string>
+    <string name="setup_intro">Berikan izin ini sekali. Tanpanya lampu tidak dapat muncul.</string>
+    <string name="setup_progress">%1$d dari %2$d</string>
+    <string name="setup_all_done">Semua siap</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">Uji</string>
+    <string name="tab_setup">Penyiapan</string>
+    <string name="tab_style">Gaya</string>
+    <string name="tab_off">Layar mati</string>
+    <string name="tab_on">Layar nyala</string>
+    <string name="tab_alerts">Notifikasi</string>
+    <string name="tab_battery">Baterai</string>
+    <string name="tab_log">Setelan</string>
+
+    <!-- Style -->
+    <string name="action_cutout">Posisi kamera</string>
+    <string name="tile_cutout_sub">Sejajarkan cincin</string>
+    <string name="custom_colour">Warna kustom</string>
+    <string name="chips_multi">Beberapa notifikasi</string>
+    <string name="s_speed">Kecepatan</string>
+    <string name="s_intensity">Intensitas</string>
+    <string name="s_thickness">Ketebalan</string>
+    <string name="s_gap">Jarak</string>
+    <string name="s_edge">Sudut tepi</string>
+    <string name="t_glow">Pendar lembut</string>
+    <string name="t_rotate">Putar cincin</string>
+    <string name="t_notif_colour">Warna notifikasi</string>
+    <string name="t_haptics">Respons haptik</string>
+    <string name="chips_app_theme">Tema aplikasi</string>
+    <string name="t_icon_colour">Warna ikon aplikasi</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">Lampu layar mati</string>
+    <string name="t_on_screen_off">Saat layar mati</string>
+    <string name="t_on_new">Saat ada notifikasi</string>
+    <string name="t_pocket">Deteksi saku</string>
+    <string name="t_double_tap">Ketuk 2x bangun</string>
+    <string name="t_burn_in">Cegah burn-in</string>
+    <string name="t_app_icons">Ikon aplikasi</string>
+    <string name="t_keep_icons">Ikon tetap tampil</string>
+    <string name="t_aod_icons">Ikon gaya AOD</string>
+    <string name="t_tap_read">Ketuk untuk baca</string>
+    <string name="t_peek_actions">Tombol balas</string>
+    <string name="t_droplet">Tetesan</string>
+    <string name="chips_method">Metode layar mati</string>
+    <string name="chips_off_delay">Mulai lampu setelah layar mati</string>
+    <string name="chips_timeout">Biarkan lampu menyala selama</string>
+    <string name="chips_remind">Ingatkan setelahnya</string>
+    <string name="s_brightness">Kecerahan</string>
+    <string name="s_reminder">Pengingat</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">Cincin saat nyala</string>
+    <string name="t_lock_only">Hanya layar kunci</string>
+    <string name="t_charge">Cincin pengisian</string>
+    <string name="t_progress">Cincin unduhan</string>
+    <string name="charge_colours">Warna cincin pengisian menurut level baterai</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">Warna cincin unduhan</string>
+    <string name="c_progress">Warna unduhan (Otomatis = warna aplikasi)</string>
+    <string name="screen_on_hint">Cincin saat nyala: cincin kecil di sekitar kamera saat Anda memakai ponsel. Cincin pengisian: terisi sesuai level baterai saat mengisi daya. Cincin unduhan: menunjukkan seberapa jauh unduhan berjalan. Keduanya juga berfungsi di layar kunci; disembunyikan dalam mode lanskap (kecuali pencahayaan tepi).</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">Aplikasi &amp; warna</string>
+    <string name="apps_sub">Aktifkan/nonaktifkan aplikasi, pilih warna</string>
+    <string name="chips_which_apps">Aplikasi mana</string>
+    <string name="t_ignore_silent">Abaikan senyap</string>
+    <string name="t_dnd">Patuhi Jangan Ganggu</string>
+    <string name="t_clear_unlock">Hapus saat dibuka</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">Frame rate animasi</string>
+    <string name="s_min_battery">Jeda di bawah baterai</string>
+    <string name="t_low_refresh">Refresh terendah</string>
+    <string name="t_eco">Diam setelah 12 d</string>
+    <string name="t_age_fade">Redupkan lama</string>
+    <string name="t_motion">Bangun saat gerak</string>
+    <string name="t_quiet">Jam tenang</string>
+    <string name="quiet_time">Waktu jam tenang</string>
+    <string name="quiet_start">Mulai jam tenang</string>
+    <string name="quiet_end">Akhir jam tenang</string>
+    <string name="battery_hint">Diam setelah 12 d: lampu beranimasi saat muncul, lalu diam, sehingga tidak ada yang digambar ulang. Redupkan lama: notifikasi baru menyala penuh dan memudar dalam satu jam. Bangun saat gerak: setelah lampu habis waktunya, lampu muncul lagi saat Anda menggerakkan ponsel, menggunakan chip gerak (tanpa waktu layar atau CPU selama menunggu).</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">Bahasa</string>
+    <string name="g_backup">Cadangkan</string>
+    <string name="g_backup_sub">Setelan ke file</string>
+    <string name="g_restore">Pulihkan</string>
+    <string name="g_restore_sub">Dari cadangan</string>
+    <string name="g_log">Log peristiwa</string>
+    <string name="g_log_sub">Lihat dan salin</string>
+    <string name="log_share">Bagikan</string>
+    <string name="log_copy">Salin</string>
+    <string name="log_copied">Disalin</string>
+    <string name="state_on">Aktif</string>
+    <string name="state_off">Nonaktif</string>
+    <string name="close">Tutup</string>
+    <string name="lang_system">Default sistem</string>
+    <string name="backup_done">Setelan disimpan</string>
+    <string name="backup_failed">Tidak dapat menyimpan cadangan</string>
+    <string name="restore_done">%d setelan dipulihkan</string>
+    <string name="restore_failed">File itu bukan cadangan Glow LED</string>
+
+    <!-- Test -->
+    <string name="test_title">Uji Glow LED</string>
+    <string name="test_text">Matikan layar untuk melihat lampu. Geser notifikasi ini untuk menghapusnya.</string>
+    <string name="test_sent">Uji terkirim. Matikan layar sekarang.</string>
+    <string name="need_listener_first">Beri akses notifikasi terlebih dahulu</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">Notifikasi baru</string>
+    <string name="peek_hidden">Konten disembunyikan</string>
+    <string name="peek_more">+%d lainnya</string>
+    <string name="peek_reply">Balas</string>
+    <string name="peek_mark_read">Tandai dibaca</string>
+    <string name="peek_dismiss">Tutup</string>
+    <string name="kind_photo">📷 Foto</string>
+    <string name="kind_video">🎥 Video</string>
+    <string name="kind_voice">🎤 Pesan suara</string>
+    <string name="kind_document">📄 Dokumen</string>
+    <string name="reply_to">Balas ke %s</string>
+    <string name="reply_hint">Pesan</string>
+    <string name="reply_send">Kirim</string>
+    <string name="reply_sent">Terkirim</string>
+    <string name="reply_failed">Tidak dapat mengirim balasan</string>
+    <string name="reply_unavailable">Notifikasi ini tidak dapat dibalas dari sini lagi</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">Deteksi otomatis</string>
+    <string name="cut_save">Simpan</string>
+    <string name="cut_reset">Reset</string>
+    <string name="cut_hint">Seret di layar untuk memindahkan. Gunakan panah untuk langkah satu piksel.</string>
+    <string name="cut_none">Ponsel ini tidak melaporkan potongan kamera. Menggunakan titik LED klasik.</string>
+    <string name="cut_detected">Potongan %s terdeteksi</string>
+    <string name="cut_saved">Posisi kamera disimpan</string>
+    <string name="cut_rotate">Pegang ponsel tegak untuk mendeteksi potongan</string>
+    <string name="cd_left">Geser ke kiri</string>
+    <string name="cd_up">Geser ke atas</string>
+    <string name="cd_down">Geser ke bawah</string>
+    <string name="cd_right">Geser ke kanan</string>
+    <string name="shape_circle">Punch-hole</string>
+    <string name="shape_pill">Pil</string>
+    <string name="shape_notch">Poni</string>
+    <string name="shape_dot">Titik LED</string>
+    <string name="label_x">Horizontal</string>
+    <string name="label_y">Vertikal</string>
+    <string name="label_w">Lebar</string>
+    <string name="label_h">Tinggi</string>
+    <string name="label_gap">Jarak dari kamera</string>
+    <string name="label_thickness">Ketebalan cincin</string>
+    <string name="label_animate">Animasikan</string>
+
+    <!-- Apps -->
+    <string name="apps_search">Cari aplikasi</string>
+    <string name="apps_auto">Otomatis</string>
+    <string name="apps_loading">Memuat aplikasi…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">Pilih warna</string>
+    <string name="color_wheel">Roda warna: putar untuk memilih warna</string>
+    <string name="color_saturation">Saturasi</string>
+    <string name="color_brightness">Kecerahan</string>
+    <string name="color_auto">Otomatis</string>
+    <string name="color_hex">Hex (#RRGGBB)</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Batal</string>
+    <string name="setup_open">Buka setelan</string>
+    <string name="tutorial_title">Tutorial</string>
+    <string name="tutorial_sub">Gestur &amp; fitur</string>
+    <string name="tutorial_step">Panduan singkat · %1$d / %2$d</string>
+    <string name="tutorial_next">Berikutnya</string>
+    <string name="tutorial_back">Kembali</string>
+    <string name="tutorial_done">Mengerti</string>
+    <string name="tutorial_later">Tutup panduan</string>
+    <string name="tutorial_swipe">Geser ke bawah pada halaman setelan saat sudah di posisi paling atas untuk menampilkan pratinjau LED langsung dan mendekatkan kontrol agar mudah dijangkau. Geser ke atas, atau tekan Kembali, untuk menutupnya. Geser ke kiri atau kanan untuk berpindah tab. Anda dapat membuka panduan ini lagi dari Setelan → Tutorial.</string>
+    <string name="tutorial_test">Ketuk tombol Uji yang mengambang, lalu tekan tombol daya untuk mengunci perangkat. Dengan akses notifikasi dan lampu layar mati aktif, Glow LED menunggu sebentar, lalu menampilkan layar notifikasi hitam. Pratinjau geser ke bawah memungkinkan Anda mencoba gaya tanpa mengunci perangkat.</string>
+    <string name="tutorial_setup">Buka kartu Penyiapan untuk mengaktifkan akses notifikasi dan salah satu dari Tampilkan di atas aplikasi lain atau Aksesibilitas. Aksesibilitas juga dapat mematikan layar seketika. Di Xiaomi dan perangkat ketat lainnya, periksa pembatasan mulai otomatis dan baterai. Bilah progres menunjukkan izin wajib mana yang masih tersisa.</string>
+    <string name="tutorial_styles">Gaya menawarkan 11 animasi, termasuk Orbit kembar dan Kilau. Pilih warna, kecepatan, ukuran, pendar, dan mode multi-aplikasi. Posisi kamera menyesuaikan cincin di sekitar kamera Anda. Tema aplikasi dan respons haptik ada di tab Setelan; keduanya tidak pernah mengubah latar notifikasi hitam.</string>
+    <string name="tutorial_transfers">Saat aplikasi menampilkan notifikasi progres, cincin menunjukkan seberapa jauh transfer berjalan, dengan panah kecil di bagian bawah cincin: ↑ unggahan, ↓ unduhan, ↕ arah tidak diketahui. Progres yang berjalan tanpa persentase menggunakan pemutar. Gunakan warna aplikasi, atau pilih warna unggahan/unduhan di Layar nyala. Transfer tanpa notifikasi progres tidak dapat dideteksi.</string>
+    <string name="tutorial_battery" formatted="false">Saat mengisi daya, cincin terisi sesuai level baterai dengan warna rendah, sedang, dan tinggi pilihan Anda, dengan petir kecil di bagian bawah cincin yang berpendar setiap kali baterai bertambah satu persen. Mencolokkan pengisi daya saat ponsel terkunci menampilkannya selama beberapa detik; transfer lebih diutamakan. Baterai % di bawah cincin bersifat opsional (Layar nyala → Pengisian &amp; baterai).</string>
+    <string name="tutorial_messages">Di layar notifikasi hitam, ketuk ikon aplikasi untuk membaca notifikasinya, membalas, atau menandainya dibaca jika aplikasi mendukung tindakan tersebut. Membalas mungkin perlu membuka kunci. Ketuk dua kali untuk menampilkan layar kunci. Notifikasi mengatur aplikasi yang diizinkan, warna per aplikasi, notifikasi senyap, dan Jangan Ganggu.</string>
+    <string name="tutorial_power">Tampilan layar mati membangunkan layar dan menggambar warna hitam; ini bukan AOD hardware bawaan perangkat. Piksel hitam mati di OLED, tetapi lampu latar LCD tetap dapat menyala. Baterai menawarkan jam tenang, perlindungan baterai lemah, batas frame rate, dan pengingat gerak. Setelan juga berisi pencadangan, pemulihan, bahasa, dan log peristiwa.</string>
+    <string name="t_battery_indicator" formatted="false">Baterai %</string>
+    <string name="t_charge_aod">Mengisi saat mati</string>
+    <string name="t_progress_initials" formatted="false">Panah arah</string>
+    <string name="t_progress_app_color" formatted="false">Warna aplikasi transfer</string>
+    <string name="c_upload">Unggahan</string>
+    <string name="c_download">Unduhan</string>
+    <string name="transfer_hint">Warna aplikasi menandai transfer (WhatsApp hijau, Instagram merah muda). Nonaktifkan warna aplikasi untuk memakai warna unggahan/unduhan; warna progres kustom menggantikan keduanya. Deteksi memerlukan notifikasi progres. Atur panah per aplikasi, atau apa yang tampil saat arah tidak diketahui, di Panah.</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">Animasi</string>
+    <string name="sec_colour">Warna</string>
+    <string name="sec_shape">Bentuk &amp; gerak</string>
+    <string name="sec_when">Kapan menyala</string>
+    <string name="sec_black">Di layar hitam</string>
+    <string name="sec_messages">Pesan</string>
+    <string name="sec_gestures">Gestur &amp; perlindungan</string>
+    <string name="sec_timing">Waktu &amp; kecerahan</string>
+    <string name="sec_ring_on">Saat Anda memakai ponsel</string>
+    <string name="sec_charging">Pengisian &amp; baterai</string>
+    <string name="sec_transfers">Unduhan &amp; unggahan</string>
+    <string name="sec_apps">Aplikasi</string>
+    <string name="sec_filters">Filter</string>
+    <string name="sec_power">Hemat daya</string>
+    <string name="sec_appearance">Tampilan</string>
+    <string name="sec_tools">Alat</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">Panah per aplikasi</string>
+    <string name="arrows_sub_some">Diatur Anda: %1$d · sisanya otomatis</string>
+    <string name="arrows_sub_none">Semua otomatis</string>
+    <string name="unknown_title">Jika tidak diketahui</string>
+    <string name="sec_arrows">Panah</string>
+    <string name="sec_set_by_you">Diatur oleh Anda</string>
+    <string name="sec_auto_apps">Otomatis</string>
+    <string name="sec_search_results">Semua aplikasi</string>
+    <string name="arrow_sub_always">Selalu</string>
+    <string name="arrow_sub_known">Aplikasi dikenal</string>
+    <string name="arrow_sub_text">Membaca notifikasi</string>
+    <string name="arrow_auto">Otomatis</string>
+    <string name="arrow_download">Unduhan</string>
+    <string name="arrow_upload">Unggahan</string>
+    <string name="arrow_none">Tanpa panah</string>
+    <string name="arrows_footer">Aplikasi muncul di sini setelah unduhan atau unggahan pertamanya, bersama aplikasi populer. Cari untuk mengatur aplikasi lain.</string>
+    <string name="arrows_empty">Tidak ada aplikasi yang cocok</string>
+    <string name="arrow_status_active">Sedang mentransfer</string>
+    <string name="arrow_status_idle">Tidak ada transfer saat ini</string>
+    <string name="sec_arrow_on_ring">Panah di cincin</string>
+    <string name="seg_none">Tidak ada</string>
+    <string name="arrow_explain_known">Otomatis membaca teks notifikasi terlebih dahulu, lalu memakai arah biasa aplikasi ini (%1$s).</string>
+    <string name="arrow_explain_text">Otomatis membaca teks notifikasi. Jika tidak menyebutkan apa pun, “Jika tidak diketahui” yang menentukan (%1$s).</string>
+    <string name="arrow_explain_down">Setiap transfer dari %1$s menampilkan ↓, apa pun isi notifikasinya.</string>
+    <string name="arrow_explain_up">Setiap transfer dari %1$s menampilkan ↑, apa pun isi notifikasinya.</string>
+    <string name="arrow_explain_none">%1$s menampilkan cincin tanpa panah. Warnanya tetap mengikuti arah.</string>
+    <string name="sec_ring_colour">Warna cincin</string>
+    <string name="ring_colour_app">Warna aplikasi</string>
+    <string name="ring_colour_upload">Warna unggahan</string>
+    <string name="ring_colour_download">Warna unduhan</string>
+    <string name="reset_auto">Reset ke Otomatis</string>
+    <string name="unknown_intro">Saat notifikasi tidak menyebut unggahan atau unduhan, dan aplikasi tidak punya panah sendiri.</string>
+    <string name="unk_none">Tanpa ikon</string>
+    <string name="unk_none_sub">Hanya cincin</string>
+    <string name="unk_both">Tampilkan ↕</string>
+    <string name="unk_both_sub">Bergerak, arah tidak diketahui</string>
+    <string name="unk_down">Anggap unduhan</string>
+    <string name="unk_down_sub">Sebagian besar transfer adalah unduhan</string>
+    <string name="unk_up">Anggap unggahan</string>
+    <string name="unk_up_sub">Untuk ponsel yang sering mencadangkan</string>
+    <string name="sec_order">Urutan yang diikuti Glow LED</string>
+    <string name="order_1">Pilihan Anda untuk aplikasi</string>
+    <string name="order_2">Kata dalam notifikasi</string>
+    <string name="order_3">Aplikasi dikenal (Play Store ↓, Foto ↑…)</string>
+    <string name="order_4">Setelan ini</string>
+    <string name="setup_optional">Opsional</string>
+    <string name="setup_allow">Izinkan</string>
+    <string name="a11y_banking">Beberapa aplikasi bank dan pembayaran menolak terbuka saat layanan aksesibilitas dari luar Play Store aktif. Jika salah satu aplikasi Anda begitu, nonaktifkan ini: Glow LED tetap berfungsi dengan jendela layar kunci (di Xiaomi mungkin terlihat kilatan singkat sebelum lampu).</string>
+    <string name="a11y_turn_off">Nonaktifkan</string>
+    <string name="upd_title">Pembaruan</string>
+    <string name="upd_sub_latest">Versi %1$s · terbaru</string>
+    <string name="upd_sub_available">Versi %1$s tersedia</string>
+    <string name="upd_sub_unknown">Versi %1$s · ketuk untuk memeriksa</string>
+    <string name="upd_installed">Terinstal: versi %1$s</string>
+    <string name="upd_checking">Memeriksa pembaruan…</string>
+    <string name="upd_latest">Glow LED sudah terbaru</string>
+    <string name="upd_latest_sub">Anda memiliki versi terbaru, %1$s.</string>
+    <string name="upd_available">Versi %1$s tersedia</string>
+    <string name="upd_size">Ukuran unduhan %1$s · ditandatangani dengan kunci resmi</string>
+    <string name="upd_failed_title">Tidak dapat memeriksa pembaruan</string>
+    <string name="upd_failed">Periksa koneksi internet Anda dan coba lagi.</string>
+    <string name="upd_retry">Coba lagi</string>
+    <string name="upd_check_now">Periksa sekarang</string>
+    <string name="upd_whats_new">Yang baru di %1$s</string>
+    <string name="upd_install">Unduh dan instal</string>
+    <string name="upd_downloading">Mengunduh… %1$d%%</string>
+    <string name="upd_installing">Menginstal…</string>
+    <string name="upd_installing_sub">Konfirmasi di layar berikutnya. Glow LED dimulai ulang dengan setelan Anda.</string>
+    <string name="upd_verify_failed">Unduhan ini bukan Glow LED versi lebih baru yang ditandatangani dengan kunci resmi, jadi tidak diinstal.</string>
+    <string name="upd_download_failed">Unduhan gagal. Coba lagi.</string>
+    <string name="upd_install_failed">Instalasi gagal: %1$s</string>
+    <string name="upd_allow_title">Izinkan instal pembaruan</string>
+    <string name="upd_allow_msg">Untuk menginstal pembaruan sendiri, Glow LED memerlukan “Instal aplikasi tidak dikenal”. Aktifkan untuk Glow LED, lalu kembali: unduhan akan dimulai dengan sendirinya.</string>
+    <string name="upd_auto">Periksa pembaruan</string>
+    <string name="upd_all_releases">Semua rilis</string>
+    <string name="upd_auto_note">Glow LED memeriksa GitHub setiap beberapa jam dan memberi tahu Anda beserta catatan perubahan saat versi baru keluar. Hanya itu kegunaan internet bagi aplikasi ini.</string>
+    <string name="channel_updates">Pembaruan aplikasi</string>
+    <string name="upd_notif_title">Glow LED %1$s tersedia</string>
+    <string name="upd_notif_action">Perbarui</string>
+    <string name="selected">Dipilih</string>
+</resources>

@@ -6,7 +6,7 @@
 
 <p align="center">
   A notification light for AMOLED phones. It glows around your camera hole, works on any brand, and uses very little battery.<br/>
-  Android 10 and up · English and Português (Brasil).
+  Android 10 and up · 13 languages.
 </p>
 
 <p align="center">
@@ -48,7 +48,7 @@ are switched off, so only the light itself uses power.
 | **Design** | Pure black by default with see-through glass cards and frosted, blurred dialogs (Android 12+); **light mode** in *Settings → App theme*. Runs at your display's full refresh rate (120 Hz). |
 | **Haptics** | Sliders tick stronger as the value goes up and softer as it goes down; switches click firmly when turned on, lightly when off. Follows the phone's touch-feedback setting; can be turned off. |
 | **Colour wheel** | Every colour picker has a ring of all colours you turn with your finger, plus saturation, brightness, presets and hex. |
-| **Languages** | English and Português (Brasil). Follows the phone language, or pick one in *Settings → Language*. |
+| **13 languages** | English, Español, Français, Deutsch, Italiano, Português (Brasil), Русский, Türkçe, العربية (right-to-left), हिन्दी, Bahasa Indonesia, 日本語 and 简体中文. Follows the phone language, or pick one in *Settings → Language*. |
 | **Built-in updater** | *Settings → Updates* checks GitHub, says **Glow LED is up to date** or shows the new version with its **changelog**, then downloads it, checks it is signed with the official key and installs it without leaving the app. Every few hours it checks by itself and sends a **notification with the changelog** when a new version is out (can be turned off). Settings backup/restore to a file. |
 | **Banking-app friendly** | No root or Shizuku code. Accessibility is optional and can be turned off from *Setup*; over apps the ring is a normal overlay that banking apps can hide. |
 | **Diagnostics** | Built-in event log (notification received, screen off, light started/skipped and why), copyable for bug reports. |

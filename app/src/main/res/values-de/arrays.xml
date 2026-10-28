@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>Puls (Ring + Welle)</item>
+        <item>Atmen</item>
+        <item>Blinken (sparsamst)</item>
+        <item>Herzschlag</item>
+        <item>Kreisel</item>
+        <item>Regenbogen</item>
+        <item>Statischer Ring</item>
+        <item>Kantenlicht</item>
+        <item>Kantenpuls</item>
+        <item>Doppelorbit</item>
+        <item>Funkeln</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>Ring nach App teilen</item>
+        <item>Farben wechseln</item>
+        <item>Nur neueste</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>Auto</item>
+        <item>Sperrbildschirm</item>
+        <item>Overlay</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 s</item>
+        <item>1 Min.</item>
+        <item>2 Min.</item>
+        <item>5 Min.</item>
+        <item>15 Min.</item>
+        <item>1 Std.</item>
+        <item>Bis gelöscht</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>Aus</item>
+        <item>Alle 2 Min.</item>
+        <item>5 Min.</item>
+        <item>10 Min.</item>
+        <item>30 Min.</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>Alle Apps</item>
+        <item>Nur ausgewählte Apps</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>Max.</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0,8 s</item>
+        <item>1,5 s</item>
+        <item>3 s</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>Dunkel (schwarz)</item>
+        <item>Hell</item>
+        <item>System</item>
+    </string-array>
+</resources>

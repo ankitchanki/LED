@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>パルス（リング＋波紋）</item>
+        <item>呼吸</item>
+        <item>点滅（最小電力）</item>
+        <item>ハートビート</item>
+        <item>スピナー</item>
+        <item>レインボー</item>
+        <item>静止リング</item>
+        <item>エッジライティング</item>
+        <item>エッジパルス</item>
+        <item>ツイン オービット</item>
+        <item>スパークル</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>アプリごとにリングを分割</item>
+        <item>色を順に切り替え</item>
+        <item>最新のみ</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>自動</item>
+        <item>ロック画面ウィンドウ</item>
+        <item>オーバーレイ</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 秒</item>
+        <item>1 分</item>
+        <item>2 分</item>
+        <item>5 分</item>
+        <item>15 分</item>
+        <item>1 時間</item>
+        <item>消去するまで</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>オフ</item>
+        <item>2 分ごと</item>
+        <item>5 分</item>
+        <item>10 分</item>
+        <item>30 分</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>すべてのアプリ</item>
+        <item>選択したアプリのみ</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>最大</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0.8 秒</item>
+        <item>1.5 秒</item>
+        <item>3 秒</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>ダーク（黒）</item>
+        <item>ライト</item>
+        <item>システム</item>
+    </string-array>
+</resources>

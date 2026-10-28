@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>Nabız (halka + dalga)</item>
+        <item>Nefes</item>
+        <item>Yanıp sönme (en az güç)</item>
+        <item>Kalp atışı</item>
+        <item>Dönen</item>
+        <item>Gökkuşağı</item>
+        <item>Sabit halka</item>
+        <item>Kenar aydınlatma</item>
+        <item>Kenar nabzı</item>
+        <item>İkiz yörünge</item>
+        <item>Işıltı</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>Halkayı uygulamaya böl</item>
+        <item>Renkleri döndür</item>
+        <item>Yalnızca en yeni</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>Otomatik</item>
+        <item>Kilit ekranı penceresi</item>
+        <item>Katman</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 sn</item>
+        <item>1 dk</item>
+        <item>2 dk</item>
+        <item>5 dk</item>
+        <item>15 dk</item>
+        <item>1 saat</item>
+        <item>Temizlenene dek</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>Kapalı</item>
+        <item>2 dk\'da bir</item>
+        <item>5 dk</item>
+        <item>10 dk</item>
+        <item>30 dk</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>Tüm uygulamalar</item>
+        <item>Yalnızca seçtiklerim</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>Maks.</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0,8 sn</item>
+        <item>1,5 sn</item>
+        <item>3 sn</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>Koyu (siyah)</item>
+        <item>Açık</item>
+        <item>Sistem</item>
+    </string-array>
+</resources>

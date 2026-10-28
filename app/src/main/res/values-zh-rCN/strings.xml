@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Glow LED 指示灯</string>
+    <string name="accessibility_desc">在锁屏上围绕摄像头绘制通知灯，并在常亮灯光超时后重新关闭屏幕。Glow LED 不会读取屏幕内容，也不会监视你的操作。</string>
+    <string name="channel_launcher">常亮启动器</string>
+    <string name="channel_test">测试通知</string>
+    <string name="title_apps">应用和颜色</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED 已开启</string>
+    <string name="master_off">Glow LED 已关闭</string>
+    <string name="status_waiting">等待通知中</string>
+    <string name="status_active">正在为 %d 条通知亮灯</string>
+    <string name="status_blocked">已暂停：%s</string>
+    <string name="status_need_listener">授予通知使用权后即可开始</string>
+    <string name="block_quiet">免打扰时段</string>
+    <string name="block_battery">电量低</string>
+    <string name="block_call">通话中</string>
+    <string name="reach_hint">上滑或按返回键返回</string>
+    <string name="reach_tip">提示：将设置下拉，单手用拇指即可够到（单手模式）。</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">通知使用权</string>
+    <string name="perm_overlay_short">悬浮窗</string>
+    <string name="perm_a11y_short">无障碍</string>
+    <string name="perm_battery_short">电池无限制</string>
+    <string name="perm_miui_short">小米锁屏</string>
+    <string name="perm_oem_short">自启动</string>
+    <string name="perm_listener">通知使用权</string>
+    <string name="perm_listener_desc">必需。让 Glow LED 知道何时有新通知。所有数据均不会离开你的手机。</string>
+    <string name="perm_a11y">无障碍（可选，最可靠）</string>
+    <string name="perm_a11y_desc">非必需。可额外提供：灯光超时后立即熄屏，以及任何手机品牌都无法拦截的灯光。不需要可跳过。</string>
+    <string name="perm_overlay">显示在其他应用的上层</string>
+    <string name="perm_overlay_desc">让灯光在熄屏时显示。单独开启即可，无需无障碍。</string>
+    <string name="perm_post">通知</string>
+    <string name="perm_post_desc">用于测试通知和备用启动器。</string>
+    <string name="perm_battery">电池无限制</string>
+    <string name="perm_battery_desc">防止系统结束 Glow LED。应用本身在后台几乎不耗电。</string>
+    <string name="perm_oem">自启动（%s）</string>
+    <string name="perm_oem_desc">你的手机品牌另有后台清理机制。请允许 Glow LED 自启动并在后台运行。</string>
+    <string name="perm_miui">小米锁屏权限</string>
+    <string name="perm_miui_desc">HyperOS/MIUI：开启“锁屏显示”和“后台弹出界面”。</string>
+    <string name="restricted_hint">Android 13 及以上：通过 APK 文件安装的应用，其通知使用权和无障碍会受到“受限设置”限制。这是 Android 的规则，并非故障。如果开关呈灰色：应用信息 → ⋮（右上角）→ 允许受限设置，然后重试。</string>
+    <string name="setup_intro">只需授予一次。缺少这些权限，灯光无法显示。</string>
+    <string name="setup_progress">%1$d / %2$d</string>
+    <string name="setup_all_done">全部就绪</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">测试</string>
+    <string name="tab_setup">设置向导</string>
+    <string name="tab_style">样式</string>
+    <string name="tab_off">熄屏</string>
+    <string name="tab_on">亮屏</string>
+    <string name="tab_alerts">提醒</string>
+    <string name="tab_battery">电池</string>
+    <string name="tab_log">设置</string>
+
+    <!-- Style -->
+    <string name="action_cutout">摄像头位置</string>
+    <string name="tile_cutout_sub">对齐光环</string>
+    <string name="custom_colour">自定义颜色</string>
+    <string name="chips_multi">多条通知</string>
+    <string name="s_speed">速度</string>
+    <string name="s_intensity">强度</string>
+    <string name="s_thickness">粗细</string>
+    <string name="s_gap">间距</string>
+    <string name="s_edge">边缘圆角</string>
+    <string name="t_glow">柔光</string>
+    <string name="t_rotate">旋转光环</string>
+    <string name="t_notif_colour">通知颜色</string>
+    <string name="t_haptics">触感反馈</string>
+    <string name="chips_app_theme">应用主题</string>
+    <string name="t_icon_colour">应用图标颜色</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">熄屏灯光</string>
+    <string name="t_on_screen_off">熄屏时</string>
+    <string name="t_on_new">新提醒时</string>
+    <string name="t_pocket">口袋检测</string>
+    <string name="t_double_tap">双击唤醒</string>
+    <string name="t_burn_in">防烧屏</string>
+    <string name="t_app_icons">应用图标</string>
+    <string name="t_keep_icons">保持图标显示</string>
+    <string name="t_aod_icons">息屏显示风格图标</string>
+    <string name="t_tap_read">点按阅读</string>
+    <string name="t_peek_actions">回复按钮</string>
+    <string name="t_droplet">水滴</string>
+    <string name="chips_method">熄屏方式</string>
+    <string name="chips_off_delay">熄屏后开始亮灯</string>
+    <string name="chips_timeout">灯光持续时间</string>
+    <string name="chips_remind">之后再次提醒</string>
+    <string name="s_brightness">亮度</string>
+    <string name="s_reminder">提醒</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">亮屏光环</string>
+    <string name="t_lock_only">仅锁屏</string>
+    <string name="t_charge">充电光环</string>
+    <string name="t_progress">下载光环</string>
+    <string name="charge_colours">按电量显示充电光环颜色</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">下载光环颜色</string>
+    <string name="c_progress">下载颜色（自动 = 应用颜色）</string>
+    <string name="screen_on_hint">亮屏光环：使用手机时在摄像头周围显示一个小光环。充电光环：充电时按电量填充。下载光环：显示下载进度。两者在锁屏上同样有效；横屏时隐藏（边缘灯光除外）。</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">应用和颜色</string>
+    <string name="apps_sub">开关应用，选择颜色</string>
+    <string name="chips_which_apps">哪些应用</string>
+    <string name="t_ignore_silent">忽略静默通知</string>
+    <string name="t_dnd">遵循勿扰模式</string>
+    <string name="t_clear_unlock">解锁后清除</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">动画帧率</string>
+    <string name="s_min_battery">低于此电量时暂停</string>
+    <string name="t_low_refresh">最低刷新率</string>
+    <string name="t_eco">12 秒后静止</string>
+    <string name="t_age_fade">旧通知变暗</string>
+    <string name="t_motion">移动时唤醒</string>
+    <string name="t_quiet">免打扰时段</string>
+    <string name="quiet_time">免打扰时间</string>
+    <string name="quiet_start">免打扰开始时间</string>
+    <string name="quiet_end">免打扰结束时间</string>
+    <string name="battery_hint">12 秒后静止：灯光出现时播放动画，随后保持静止，不再重绘。旧通知变暗：新通知以全亮度发光，并在一小时内逐渐变暗。移动时唤醒：灯光超时后，移动手机时会再次显示，由运动传感芯片检测（等待期间不占用屏幕和 CPU）。</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">语言</string>
+    <string name="g_backup">备份</string>
+    <string name="g_backup_sub">将设置保存到文件</string>
+    <string name="g_restore">恢复</string>
+    <string name="g_restore_sub">从备份恢复</string>
+    <string name="g_log">事件日志</string>
+    <string name="g_log_sub">查看和复制</string>
+    <string name="log_share">分享</string>
+    <string name="log_copy">复制</string>
+    <string name="log_copied">已复制</string>
+    <string name="state_on">开</string>
+    <string name="state_off">关</string>
+    <string name="close">关闭</string>
+    <string name="lang_system">跟随系统</string>
+    <string name="backup_done">设置已保存</string>
+    <string name="backup_failed">无法保存备份</string>
+    <string name="restore_done">已恢复 %d 项设置</string>
+    <string name="restore_failed">该文件不是 Glow LED 备份</string>
+
+    <!-- Test -->
+    <string name="test_title">Glow LED 测试</string>
+    <string name="test_text">关闭屏幕即可看到灯光。滑动此通知可将其清除。</string>
+    <string name="test_sent">测试已发送，请立即关闭屏幕。</string>
+    <string name="need_listener_first">请先授予通知使用权</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">新通知</string>
+    <string name="peek_hidden">内容已隐藏</string>
+    <string name="peek_more">还有 %d 条</string>
+    <string name="peek_reply">回复</string>
+    <string name="peek_mark_read">标为已读</string>
+    <string name="peek_dismiss">忽略</string>
+    <string name="kind_photo">📷 图片</string>
+    <string name="kind_video">🎥 视频</string>
+    <string name="kind_voice">🎤 语音消息</string>
+    <string name="kind_document">📄 文档</string>
+    <string name="reply_to">回复 %s</string>
+    <string name="reply_hint">消息</string>
+    <string name="reply_send">发送</string>
+    <string name="reply_sent">已发送</string>
+    <string name="reply_failed">无法发送回复</string>
+    <string name="reply_unavailable">已无法在此处回复此通知</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">自动检测</string>
+    <string name="cut_save">保存</string>
+    <string name="cut_reset">重置</string>
+    <string name="cut_hint">在屏幕上拖动以移动。使用箭头可逐像素微调。</string>
+    <string name="cut_none">此手机未报告摄像头开孔，将使用经典 LED 圆点。</string>
+    <string name="cut_detected">已检测到开孔：%s</string>
+    <string name="cut_saved">摄像头位置已保存</string>
+    <string name="cut_rotate">请竖持手机以检测开孔</string>
+    <string name="cd_left">左移</string>
+    <string name="cd_up">上移</string>
+    <string name="cd_down">下移</string>
+    <string name="cd_right">右移</string>
+    <string name="shape_circle">挖孔</string>
+    <string name="shape_pill">药丸</string>
+    <string name="shape_notch">刘海</string>
+    <string name="shape_dot">LED 圆点</string>
+    <string name="label_x">水平</string>
+    <string name="label_y">垂直</string>
+    <string name="label_w">宽度</string>
+    <string name="label_h">高度</string>
+    <string name="label_gap">与摄像头间距</string>
+    <string name="label_thickness">光环粗细</string>
+    <string name="label_animate">动画</string>
+
+    <!-- Apps -->
+    <string name="apps_search">搜索应用</string>
+    <string name="apps_auto">自动</string>
+    <string name="apps_loading">正在加载应用…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">选择颜色</string>
+    <string name="color_wheel">色轮：转动以选择颜色</string>
+    <string name="color_saturation">饱和度</string>
+    <string name="color_brightness">亮度</string>
+    <string name="color_auto">自动</string>
+    <string name="color_hex">十六进制（#RRGGBB）</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="setup_open">打开设置</string>
+    <string name="tutorial_title">教程</string>
+    <string name="tutorial_sub">手势和功能</string>
+    <string name="tutorial_step">快速指南 · %1$d / %2$d</string>
+    <string name="tutorial_next">下一步</string>
+    <string name="tutorial_back">上一步</string>
+    <string name="tutorial_done">知道了</string>
+    <string name="tutorial_later">关闭指南</string>
+    <string name="tutorial_swipe">在设置页面滚动到顶部时向下滑动，可显示 LED 实时预览，并让控件更易够到。上滑或按返回键可将其关闭。左右滑动可切换标签页。你可以在“设置 → 教程”中重新打开本指南。</string>
+    <string name="tutorial_test">点按悬浮的“测试”按钮，然后按电源键锁定设备。开启通知使用权和熄屏灯光后，Glow LED 会稍等片刻，然后显示黑色通知屏幕。下滑预览可让你无需锁屏即可试用各种样式。</string>
+    <string name="tutorial_setup">打开“设置向导”中的卡片，开启通知使用权，以及“显示在其他应用的上层”或“无障碍”其中之一。无障碍还可以立即关闭屏幕。在小米等限制严格的设备上，请检查自启动和电池限制。进度条会显示仍需授予的必需权限。</string>
+    <string name="tutorial_styles">“样式”提供 11 种动画，包括双星环绕和闪烁星光。可选择颜色、速度、大小、柔光和多应用模式。“摄像头位置”用于调整摄像头周围的光环。应用主题和触感反馈位于“设置”标签页；它们不会改变黑色的通知背景。</string>
+    <string name="tutorial_transfers">当应用发布进度通知时，光环会显示传输进度，并在光环底部显示一个小箭头：↑ 上传，↓ 下载，↕ 方向未知。没有百分比的进行中进度会显示为旋转动画。可使用应用颜色，或在“亮屏”中选择上传/下载颜色。没有进度通知的传输无法被检测到。</string>
+    <string name="tutorial_battery" formatted="false">充电时，光环会按电量以你设定的低、中、高颜色填充，光环底部有一个小闪电，电量每增加 1% 就会闪亮一次。在手机锁定时接入电源，会显示几秒钟；传输优先显示。光环下方的电量 % 为可选项（亮屏 → 充电和电池）。</string>
+    <string name="tutorial_messages">在黑色通知屏幕上，点按应用图标即可阅读其通知；如果应用支持，还可回复或标为已读。回复可能需要解锁。双击可显示锁屏。“提醒”用于控制允许的应用、单个应用颜色、静默通知和勿扰模式。</string>
+    <string name="tutorial_power">熄屏界面会唤醒显示屏并绘制黑色画面，并非设备原生的硬件息屏显示（AOD）。在 OLED 屏幕上黑色像素会熄灭，但 LCD 背光仍可能发光。“电池”提供免打扰时段、低电量保护、帧率限制和移动提醒。“设置”中还包含备份、恢复、语言和事件日志。</string>
+    <string name="t_battery_indicator" formatted="false">电量 %</string>
+    <string name="t_charge_aod">熄屏时显示充电</string>
+    <string name="t_progress_initials" formatted="false">方向箭头</string>
+    <string name="t_progress_app_color" formatted="false">传输应用颜色</string>
+    <string name="c_upload">上传</string>
+    <string name="c_download">下载</string>
+    <string name="transfer_hint">应用颜色可用于区分传输（WhatsApp 绿色、Instagram 粉色）。关闭应用颜色即可使用上传/下载颜色；自定义进度颜色优先于两者。检测需要进度通知。可在“箭头”中为每个应用设置箭头，或设置方向未知时显示的内容。</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">动画</string>
+    <string name="sec_colour">颜色</string>
+    <string name="sec_shape">形状和动效</string>
+    <string name="sec_when">何时亮灯</string>
+    <string name="sec_black">黑色屏幕上</string>
+    <string name="sec_messages">消息</string>
+    <string name="sec_gestures">手势和保护</string>
+    <string name="sec_timing">时间和亮度</string>
+    <string name="sec_ring_on">使用手机时</string>
+    <string name="sec_charging">充电和电池</string>
+    <string name="sec_transfers">下载和上传</string>
+    <string name="sec_apps">应用</string>
+    <string name="sec_filters">过滤</string>
+    <string name="sec_power">省电</string>
+    <string name="sec_appearance">外观</string>
+    <string name="sec_tools">工具</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">单个应用箭头</string>
+    <string name="arrows_sub_some">自定义：%1$d 个 · 其余自动</string>
+    <string name="arrows_sub_none">全部自动</string>
+    <string name="unknown_title">方向未知时</string>
+    <string name="sec_arrows">箭头</string>
+    <string name="sec_set_by_you">自定义</string>
+    <string name="sec_auto_apps">自动</string>
+    <string name="sec_search_results">所有应用</string>
+    <string name="arrow_sub_always">始终</string>
+    <string name="arrow_sub_known">已知应用</string>
+    <string name="arrow_sub_text">读取通知内容</string>
+    <string name="arrow_auto">自动</string>
+    <string name="arrow_download">下载</string>
+    <string name="arrow_upload">上传</string>
+    <string name="arrow_none">无箭头</string>
+    <string name="arrows_footer">应用在首次下载或上传后会显示在这里，常用应用也会列出。搜索即可设置其他应用。</string>
+    <string name="arrows_empty">没有匹配的应用</string>
+    <string name="arrow_status_active">正在传输</string>
+    <string name="arrow_status_idle">当前无传输</string>
+    <string name="sec_arrow_on_ring">光环上的箭头</string>
+    <string name="seg_none">无</string>
+    <string name="arrow_explain_known">“自动”会先读取通知文字，再使用此应用的常用方向（%1$s）。</string>
+    <string name="arrow_explain_text">“自动”会读取通知文字。若未说明方向，则由“方向未知时”决定（%1$s）。</string>
+    <string name="arrow_explain_down">%1$s 的所有传输都显示 ↓，无论其通知内容如何。</string>
+    <string name="arrow_explain_up">%1$s 的所有传输都显示 ↑，无论其通知内容如何。</string>
+    <string name="arrow_explain_none">%1$s 显示不带箭头的光环。颜色仍随方向变化。</string>
+    <string name="sec_ring_colour">光环颜色</string>
+    <string name="ring_colour_app">应用颜色</string>
+    <string name="ring_colour_upload">上传颜色</string>
+    <string name="ring_colour_download">下载颜色</string>
+    <string name="reset_auto">重置为自动</string>
+    <string name="unknown_intro">当通知未说明是上传还是下载，且应用没有单独设置箭头时。</string>
+    <string name="unk_none">无图标</string>
+    <string name="unk_none_sub">仅显示光环</string>
+    <string name="unk_both">显示 ↕</string>
+    <string name="unk_both_sub">传输中，方向未知</string>
+    <string name="unk_down">视为下载</string>
+    <string name="unk_down_sub">大多数传输是下载</string>
+    <string name="unk_up">视为上传</string>
+    <string name="unk_up_sub">适合经常备份的手机</string>
+    <string name="sec_order">Glow LED 的判断顺序</string>
+    <string name="order_1">你为该应用的选择</string>
+    <string name="order_2">通知中的文字</string>
+    <string name="order_3">已知应用（Play Store ↓、相册 ↑…）</string>
+    <string name="order_4">此设置</string>
+    <string name="setup_optional">可选</string>
+    <string name="setup_allow">允许</string>
+    <string name="a11y_banking">当开启了非 Play Store 来源的无障碍服务时，部分银行和支付应用会拒绝打开。如果你的应用出现这种情况，请关闭此项：Glow LED 会继续通过锁屏窗口工作（在小米设备上，灯光出现前可能会短暂闪烁）。</string>
+    <string name="a11y_turn_off">关闭</string>
+    <string name="upd_title">更新</string>
+    <string name="upd_sub_latest">版本 %1$s · 已是最新</string>
+    <string name="upd_sub_available">版本 %1$s 可用</string>
+    <string name="upd_sub_unknown">版本 %1$s · 点按检查</string>
+    <string name="upd_installed">已安装：版本 %1$s</string>
+    <string name="upd_checking">正在检查更新…</string>
+    <string name="upd_latest">Glow LED 已是最新版本</string>
+    <string name="upd_latest_sub">你使用的是最新版本 %1$s。</string>
+    <string name="upd_available">版本 %1$s 可用</string>
+    <string name="upd_size">下载大小 %1$s · 已使用官方密钥签名</string>
+    <string name="upd_failed_title">无法检查更新</string>
+    <string name="upd_failed">请检查网络连接，然后重试。</string>
+    <string name="upd_retry">重试</string>
+    <string name="upd_check_now">立即检查</string>
+    <string name="upd_whats_new">%1$s 新功能</string>
+    <string name="upd_install">下载并安装</string>
+    <string name="upd_downloading">正在下载… %1$d%%</string>
+    <string name="upd_installing">正在安装…</string>
+    <string name="upd_installing_sub">请在下一个界面确认。Glow LED 将保留你的设置并重新启动。</string>
+    <string name="upd_verify_failed">下载的文件不是使用官方密钥签名的较新版 Glow LED，因此未安装。</string>
+    <string name="upd_download_failed">下载失败，请重试。</string>
+    <string name="upd_install_failed">安装失败：%1$s</string>
+    <string name="upd_allow_title">允许安装更新</string>
+    <string name="upd_allow_msg">要自行安装更新，Glow LED 需要“安装未知应用”权限。请为 Glow LED 开启后返回：下载将自动开始。</string>
+    <string name="upd_auto">检查更新</string>
+    <string name="upd_all_releases">所有版本</string>
+    <string name="upd_auto_note">Glow LED 每隔几小时向 GitHub 查询一次，有新版本时会通知你并附上更新日志。这是它唯一需要联网的用途。</string>
+    <string name="channel_updates">应用更新</string>
+    <string name="upd_notif_title">Glow LED %1$s 可用</string>
+    <string name="upd_notif_action">更新</string>
+    <string name="selected">已选择</string>
+</resources>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>脉冲（光环 + 波纹）</item>
+        <item>呼吸</item>
+        <item>闪烁（最省电）</item>
+        <item>心跳</item>
+        <item>旋转</item>
+        <item>彩虹</item>
+        <item>静态光环</item>
+        <item>边缘灯光</item>
+        <item>边缘脉冲</item>
+        <item>双星环绕</item>
+        <item>闪烁星光</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>按应用分割光环</item>
+        <item>循环颜色</item>
+        <item>仅最新</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>自动</item>
+        <item>锁屏窗口</item>
+        <item>悬浮窗</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 秒</item>
+        <item>1 分钟</item>
+        <item>2 分钟</item>
+        <item>5 分钟</item>
+        <item>15 分钟</item>
+        <item>1 小时</item>
+        <item>直到清除</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>关闭</item>
+        <item>每 2 分钟</item>
+        <item>5 分钟</item>
+        <item>10 分钟</item>
+        <item>30 分钟</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>所有应用</item>
+        <item>仅选定的应用</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>最高</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0.8 秒</item>
+        <item>1.5 秒</item>
+        <item>3 秒</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>深色（纯黑）</item>
+        <item>浅色</item>
+        <item>跟随系统</item>
+    </string-array>
+</resources>

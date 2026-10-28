@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Glow LED इंडिकेटर</string>
+    <string name="accessibility_desc">लॉक स्क्रीन पर आपके कैमरे के चारों ओर सूचना वाली लाइट दिखाता है और हमेशा चालू रहने वाली लाइट का समय खत्म होने पर स्क्रीन फिर से बंद कर देता है। Glow LED स्क्रीन का कॉन्टेंट नहीं पढ़ता और न ही आपकी गतिविधियों पर नज़र रखता है।</string>
+    <string name="channel_launcher">हमेशा चालू लॉन्चर</string>
+    <string name="channel_test">टेस्ट सूचनाएं</string>
+    <string name="title_apps">ऐप्लिकेशन और रंग</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED चालू है</string>
+    <string name="master_off">Glow LED बंद है</string>
+    <string name="status_waiting">सूचनाओं का इंतज़ार है</string>
+    <string name="status_active">%d सूचना(ओं) के लिए लाइट जल रही है</string>
+    <string name="status_blocked">रोका गया: %s</string>
+    <string name="status_need_listener">शुरू करने के लिए सूचना ऐक्सेस दें</string>
+    <string name="block_quiet">शांत समय</string>
+    <string name="block_battery">बैटरी कम है</string>
+    <string name="block_call">कॉल चल रही है</string>
+    <string name="reach_hint">वापस जाने के लिए ऊपर स्वाइप करें या \'वापस जाएं\' दबाएं</string>
+    <string name="reach_tip">सलाह: सेटिंग को नीचे खींचें ताकि वे अंगूठे की पहुंच में आ जाएं (एक हाथ वाला मोड)।</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">सूचना ऐक्सेस</string>
+    <string name="perm_overlay_short">ऐप्लिकेशन के ऊपर</string>
+    <string name="perm_a11y_short">सुलभता</string>
+    <string name="perm_battery_short">बैटरी बिना पाबंदी</string>
+    <string name="perm_miui_short">Xiaomi लॉक स्क्रीन</string>
+    <string name="perm_oem_short">ऑटोस्टार्ट</string>
+    <string name="perm_listener">सूचना ऐक्सेस</string>
+    <string name="perm_listener_desc">ज़रूरी है। इससे Glow LED को पता चलता है कि कोई सूचना आई है। कुछ भी आपके फ़ोन से बाहर नहीं जाता।</string>
+    <string name="perm_a11y">सुलभता (वैकल्पिक, सबसे भरोसेमंद)</string>
+    <string name="perm_a11y_desc">ज़रूरी नहीं है। इससे मिलता है: लाइट का समय खत्म होते ही स्क्रीन तुरंत बंद होना, और ऐसी लाइट जिसे कोई भी फ़ोन ब्रैंड रोक नहीं सकता। चाहें तो इसे छोड़ दें।</string>
+    <string name="perm_overlay">दूसरे ऐप्लिकेशन के ऊपर दिखाएं</string>
+    <string name="perm_overlay_desc">स्क्रीन बंद होने पर भी लाइट दिखने देता है। अकेले यही काफ़ी है - सुलभता की ज़रूरत नहीं।</string>
+    <string name="perm_post">सूचनाएं</string>
+    <string name="perm_post_desc">टेस्ट सूचना और बैकअप लॉन्चर के लिए ज़रूरी है।</string>
+    <string name="perm_battery">बिना पाबंदी वाली बैटरी</string>
+    <string name="perm_battery_desc">सिस्टम को Glow LED बंद करने से रोकता है। बैकग्राउंड में यह ऐप्लिकेशन लगभग कोई बैटरी इस्तेमाल नहीं करता।</string>
+    <string name="perm_oem">ऑटोस्टार्ट (%s)</string>
+    <string name="perm_oem_desc">आपके फ़ोन ब्रैंड में ऐप्लिकेशन बंद करने वाला एक और सिस्टम है। Glow LED को ऑटोस्टार्ट और बैकग्राउंड में चलने की अनुमति दें।</string>
+    <string name="perm_miui">Xiaomi लॉक स्क्रीन अनुमतियां</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: \"लॉक स्क्रीन पर दिखाएं\" और \"बैकग्राउंड में चलते समय पॉप-अप विंडो दिखाएं\" चालू करें।</string>
+    <string name="restricted_hint">Android 13+: APK फ़ाइल से इंस्टॉल किए गए ऐप्लिकेशन के लिए सूचना ऐक्सेस और सुलभता पर \"पाबंदी वाली सेटिंग\" लागू होती है। यह Android का नियम है, कोई गड़बड़ी नहीं। अगर कोई स्विच धूसर दिखे: ऐप्लिकेशन की जानकारी → ⋮ (ऊपर दाईं ओर) → पाबंदी वाली सेटिंग की अनुमति दें, फिर दोबारा कोशिश करें।</string>
+    <string name="setup_intro">ये अनुमतियां एक बार दे दें। इनके बिना लाइट नहीं दिख सकती।</string>
+    <string name="setup_progress">%2$d में से %1$d</string>
+    <string name="setup_all_done">सब तैयार है</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">टेस्ट</string>
+    <string name="tab_setup">सेटअप</string>
+    <string name="tab_style">स्टाइल</string>
+    <string name="tab_off">स्क्रीन बंद</string>
+    <string name="tab_on">स्क्रीन चालू</string>
+    <string name="tab_alerts">अलर्ट</string>
+    <string name="tab_battery">बैटरी</string>
+    <string name="tab_log">सेटिंग</string>
+
+    <!-- Style -->
+    <string name="action_cutout">कैमरे की जगह</string>
+    <string name="tile_cutout_sub">रिंग सही जगह करें</string>
+    <string name="custom_colour">अपना रंग</string>
+    <string name="chips_multi">कई सूचनाएं</string>
+    <string name="s_speed">रफ़्तार</string>
+    <string name="s_intensity">तीव्रता</string>
+    <string name="s_thickness">मोटाई</string>
+    <string name="s_gap">दूरी</string>
+    <string name="s_edge">किनारे के कोने</string>
+    <string name="t_glow">हल्की चमक</string>
+    <string name="t_rotate">रिंग घुमाएं</string>
+    <string name="t_notif_colour">सूचना का रंग</string>
+    <string name="t_haptics">हैप्टिक फ़ीडबैक</string>
+    <string name="chips_app_theme">ऐप्लिकेशन थीम</string>
+    <string name="t_icon_colour">ऐप्लिकेशन आइकॉन का रंग</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">स्क्रीन बंद पर लाइट</string>
+    <string name="t_on_screen_off">स्क्रीन बंद होने पर</string>
+    <string name="t_on_new">नए अलर्ट पर</string>
+    <string name="t_pocket">जेब का पता लगाना</string>
+    <string name="t_double_tap">दो बार टैप से जगाएं</string>
+    <string name="t_burn_in">बर्न-इन से बचाव</string>
+    <string name="t_app_icons">ऐप्लिकेशन आइकॉन</string>
+    <string name="t_keep_icons">आइकॉन दिखते रहें</string>
+    <string name="t_aod_icons">AOD जैसे आइकॉन</string>
+    <string name="t_tap_read">टैप करके पढ़ें</string>
+    <string name="t_peek_actions">जवाब बटन</string>
+    <string name="t_droplet">बूंद</string>
+    <string name="chips_method">स्क्रीन बंद करने का तरीका</string>
+    <string name="chips_off_delay">स्क्रीन बंद होने के बाद लाइट कब शुरू हो</string>
+    <string name="chips_timeout">लाइट कितनी देर चालू रहे</string>
+    <string name="chips_remind">बाद में याद दिलाएं</string>
+    <string name="s_brightness">चमक</string>
+    <string name="s_reminder">रिमाइंडर</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">चालू स्क्रीन पर रिंग</string>
+    <string name="t_lock_only">सिर्फ़ लॉक स्क्रीन</string>
+    <string name="t_charge">चार्जिंग रिंग</string>
+    <string name="t_progress">डाउनलोड रिंग</string>
+    <string name="charge_colours">बैटरी लेवल के हिसाब से चार्जिंग रिंग का रंग</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">डाउनलोड रिंग का रंग</string>
+    <string name="c_progress">डाउनलोड का रंग (ऑटो = ऐप्लिकेशन का रंग)</string>
+    <string name="screen_on_hint">चालू स्क्रीन पर रिंग: फ़ोन इस्तेमाल करते समय कैमरे के चारों ओर एक छोटी रिंग। चार्जिंग रिंग: चार्ज होते समय बैटरी लेवल के हिसाब से भरती है। डाउनलोड रिंग: दिखाती है कि डाउनलोड कितना हो चुका है। दोनों लॉक स्क्रीन पर भी काम करती हैं; लैंडस्केप में छिपी रहती हैं (एज लाइटिंग को छोड़कर)।</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">ऐप्लिकेशन और रंग</string>
+    <string name="apps_sub">ऐप्लिकेशन चालू/बंद करें, रंग चुनें</string>
+    <string name="chips_which_apps">कौन से ऐप्लिकेशन</string>
+    <string name="t_ignore_silent">साइलेंट को अनदेखा करें</string>
+    <string name="t_dnd">परेशान न करें का पालन</string>
+    <string name="t_clear_unlock">अनलॉक पर हटाएं</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">ऐनिमेशन फ़्रेम रेट</string>
+    <string name="s_min_battery">इतनी बैटरी से कम पर रोकें</string>
+    <string name="t_low_refresh">सबसे कम रीफ़्रेश</string>
+    <string name="t_eco">12 सेकंड बाद स्थिर</string>
+    <string name="t_age_fade">पुरानी को धीमा करें</string>
+    <string name="t_motion">हिलाने पर जगाएं</string>
+    <string name="t_quiet">शांत समय</string>
+    <string name="quiet_time">शांत समय का वक्त</string>
+    <string name="quiet_start">शांत समय शुरू</string>
+    <string name="quiet_end">शांत समय खत्म</string>
+    <string name="battery_hint">12 सेकंड बाद स्थिर: लाइट दिखते समय ऐनिमेट होती है, फिर स्थिर हो जाती है, ताकि कुछ भी दोबारा न बनाना पड़े। पुरानी को धीमा करें: नई सूचना पूरी चमक से जलती है और एक घंटे में धीमी पड़ जाती है। हिलाने पर जगाएं: लाइट का समय खत्म होने के बाद, फ़ोन हिलाने पर यह फिर दिखती है; इसके लिए मोशन चिप का इस्तेमाल होता है (इंतज़ार के दौरान स्क्रीन या CPU का कोई इस्तेमाल नहीं)।</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">भाषा</string>
+    <string name="g_backup">बैकअप लें</string>
+    <string name="g_backup_sub">सेटिंग फ़ाइल में</string>
+    <string name="g_restore">वापस लाएं</string>
+    <string name="g_restore_sub">बैकअप से</string>
+    <string name="g_log">इवेंट लॉग</string>
+    <string name="g_log_sub">देखें और कॉपी करें</string>
+    <string name="log_share">शेयर करें</string>
+    <string name="log_copy">कॉपी करें</string>
+    <string name="log_copied">कॉपी हो गया</string>
+    <string name="state_on">चालू</string>
+    <string name="state_off">बंद</string>
+    <string name="close">बंद करें</string>
+    <string name="lang_system">सिस्टम डिफ़ॉल्ट</string>
+    <string name="backup_done">सेटिंग सेव हो गईं</string>
+    <string name="backup_failed">बैकअप सेव नहीं हो सका</string>
+    <string name="restore_done">%d सेटिंग वापस लाई गईं</string>
+    <string name="restore_failed">यह फ़ाइल Glow LED का बैकअप नहीं है</string>
+
+    <!-- Test -->
+    <string name="test_title">Glow LED टेस्ट</string>
+    <string name="test_text">लाइट देखने के लिए स्क्रीन बंद करें। इसे हटाने के लिए स्वाइप करें।</string>
+    <string name="test_sent">टेस्ट भेजा गया। अब स्क्रीन बंद करें।</string>
+    <string name="need_listener_first">पहले सूचना ऐक्सेस दें</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">नई सूचना</string>
+    <string name="peek_hidden">कॉन्टेंट छिपा है</string>
+    <string name="peek_more">+%d और</string>
+    <string name="peek_reply">जवाब दें</string>
+    <string name="peek_mark_read">पढ़ा हुआ मार्क करें</string>
+    <string name="peek_dismiss">खारिज करें</string>
+    <string name="kind_photo">📷 फ़ोटो</string>
+    <string name="kind_video">🎥 वीडियो</string>
+    <string name="kind_voice">🎤 वॉइस मैसेज</string>
+    <string name="kind_document">📄 दस्तावेज़</string>
+    <string name="reply_to">%s को जवाब दें</string>
+    <string name="reply_hint">मैसेज</string>
+    <string name="reply_send">भेजें</string>
+    <string name="reply_sent">भेजा गया</string>
+    <string name="reply_failed">जवाब नहीं भेजा जा सका</string>
+    <string name="reply_unavailable">अब इस सूचना का जवाब यहां से नहीं दिया जा सकता</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">अपने-आप पहचानें</string>
+    <string name="cut_save">सेव करें</string>
+    <string name="cut_reset">रीसेट करें</string>
+    <string name="cut_hint">खिसकाने के लिए स्क्रीन पर खींचें। एक-एक पिक्सल खिसकाने के लिए तीर इस्तेमाल करें।</string>
+    <string name="cut_none">इस फ़ोन में कोई कैमरा कटआउट नहीं बताया गया है। क्लासिक LED बिंदु इस्तेमाल हो रहा है।</string>
+    <string name="cut_detected">%s कटआउट पहचाना गया</string>
+    <string name="cut_saved">कैमरे की जगह सेव हो गई</string>
+    <string name="cut_rotate">कटआउट पहचानने के लिए फ़ोन को सीधा पकड़ें</string>
+    <string name="cd_left">बाईं ओर खिसकाएं</string>
+    <string name="cd_up">ऊपर खिसकाएं</string>
+    <string name="cd_down">नीचे खिसकाएं</string>
+    <string name="cd_right">दाईं ओर खिसकाएं</string>
+    <string name="shape_circle">पंच-होल</string>
+    <string name="shape_pill">पिल</string>
+    <string name="shape_notch">नॉच</string>
+    <string name="shape_dot">LED बिंदु</string>
+    <string name="label_x">क्षैतिज</string>
+    <string name="label_y">लंबवत</string>
+    <string name="label_w">चौड़ाई</string>
+    <string name="label_h">ऊंचाई</string>
+    <string name="label_gap">कैमरे से दूरी</string>
+    <string name="label_thickness">रिंग की मोटाई</string>
+    <string name="label_animate">ऐनिमेट करें</string>
+
+    <!-- Apps -->
+    <string name="apps_search">ऐप्लिकेशन खोजें</string>
+    <string name="apps_auto">ऑटो</string>
+    <string name="apps_loading">ऐप्लिकेशन लोड हो रहे हैं…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">रंग चुनें</string>
+    <string name="color_wheel">कलर व्हील: रंग चुनने के लिए घुमाएं</string>
+    <string name="color_saturation">गहराई</string>
+    <string name="color_brightness">चमक</string>
+    <string name="color_auto">अपने-आप</string>
+    <string name="color_hex">Hex (#RRGGBB)</string>
+    <string name="ok">ठीक है</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="setup_open">सेटिंग खोलें</string>
+    <string name="tutorial_title">ट्यूटोरियल</string>
+    <string name="tutorial_sub">जेस्चर और सुविधाएं</string>
+    <string name="tutorial_step">छोटी गाइड · %1$d / %2$d</string>
+    <string name="tutorial_next">आगे</string>
+    <string name="tutorial_back">पीछे</string>
+    <string name="tutorial_done">समझ गया</string>
+    <string name="tutorial_later">गाइड बंद करें</string>
+    <string name="tutorial_swipe">सेटिंग पेज सबसे ऊपर तक स्क्रोल होने पर नीचे की ओर स्वाइप करें, इससे लाइव LED प्रीव्यू दिखेगा और कंट्रोल आपकी पहुंच में आ जाएंगे। बंद करने के लिए ऊपर स्वाइप करें या \'वापस जाएं\' दबाएं। टैब बदलने के लिए बाएं या दाएं स्वाइप करें। यह गाइड आप सेटिंग → ट्यूटोरियल से फिर खोल सकते हैं।</string>
+    <string name="tutorial_test">तैरते हुए टेस्ट बटन पर टैप करें, फिर डिवाइस लॉक करने के लिए पावर बटन दबाएं। सूचना ऐक्सेस और स्क्रीन बंद पर लाइट चालू हो, तो Glow LED थोड़ी देर रुककर काली सूचना स्क्रीन दिखाता है। नीचे स्वाइप वाले प्रीव्यू से आप डिवाइस लॉक किए बिना स्टाइल आज़मा सकते हैं।</string>
+    <string name="tutorial_setup">सूचना ऐक्सेस और \'दूसरे ऐप्लिकेशन के ऊपर दिखाएं\' या सुलभता में से कोई एक चालू करने के लिए सेटअप कार्ड खोलें। सुलभता से स्क्रीन तुरंत बंद भी हो सकती है। Xiaomi और दूसरे सख्त डिवाइस पर ऑटोस्टार्ट और बैटरी की पाबंदियां जांचें। प्रोग्रेस बार दिखाता है कि कौन सी ज़रूरी अनुमतियां बाकी हैं।</string>
+    <string name="tutorial_styles">स्टाइल में 11 ऐनिमेशन हैं, जिनमें ट्विन ऑर्बिट और स्पार्कल भी शामिल हैं। रंग, रफ़्तार, आकार, चमक और कई ऐप्लिकेशन वाला मोड चुनें। कैमरे की जगह से कैमरे के चारों ओर की रिंग सेट होती है। ऐप्लिकेशन थीम और हैप्टिक फ़ीडबैक सेटिंग टैब में हैं; इनसे काली सूचना स्क्रीन का बैकग्राउंड कभी नहीं बदलता।</string>
+    <string name="tutorial_transfers">जब कोई ऐप्लिकेशन प्रोग्रेस वाली सूचना दिखाता है, तो रिंग बताती है कि ट्रांसफ़र कितना हो चुका है, और रिंग के नीचे एक छोटा तीर होता है: ↑ अपलोड, ↓ डाउनलोड, ↕ दिशा पता नहीं। बिना प्रतिशत वाली प्रोग्रेस के लिए घूमने वाला स्पिनर दिखता है। ऐप्लिकेशन के रंग इस्तेमाल करें, या स्क्रीन चालू में अपलोड/डाउनलोड के रंग चुनें। जिन ट्रांसफ़र की प्रोग्रेस सूचना नहीं होती, उनका पता नहीं लगाया जा सकता।</string>
+    <string name="tutorial_battery" formatted="false">चार्ज होते समय रिंग आपके कम, मध्यम और ज़्यादा वाले रंगों में बैटरी लेवल के हिसाब से भरती है, और रिंग के नीचे एक छोटा बिजली का निशान होता है जो बैटरी हर एक प्रतिशत बढ़ने पर चमकता है। फ़ोन लॉक होने पर चार्जर लगाने से यह कुछ सेकंड के लिए दिखता है; ट्रांसफ़र को प्राथमिकता मिलती है। रिंग के नीचे बैटरी % दिखाना वैकल्पिक है (स्क्रीन चालू → चार्जिंग और बैटरी)।</string>
+    <string name="tutorial_messages">काली सूचना स्क्रीन पर किसी ऐप्लिकेशन आइकॉन पर टैप करके उसकी सूचना पढ़ें, जवाब दें या उसे पढ़ा हुआ मार्क करें, अगर ऐप्लिकेशन ये सुविधाएं देता है। जवाब देने के लिए अनलॉक करना पड़ सकता है। लॉक स्क्रीन दिखाने के लिए दो बार टैप करें। अलर्ट में आप तय करते हैं कि कौन से ऐप्लिकेशन चलें, हर ऐप्लिकेशन का रंग, साइलेंट सूचनाएं और परेशान न करें।</string>
+    <string name="tutorial_power">स्क्रीन बंद वाला व्यू डिसप्ले को जगाकर काला रंग दिखाता है; यह डिवाइस का अपना हार्डवेयर AOD नहीं है। OLED पर काले पिक्सल बंद हो जाते हैं, लेकिन LCD की बैकलाइट फिर भी चमक सकती है। बैटरी में शांत समय, कम बैटरी से सुरक्षा, फ़्रेम रेट की सीमा और हिलाने पर रिमाइंडर मिलते हैं। सेटिंग में बैकअप, वापस लाना, भाषा और इवेंट लॉग भी हैं।</string>
+    <string name="t_battery_indicator" formatted="false">बैटरी %</string>
+    <string name="t_charge_aod">बंद स्क्रीन पर चार्जिंग</string>
+    <string name="t_progress_initials" formatted="false">दिशा का तीर</string>
+    <string name="t_progress_app_color" formatted="false">ट्रांसफ़र में ऐप्लिकेशन का रंग</string>
+    <string name="c_upload">अपलोड</string>
+    <string name="c_download">डाउनलोड</string>
+    <string name="transfer_hint">ऐप्लिकेशन के रंग से ट्रांसफ़र पहचाने जाते हैं (WhatsApp हरा, Instagram गुलाबी)। अपलोड/डाउनलोड के रंग इस्तेमाल करने के लिए ऐप्लिकेशन का रंग बंद करें; अपना चुना प्रोग्रेस रंग इन दोनों से ऊपर होता है। पहचान के लिए प्रोग्रेस सूचना ज़रूरी है। तीर में जाकर हर ऐप्लिकेशन का तीर सेट करें, या चुनें कि दिशा पता न होने पर क्या दिखे।</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">ऐनिमेशन</string>
+    <string name="sec_colour">रंग</string>
+    <string name="sec_shape">आकार और गति</string>
+    <string name="sec_when">लाइट कब जले</string>
+    <string name="sec_black">काली स्क्रीन पर</string>
+    <string name="sec_messages">मैसेज</string>
+    <string name="sec_gestures">जेस्चर और सुरक्षा</string>
+    <string name="sec_timing">समय और चमक</string>
+    <string name="sec_ring_on">फ़ोन इस्तेमाल करते समय</string>
+    <string name="sec_charging">चार्जिंग और बैटरी</string>
+    <string name="sec_transfers">डाउनलोड और अपलोड</string>
+    <string name="sec_apps">ऐप्लिकेशन</string>
+    <string name="sec_filters">फ़िल्टर</string>
+    <string name="sec_power">बैटरी बचत</string>
+    <string name="sec_appearance">दिखावट</string>
+    <string name="sec_tools">टूल</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">हर ऐप्लिकेशन के तीर</string>
+    <string name="arrows_sub_some">आपके सेट किए: %1$d · बाकी अपने-आप</string>
+    <string name="arrows_sub_none">सब अपने-आप</string>
+    <string name="unknown_title">पता न होने पर</string>
+    <string name="sec_arrows">तीर</string>
+    <string name="sec_set_by_you">आपके सेट किए</string>
+    <string name="sec_auto_apps">अपने-आप</string>
+    <string name="sec_search_results">सभी ऐप्लिकेशन</string>
+    <string name="arrow_sub_always">हमेशा</string>
+    <string name="arrow_sub_known">जाना-पहचाना ऐप्लिकेशन</string>
+    <string name="arrow_sub_text">सूचना पढ़ता है</string>
+    <string name="arrow_auto">ऑटो</string>
+    <string name="arrow_download">डाउनलोड</string>
+    <string name="arrow_upload">अपलोड</string>
+    <string name="arrow_none">कोई तीर नहीं</string>
+    <string name="arrows_footer">ऐप्लिकेशन अपने पहले डाउनलोड या अपलोड के बाद यहां दिखते हैं, साथ में जाने-माने ऐप्लिकेशन भी। किसी दूसरे ऐप्लिकेशन को सेट करने के लिए खोजें।</string>
+    <string name="arrows_empty">कोई मिलता-जुलता ऐप्लिकेशन नहीं</string>
+    <string name="arrow_status_active">अभी ट्रांसफ़र हो रहा है</string>
+    <string name="arrow_status_idle">अभी कोई ट्रांसफ़र नहीं</string>
+    <string name="sec_arrow_on_ring">रिंग पर तीर</string>
+    <string name="seg_none">कोई नहीं</string>
+    <string name="arrow_explain_known">ऑटो पहले सूचना का टेक्स्ट पढ़ता है, फिर इस ऐप्लिकेशन की सामान्य दिशा इस्तेमाल करता है (%1$s)।</string>
+    <string name="arrow_explain_text">ऑटो सूचना का टेक्स्ट पढ़ता है। अगर उसमें कुछ नहीं लिखा हो, तो “पता न होने पर” तय करता है (%1$s)।</string>
+    <string name="arrow_explain_down">%1$s का हर ट्रांसफ़र ↓ दिखाता है, चाहे उसकी सूचना में कुछ भी लिखा हो।</string>
+    <string name="arrow_explain_up">%1$s का हर ट्रांसफ़र ↑ दिखाता है, चाहे उसकी सूचना में कुछ भी लिखा हो।</string>
+    <string name="arrow_explain_none">%1$s बिना तीर के रिंग दिखाता है। रंग फिर भी दिशा के हिसाब से बदलता है।</string>
+    <string name="sec_ring_colour">रिंग का रंग</string>
+    <string name="ring_colour_app">ऐप्लिकेशन का रंग</string>
+    <string name="ring_colour_upload">अपलोड का रंग</string>
+    <string name="ring_colour_download">डाउनलोड का रंग</string>
+    <string name="reset_auto">ऑटो पर रीसेट करें</string>
+    <string name="unknown_intro">जब सूचना में अपलोड या डाउनलोड न लिखा हो, और ऐप्लिकेशन का अपना कोई तीर न हो।</string>
+    <string name="unk_none">कोई आइकॉन नहीं</string>
+    <string name="unk_none_sub">सिर्फ़ रिंग</string>
+    <string name="unk_both">↕ दिखाएं</string>
+    <string name="unk_both_sub">चल रहा है, दिशा पता नहीं</string>
+    <string name="unk_down">डाउनलोड मानें</string>
+    <string name="unk_down_sub">ज़्यादातर ट्रांसफ़र डाउनलोड होते हैं</string>
+    <string name="unk_up">अपलोड मानें</string>
+    <string name="unk_up_sub">ज़्यादा बैकअप लेने वाले फ़ोन के लिए</string>
+    <string name="sec_order">Glow LED किस क्रम में देखता है</string>
+    <string name="order_1">ऐप्लिकेशन के लिए आपकी पसंद</string>
+    <string name="order_2">सूचना में लिखे शब्द</string>
+    <string name="order_3">जाना-पहचाना ऐप्लिकेशन (Play Store ↓, Photos ↑…)</string>
+    <string name="order_4">यह सेटिंग</string>
+    <string name="setup_optional">वैकल्पिक</string>
+    <string name="setup_allow">अनुमति दें</string>
+    <string name="a11y_banking">Play Store के बाहर की कोई सुलभता सेवा चालू हो, तो कुछ बैंकिंग और पेमेंट ऐप्लिकेशन खुलने से मना कर देते हैं। अगर आपका कोई ऐप्लिकेशन ऐसा करे, तो इसे बंद कर दें: Glow LED लॉक स्क्रीन विंडो के साथ काम करता रहेगा (Xiaomi पर लाइट से पहले थोड़ी देर के लिए एक फ़्लैश दिख सकता है)।</string>
+    <string name="a11y_turn_off">बंद करें</string>
+    <string name="upd_title">अपडेट</string>
+    <string name="upd_sub_latest">वर्शन %1$s · अप-टू-डेट</string>
+    <string name="upd_sub_available">वर्शन %1$s उपलब्ध है</string>
+    <string name="upd_sub_unknown">वर्शन %1$s · जांचने के लिए टैप करें</string>
+    <string name="upd_installed">इंस्टॉल है: वर्शन %1$s</string>
+    <string name="upd_checking">अपडेट जांचे जा रहे हैं…</string>
+    <string name="upd_latest">Glow LED अप-टू-डेट है</string>
+    <string name="upd_latest_sub">आपके पास नया वर्शन %1$s है।</string>
+    <string name="upd_available">वर्शन %1$s उपलब्ध है</string>
+    <string name="upd_size">डाउनलोड साइज़ %1$s · आधिकारिक की से साइन किया गया</string>
+    <string name="upd_failed_title">अपडेट नहीं जांचे जा सके</string>
+    <string name="upd_failed">अपना इंटरनेट कनेक्शन जांचें और फिर से कोशिश करें।</string>
+    <string name="upd_retry">फिर से कोशिश करें</string>
+    <string name="upd_check_now">अभी जांचें</string>
+    <string name="upd_whats_new">%1$s में नया क्या है</string>
+    <string name="upd_install">डाउनलोड और इंस्टॉल करें</string>
+    <string name="upd_downloading">डाउनलोड हो रहा है… %1$d%%</string>
+    <string name="upd_installing">इंस्टॉल हो रहा है…</string>
+    <string name="upd_installing_sub">अगली स्क्रीन पर पुष्टि करें। Glow LED आपकी सेटिंग के साथ फिर से शुरू होगा।</string>
+    <string name="upd_verify_failed">डाउनलोड की गई फ़ाइल आधिकारिक की से साइन किया गया Glow LED का नया वर्शन नहीं है, इसलिए इसे इंस्टॉल नहीं किया गया।</string>
+    <string name="upd_download_failed">डाउनलोड नहीं हो सका। फिर से कोशिश करें।</string>
+    <string name="upd_install_failed">इंस्टॉल नहीं हो सका: %1$s</string>
+    <string name="upd_allow_title">अपडेट इंस्टॉल करने की अनुमति दें</string>
+    <string name="upd_allow_msg">अपडेट खुद इंस्टॉल करने के लिए, Glow LED को “अनजान ऐप्लिकेशन इंस्टॉल करें” की अनुमति चाहिए। इसे Glow LED के लिए चालू करें, फिर वापस आएं: डाउनलोड अपने-आप शुरू हो जाएगा।</string>
+    <string name="upd_auto">अपडेट जांचें</string>
+    <string name="upd_all_releases">सभी रिलीज़</string>
+    <string name="upd_auto_note">Glow LED हर कुछ घंटों में GitHub से पूछता है और नया वर्शन आने पर बदलावों की सूची के साथ आपको सूचना देता है। यह इंटरनेट का इस्तेमाल सिर्फ़ इसी के लिए करता है।</string>
+    <string name="channel_updates">ऐप्लिकेशन अपडेट</string>
+    <string name="upd_notif_title">Glow LED %1$s उपलब्ध है</string>
+    <string name="upd_notif_action">अपडेट करें</string>
+    <string name="selected">चुना गया</string>
+</resources>

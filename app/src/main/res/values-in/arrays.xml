@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>Denyut (cincin + riak)</item>
+        <item>Bernapas</item>
+        <item>Kedip (daya terendah)</item>
+        <item>Detak jantung</item>
+        <item>Pemutar</item>
+        <item>Pelangi</item>
+        <item>Cincin statis</item>
+        <item>Pencahayaan tepi</item>
+        <item>Denyut tepi</item>
+        <item>Orbit kembar</item>
+        <item>Kilau</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>Bagi cincin per aplikasi</item>
+        <item>Ganti warna bergilir</item>
+        <item>Terbaru saja</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>Otomatis</item>
+        <item>Jendela layar kunci</item>
+        <item>Overlay</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 d</item>
+        <item>1 mnt</item>
+        <item>2 mnt</item>
+        <item>5 mnt</item>
+        <item>15 mnt</item>
+        <item>1 jam</item>
+        <item>Sampai dihapus</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>Nonaktif</item>
+        <item>Tiap 2 mnt</item>
+        <item>5 mnt</item>
+        <item>10 mnt</item>
+        <item>30 mnt</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>Semua aplikasi</item>
+        <item>Hanya pilihan saya</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>Maks</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0,8 d</item>
+        <item>1,5 d</item>
+        <item>3 d</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>Gelap (hitam)</item>
+        <item>Terang</item>
+        <item>Sistem</item>
+    </string-array>
+</resources>

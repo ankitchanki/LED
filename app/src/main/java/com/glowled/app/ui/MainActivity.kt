@@ -810,9 +810,25 @@ class MainActivity : AppCompatActivity() {
 
     // ---- language -----------------------------------------------------------------------------
 
-    private val languageTags = arrayOf("", "en", "pt-BR")
+    // Each name is written in its own language, so anyone can find theirs.
+    private val languageTags = arrayOf("", "en", "pt-BR", "es", "fr", "de", "it", "ru", "tr", "ar", "hi", "id", "ja", "zh-CN")
 
-    private fun languageNames() = arrayOf(getString(R.string.lang_system), "English", "Português (Brasil)")
+    private fun languageNames() = arrayOf(
+        getString(R.string.lang_system),
+        "English",
+        "Português (Brasil)",
+        "Español",
+        "Français",
+        "Deutsch",
+        "Italiano",
+        "Русский",
+        "Türkçe",
+        "العربية",
+        "हिन्दी",
+        "Bahasa Indonesia",
+        "日本語",
+        "简体中文",
+    )
 
     private fun currentLanguageName(): String {
         val cur = AppCompatDelegate.getApplicationLocales().toLanguageTags()

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>पल्स (रिंग + लहर)</item>
+        <item>सांस</item>
+        <item>ब्लिंक (सबसे कम बैटरी)</item>
+        <item>धड़कन</item>
+        <item>स्पिनर</item>
+        <item>इंद्रधनुष</item>
+        <item>स्थिर रिंग</item>
+        <item>एज लाइटिंग</item>
+        <item>एज पल्स</item>
+        <item>ट्विन ऑर्बिट</item>
+        <item>स्पार्कल</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>ऐप के हिसाब से रिंग बांटें</item>
+        <item>रंग बदलते रहें</item>
+        <item>सिर्फ़ नई</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>ऑटो</item>
+        <item>लॉक स्क्रीन विंडो</item>
+        <item>ओवरले</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 से.</item>
+        <item>1 मिनट</item>
+        <item>2 मिनट</item>
+        <item>5 मिनट</item>
+        <item>15 मिनट</item>
+        <item>1 घंटा</item>
+        <item>हटाने तक</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>बंद</item>
+        <item>हर 2 मिनट</item>
+        <item>5 मिनट</item>
+        <item>10 मिनट</item>
+        <item>30 मिनट</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>सभी ऐप्लिकेशन</item>
+        <item>सिर्फ़ मेरे चुने ऐप</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>अधिकतम</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0.8 से.</item>
+        <item>1.5 से.</item>
+        <item>3 से.</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>गहरी (काली)</item>
+        <item>हल्की</item>
+        <item>सिस्टम</item>
+    </string-array>
+</resources>

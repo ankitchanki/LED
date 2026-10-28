@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>Пульс (кольцо + волна)</item>
+        <item>Дыхание</item>
+        <item>Мигание (экономно)</item>
+        <item>Сердцебиение</item>
+        <item>Вращение</item>
+        <item>Радуга</item>
+        <item>Статичное кольцо</item>
+        <item>Подсветка краёв</item>
+        <item>Пульс по краям</item>
+        <item>Двойная орбита</item>
+        <item>Искры</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>Делить кольцо</item>
+        <item>Чередовать цвета</item>
+        <item>Только новое</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>Авто</item>
+        <item>Окно блокировки</item>
+        <item>Наложение</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 с</item>
+        <item>1 мин</item>
+        <item>2 мин</item>
+        <item>5 мин</item>
+        <item>15 мин</item>
+        <item>1 час</item>
+        <item>До сброса</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>Выкл.</item>
+        <item>Каждые 2 мин</item>
+        <item>5 мин</item>
+        <item>10 мин</item>
+        <item>30 мин</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>Все приложения</item>
+        <item>Только выбранные</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 к/с</item>
+        <item>24 к/с</item>
+        <item>30 к/с</item>
+        <item>60 к/с</item>
+        <item>Макс.</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0,8 с</item>
+        <item>1,5 с</item>
+        <item>3 с</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>Тёмная (чёрная)</item>
+        <item>Светлая</item>
+        <item>Системная</item>
+    </string-array>
+</resources>

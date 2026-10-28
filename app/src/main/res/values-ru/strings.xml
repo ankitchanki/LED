@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Индикатор Glow LED</string>
+    <string name="accessibility_desc">Рисует световой индикатор уведомлений вокруг камеры на экране блокировки и снова выключает экран, когда время работы индикатора истекает. Glow LED не считывает содержимое экрана и не отслеживает ваши действия.</string>
+    <string name="channel_launcher">Запуск подсветки</string>
+    <string name="channel_test">Тестовые уведомления</string>
+    <string name="title_apps">Приложения и цвета</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED включён</string>
+    <string name="master_off">Glow LED выключен</string>
+    <string name="status_waiting">Ожидание уведомлений</string>
+    <string name="status_active">Светится, уведомлений: %d</string>
+    <string name="status_blocked">Пауза: %s</string>
+    <string name="status_need_listener">Для начала дайте доступ к уведомлениям</string>
+    <string name="block_quiet">тихие часы</string>
+    <string name="block_battery">низкий заряд</string>
+    <string name="block_call">идёт звонок</string>
+    <string name="reach_hint">Проведите вверх или нажмите «Назад», чтобы вернуться</string>
+    <string name="reach_tip">Совет: потяните настройки вниз, чтобы дотянуться до них большим пальцем (управление одной рукой).</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">Доступ к уведомлениям</string>
+    <string name="perm_overlay_short">Поверх приложений</string>
+    <string name="perm_a11y_short">Спец. возможности</string>
+    <string name="perm_battery_short">Батарея без ограничений</string>
+    <string name="perm_miui_short">Экран блокировки Xiaomi</string>
+    <string name="perm_oem_short">Автозапуск</string>
+    <string name="perm_listener">Доступ к уведомлениям</string>
+    <string name="perm_listener_desc">Обязательно. Позволяет Glow LED узнавать о новых уведомлениях. Ничего не покидает ваш телефон.</string>
+    <string name="perm_a11y">Спец. возможности (необязательно, самый надёжный способ)</string>
+    <string name="perm_a11y_desc">Необязательно. Добавляет мгновенное выключение экрана после окончания подсветки и подсветку, которую не может заблокировать ни один производитель телефонов. Можно пропустить.</string>
+    <string name="perm_overlay">Поверх других приложений</string>
+    <string name="perm_overlay_desc">Позволяет подсветке появляться при выключенном экране. Этого достаточно - спец. возможности не нужны.</string>
+    <string name="perm_post">Уведомления</string>
+    <string name="perm_post_desc">Нужно для тестового уведомления и резервного запуска подсветки.</string>
+    <string name="perm_battery">Батарея без ограничений</string>
+    <string name="perm_battery_desc">Не даёт системе закрывать Glow LED. Само приложение почти не расходует заряд в фоне.</string>
+    <string name="perm_oem">Автозапуск (%s)</string>
+    <string name="perm_oem_desc">У производителя вашего телефона есть дополнительный «убийца» приложений. Разрешите Glow LED автозапуск и работу в фоне.</string>
+    <string name="perm_miui">Разрешения экрана блокировки Xiaomi</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: включите «Отображать на экране блокировки» и «Показывать всплывающие окна при работе в фоне».</string>
+    <string name="restricted_hint">Android 13+: для приложений, установленных из APK-файла, доступ к уведомлениям и спец. возможностям относится к «ограниченным настройкам». Это правило Android, а не ошибка. Если переключатель неактивен: О приложении → ⋮ (вверху справа) → Разрешить ограниченные настройки, затем попробуйте снова.</string>
+    <string name="setup_intro">Предоставьте один раз. Без этих разрешений подсветка не сможет появиться.</string>
+    <string name="setup_progress">%1$d из %2$d</string>
+    <string name="setup_all_done">Всё готово</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">Тест</string>
+    <string name="tab_setup">Настройка</string>
+    <string name="tab_style">Стиль</string>
+    <string name="tab_off">Экран выкл.</string>
+    <string name="tab_on">Экран вкл.</string>
+    <string name="tab_alerts">Оповещения</string>
+    <string name="tab_battery">Батарея</string>
+    <string name="tab_log">Настройки</string>
+
+    <!-- Style -->
+    <string name="action_cutout">Положение камеры</string>
+    <string name="tile_cutout_sub">Выровнять кольцо</string>
+    <string name="custom_colour">Свой цвет</string>
+    <string name="chips_multi">Несколько уведомлений</string>
+    <string name="s_speed">Скорость</string>
+    <string name="s_intensity">Интенсивность</string>
+    <string name="s_thickness">Толщина</string>
+    <string name="s_gap">Отступ</string>
+    <string name="s_edge">Углы экрана</string>
+    <string name="t_glow">Мягкое свечение</string>
+    <string name="t_rotate">Вращение кольца</string>
+    <string name="t_notif_colour">Цвет уведомления</string>
+    <string name="t_haptics">Виброотклик</string>
+    <string name="chips_app_theme">Тема приложения</string>
+    <string name="t_icon_colour">Цвет значка</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">Подсветка при выкл.</string>
+    <string name="t_on_screen_off">При выкл. экрана</string>
+    <string name="t_on_new">При новом</string>
+    <string name="t_pocket">Режим «в кармане»</string>
+    <string name="t_double_tap">Двойное касание</string>
+    <string name="t_burn_in">Защита от выгорания</string>
+    <string name="t_app_icons">Значки приложений</string>
+    <string name="t_keep_icons">Не скрывать значки</string>
+    <string name="t_aod_icons">Значки как в AOD</string>
+    <string name="t_tap_read">Нажать и прочитать</string>
+    <string name="t_peek_actions">Кнопки ответа</string>
+    <string name="t_droplet">Капля</string>
+    <string name="chips_method">Способ при выкл. экране</string>
+    <string name="chips_off_delay">Включать подсветку после выкл. экрана через</string>
+    <string name="chips_timeout">Держать подсветку</string>
+    <string name="chips_remind">Напоминать после</string>
+    <string name="s_brightness">Яркость</string>
+    <string name="s_reminder">Напоминание</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">Кольцо при вкл.</string>
+    <string name="t_lock_only">Только на блокировке</string>
+    <string name="t_charge">Кольцо зарядки</string>
+    <string name="t_progress">Кольцо загрузки</string>
+    <string name="charge_colours">Цвет кольца зарядки по уровню заряда</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">Цвет кольца загрузки</string>
+    <string name="c_progress">Цвет загрузки (Авто = цвет приложения)</string>
+    <string name="screen_on_hint">Кольцо при вкл.: небольшое кольцо вокруг камеры, пока вы пользуетесь телефоном. Кольцо зарядки: заполняется по уровню заряда во время зарядки. Кольцо загрузки: показывает, насколько продвинулась загрузка. Оба работают и на экране блокировки; скрываются в альбомной ориентации (кроме подсветки краёв).</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">Приложения и цвета</string>
+    <string name="apps_sub">Вкл./выкл. приложения, выбор цветов</string>
+    <string name="chips_which_apps">Какие приложения</string>
+    <string name="t_ignore_silent">Без беззвучных</string>
+    <string name="t_dnd">Учитывать «Не беспокоить»</string>
+    <string name="t_clear_unlock">Сброс при разблокировке</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">Частота кадров анимации</string>
+    <string name="s_min_battery">Пауза при заряде ниже</string>
+    <string name="t_low_refresh">Мин. частота экрана</string>
+    <string name="t_eco">Статично через 12 с</string>
+    <string name="t_age_fade">Гасить старые</string>
+    <string name="t_motion">По движению</string>
+    <string name="t_quiet">Тихие часы</string>
+    <string name="quiet_time">Время тихих часов</string>
+    <string name="quiet_start">Начало тихих часов</string>
+    <string name="quiet_end">Конец тихих часов</string>
+    <string name="battery_hint">Статично через 12 с: подсветка анимируется при появлении, затем замирает, и ничего не перерисовывается. Гасить старые: новое уведомление светится в полную силу и угасает в течение часа. По движению: после окончания подсветки она снова появляется, когда вы двигаете телефон; используется датчик движения (экран и процессор при ожидании не задействованы).</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">Язык</string>
+    <string name="g_backup">Резервная копия</string>
+    <string name="g_backup_sub">Настройки в файл</string>
+    <string name="g_restore">Восстановить</string>
+    <string name="g_restore_sub">Из резервной копии</string>
+    <string name="g_log">Журнал событий</string>
+    <string name="g_log_sub">Просмотр и копирование</string>
+    <string name="log_share">Поделиться</string>
+    <string name="log_copy">Копировать</string>
+    <string name="log_copied">Скопировано</string>
+    <string name="state_on">Вкл.</string>
+    <string name="state_off">Выкл.</string>
+    <string name="close">Закрыть</string>
+    <string name="lang_system">Как в системе</string>
+    <string name="backup_done">Настройки сохранены</string>
+    <string name="backup_failed">Не удалось сохранить резервную копию</string>
+    <string name="restore_done">Восстановлено настроек: %d</string>
+    <string name="restore_failed">Этот файл не является резервной копией Glow LED</string>
+
+    <!-- Test -->
+    <string name="test_title">Тест Glow LED</string>
+    <string name="test_text">Выключите экран, чтобы увидеть подсветку. Смахните это уведомление, чтобы убрать её.</string>
+    <string name="test_sent">Тест отправлен. Выключите экран.</string>
+    <string name="need_listener_first">Сначала дайте доступ к уведомлениям</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">Новое уведомление</string>
+    <string name="peek_hidden">Содержимое скрыто</string>
+    <string name="peek_more">Ещё: %d</string>
+    <string name="peek_reply">Ответить</string>
+    <string name="peek_mark_read">Прочитано</string>
+    <string name="peek_dismiss">Закрыть</string>
+    <string name="kind_photo">📷 Фото</string>
+    <string name="kind_video">🎥 Видео</string>
+    <string name="kind_voice">🎤 Голосовое сообщение</string>
+    <string name="kind_document">📄 Документ</string>
+    <string name="reply_to">Ответ: %s</string>
+    <string name="reply_hint">Сообщение</string>
+    <string name="reply_send">Отправить</string>
+    <string name="reply_sent">Отправлено</string>
+    <string name="reply_failed">Не удалось отправить ответ</string>
+    <string name="reply_unavailable">На это уведомление больше нельзя ответить отсюда</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">Автоопределение</string>
+    <string name="cut_save">Сохранить</string>
+    <string name="cut_reset">Сбросить</string>
+    <string name="cut_hint">Перетаскивайте по экрану, чтобы сместить. Стрелки сдвигают на один пиксель.</string>
+    <string name="cut_none">Телефон не сообщает о вырезе под камеру. Используется классическая LED-точка.</string>
+    <string name="cut_detected">Обнаружен вырез: %s</string>
+    <string name="cut_saved">Положение камеры сохранено</string>
+    <string name="cut_rotate">Держите телефон вертикально, чтобы определить вырез</string>
+    <string name="cd_left">Сдвинуть влево</string>
+    <string name="cd_up">Сдвинуть вверх</string>
+    <string name="cd_down">Сдвинуть вниз</string>
+    <string name="cd_right">Сдвинуть вправо</string>
+    <string name="shape_circle">Отверстие</string>
+    <string name="shape_pill">Таблетка</string>
+    <string name="shape_notch">Чёлка</string>
+    <string name="shape_dot">LED-точка</string>
+    <string name="label_x">По горизонтали</string>
+    <string name="label_y">По вертикали</string>
+    <string name="label_w">Ширина</string>
+    <string name="label_h">Высота</string>
+    <string name="label_gap">Отступ от камеры</string>
+    <string name="label_thickness">Толщина кольца</string>
+    <string name="label_animate">Анимация</string>
+
+    <!-- Apps -->
+    <string name="apps_search">Поиск приложений</string>
+    <string name="apps_auto">Авто</string>
+    <string name="apps_loading">Загрузка приложений…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">Выбор цвета</string>
+    <string name="color_wheel">Цветовой круг: вращайте, чтобы выбрать цвет</string>
+    <string name="color_saturation">Насыщенность</string>
+    <string name="color_brightness">Яркость</string>
+    <string name="color_auto">Автоматически</string>
+    <string name="color_hex">Hex (#RRGGBB)</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="setup_open">Открыть настройки</string>
+    <string name="tutorial_title">Обучение</string>
+    <string name="tutorial_sub">Жесты и функции</string>
+    <string name="tutorial_step">Краткое руководство · %1$d / %2$d</string>
+    <string name="tutorial_next">Далее</string>
+    <string name="tutorial_back">Назад</string>
+    <string name="tutorial_done">Понятно</string>
+    <string name="tutorial_later">Закрыть руководство</string>
+    <string name="tutorial_swipe">Проведите вниз по странице настроек, прокрученной до самого верха, чтобы открыть живой предпросмотр LED и приблизить элементы управления. Проведите вверх или нажмите «Назад», чтобы закрыть его. Проводите влево или вправо, чтобы переключать вкладки. Это руководство можно снова открыть в Настройки → Обучение.</string>
+    <string name="tutorial_test">Нажмите плавающую кнопку «Тест», затем нажмите кнопку питания, чтобы заблокировать устройство. Если включены доступ к уведомлениям и подсветка при выключенном экране, Glow LED подождёт немного и покажет чёрный экран уведомлений. Предпросмотр по свайпу вниз позволяет пробовать стили без блокировки устройства.</string>
+    <string name="tutorial_setup">Откройте карточки на вкладке «Настройка», чтобы включить доступ к уведомлениям и либо «Поверх других приложений», либо спец. возможности. Спец. возможности также позволяют мгновенно выключать экран. На Xiaomi и других устройствах со строгими ограничениями проверьте автозапуск и ограничения батареи. Индикатор прогресса показывает, какие обязательные разрешения ещё остались.</string>
+    <string name="tutorial_styles">На вкладке «Стиль» есть 11 анимаций, включая «Двойную орбиту» и «Искры». Выберите цвет, скорость, размер, свечение и режим для нескольких приложений. «Положение камеры» настраивает кольцо вокруг камеры. Тема приложения и виброотклик находятся на вкладке «Настройки»; они никогда не меняют чёрный фон экрана уведомлений.</string>
+    <string name="tutorial_transfers">Когда приложение показывает уведомление с прогрессом, кольцо отображает ход передачи, а внизу кольца появляется небольшая стрелка: ↑ отправка, ↓ загрузка, ↕ направление неизвестно. Для прогресса без процентов используется вращающийся индикатор. Используйте цвета приложений или выберите цвета отправки/загрузки на вкладке «Экран вкл.». Передачи без уведомления с прогрессом обнаружить нельзя.</string>
+    <string name="tutorial_battery" formatted="false">Во время зарядки кольцо заполняется по уровню заряда вашими цветами для низкого, среднего и высокого уровня, а внизу кольца появляется небольшая молния, которая вспыхивает при каждом прибавлении процента. Если подключить зарядку на заблокированном телефоне, кольцо покажется на несколько секунд; передачи имеют приоритет. % заряда под кольцом — по желанию (Экран вкл. → Зарядка и батарея).</string>
+    <string name="tutorial_messages">На чёрном экране уведомлений нажмите на значок приложения, чтобы прочитать уведомление, ответить или отметить его прочитанным, если приложение поддерживает эти действия. Для ответа может потребоваться разблокировка. Коснитесь дважды, чтобы открыть экран блокировки. На вкладке «Оповещения» настраиваются разрешённые приложения, цвета для каждого приложения, беззвучные уведомления и режим «Не беспокоить».</string>
+    <string name="tutorial_power">Режим при выключенном экране включает дисплей и рисует чёрный цвет; это не встроенный аппаратный AOD устройства. На OLED чёрные пиксели отключаются, но подсветка LCD всё равно может светиться. На вкладке «Батарея» есть тихие часы, защита при низком заряде, ограничение частоты кадров и напоминания по движению. В «Настройках» также есть резервное копирование, восстановление, язык и журнал событий.</string>
+    <string name="t_battery_indicator" formatted="false">% заряда</string>
+    <string name="t_charge_aod">Зарядка при выкл.</string>
+    <string name="t_progress_initials" formatted="false">Стрелка направления</string>
+    <string name="t_progress_app_color" formatted="false">Цвет приложения</string>
+    <string name="c_upload">Отправка</string>
+    <string name="c_download">Загрузка</string>
+    <string name="transfer_hint">Цвета приложений помогают узнать передачу (WhatsApp — зелёный, Instagram — розовый). Выключите цвет приложения, чтобы использовать цвета отправки/загрузки; свой цвет прогресса заменяет оба. Для обнаружения нужно уведомление с прогрессом. Стрелку для каждого приложения, а также то, что показывать при неизвестном направлении, можно задать в разделе «Стрелки».</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">Анимация</string>
+    <string name="sec_colour">Цвет</string>
+    <string name="sec_shape">Форма и движение</string>
+    <string name="sec_when">Когда светиться</string>
+    <string name="sec_black">На чёрном экране</string>
+    <string name="sec_messages">Сообщения</string>
+    <string name="sec_gestures">Жесты и защита</string>
+    <string name="sec_timing">Время и яркость</string>
+    <string name="sec_ring_on">Пока вы пользуетесь телефоном</string>
+    <string name="sec_charging">Зарядка и батарея</string>
+    <string name="sec_transfers">Загрузки и отправки</string>
+    <string name="sec_apps">Приложения</string>
+    <string name="sec_filters">Фильтры</string>
+    <string name="sec_power">Энергосбережение</string>
+    <string name="sec_appearance">Оформление</string>
+    <string name="sec_tools">Инструменты</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">Стрелки приложений</string>
+    <string name="arrows_sub_some">Задано вами: %1$d · остальные авто</string>
+    <string name="arrows_sub_none">Все автоматически</string>
+    <string name="unknown_title">Если неизвестно</string>
+    <string name="sec_arrows">Стрелки</string>
+    <string name="sec_set_by_you">Задано вами</string>
+    <string name="sec_auto_apps">Автоматически</string>
+    <string name="sec_search_results">Все приложения</string>
+    <string name="arrow_sub_always">Всегда</string>
+    <string name="arrow_sub_known">Известное приложение</string>
+    <string name="arrow_sub_text">По тексту уведомления</string>
+    <string name="arrow_auto">Авто</string>
+    <string name="arrow_download">Загрузка</string>
+    <string name="arrow_upload">Отправка</string>
+    <string name="arrow_none">Без стрелки</string>
+    <string name="arrows_footer">Здесь появляются приложения после первой загрузки или отправки, а также известные приложения. Чтобы настроить любое другое приложение, воспользуйтесь поиском.</string>
+    <string name="arrows_empty">Нет подходящих приложений</string>
+    <string name="arrow_status_active">Идёт передача</string>
+    <string name="arrow_status_idle">Сейчас нет передачи</string>
+    <string name="sec_arrow_on_ring">Стрелка на кольце</string>
+    <string name="seg_none">Нет</string>
+    <string name="arrow_explain_known">«Авто» сначала читает текст уведомления, затем использует обычное направление этого приложения (%1$s).</string>
+    <string name="arrow_explain_text">«Авто» читает текст уведомления. Если в нём ничего не сказано, решает настройка «Если неизвестно» (%1$s).</string>
+    <string name="arrow_explain_down">Каждая передача из %1$s показывает ↓, что бы ни говорило уведомление.</string>
+    <string name="arrow_explain_up">Каждая передача из %1$s показывает ↑, что бы ни говорило уведомление.</string>
+    <string name="arrow_explain_none">%1$s показывает кольцо без стрелки. Цвет всё равно зависит от направления.</string>
+    <string name="sec_ring_colour">Цвет кольца</string>
+    <string name="ring_colour_app">Цвет приложения</string>
+    <string name="ring_colour_upload">Цвет отправки</string>
+    <string name="ring_colour_download">Цвет загрузки</string>
+    <string name="reset_auto">Сбросить на «Авто»</string>
+    <string name="unknown_intro">Когда в уведомлении не указано, отправка это или загрузка, и у приложения нет своей стрелки.</string>
+    <string name="unk_none">Без значка</string>
+    <string name="unk_none_sub">Только кольцо</string>
+    <string name="unk_both">Показывать ↕</string>
+    <string name="unk_both_sub">Идёт передача, направление неизвестно</string>
+    <string name="unk_down">Считать загрузкой</string>
+    <string name="unk_down_sub">Большинство передач — загрузки</string>
+    <string name="unk_up">Считать отправкой</string>
+    <string name="unk_up_sub">Для телефонов, которые часто делают резервные копии</string>
+    <string name="sec_order">Порядок, которому следует Glow LED</string>
+    <string name="order_1">Ваш выбор для приложения</string>
+    <string name="order_2">Слова в уведомлении</string>
+    <string name="order_3">Известное приложение (Play Store ↓, Фото ↑…)</string>
+    <string name="order_4">Эта настройка</string>
+    <string name="setup_optional">Необязательно</string>
+    <string name="setup_allow">Разрешить</string>
+    <string name="a11y_banking">Некоторые банковские и платёжные приложения не открываются, пока включена служба спец. возможностей не из Play Store. Если такое случилось с одним из ваших, отключите её: Glow LED продолжит работать через окно экрана блокировки (на Xiaomi перед подсветкой может быть короткая вспышка).</string>
+    <string name="a11y_turn_off">Отключить</string>
+    <string name="upd_title">Обновления</string>
+    <string name="upd_sub_latest">Версия %1$s · актуальная</string>
+    <string name="upd_sub_available">Доступна версия %1$s</string>
+    <string name="upd_sub_unknown">Версия %1$s · нажмите для проверки</string>
+    <string name="upd_installed">Установлена версия %1$s</string>
+    <string name="upd_checking">Проверка обновлений…</string>
+    <string name="upd_latest">У вас последняя версия Glow LED</string>
+    <string name="upd_latest_sub">Установлена последняя версия, %1$s.</string>
+    <string name="upd_available">Доступна версия %1$s</string>
+    <string name="upd_size">Размер загрузки %1$s · подписано официальным ключом</string>
+    <string name="upd_failed_title">Не удалось проверить обновления</string>
+    <string name="upd_failed">Проверьте подключение к интернету и повторите попытку.</string>
+    <string name="upd_retry">Повторить</string>
+    <string name="upd_check_now">Проверить</string>
+    <string name="upd_whats_new">Что нового в %1$s</string>
+    <string name="upd_install">Скачать и установить</string>
+    <string name="upd_downloading">Загрузка… %1$d%%</string>
+    <string name="upd_installing">Установка…</string>
+    <string name="upd_installing_sub">Подтвердите на следующем экране. Glow LED перезапустится с вашими настройками.</string>
+    <string name="upd_verify_failed">Загруженный файл не является более новой версией Glow LED, подписанной официальным ключом, поэтому он не был установлен.</string>
+    <string name="upd_download_failed">Ошибка загрузки. Повторите попытку.</string>
+    <string name="upd_install_failed">Ошибка установки: %1$s</string>
+    <string name="upd_allow_title">Разрешить установку обновлений</string>
+    <string name="upd_allow_msg">Чтобы устанавливать обновления самостоятельно, Glow LED нужно разрешение «Установка неизвестных приложений». Включите его для Glow LED и вернитесь: загрузка начнётся сама.</string>
+    <string name="upd_auto">Проверять обновления</string>
+    <string name="upd_all_releases">Все выпуски</string>
+    <string name="upd_auto_note">Glow LED раз в несколько часов обращается к GitHub и, когда выходит новая версия, присылает уведомление со списком изменений. Только для этого приложение и использует интернет.</string>
+    <string name="channel_updates">Обновления приложения</string>
+    <string name="upd_notif_title">Доступна версия Glow LED %1$s</string>
+    <string name="upd_notif_action">Обновить</string>
+    <string name="selected">Выбрано</string>
+</resources>

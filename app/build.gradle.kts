@@ -17,12 +17,17 @@ android {
     namespace = "com.glowled.app"
     compileSdk = 35
 
+    // Only the languages Glow LED is translated into (libraries ship many more).
+    androidResources {
+        localeFilters += listOf("en", "pt-rBR", "es", "fr", "de", "it", "ru", "tr", "ar", "hi", "in", "ja", "zh-rCN")
+    }
+
     defaultConfig {
         applicationId = "com.glowled.app"
         minSdk = 29
         targetSdk = 35
-        versionCode = 31
-        versionName = "2.8.1"
+        versionCode = 32
+        versionName = "2.9.0"
     }
 
     signingConfigs {

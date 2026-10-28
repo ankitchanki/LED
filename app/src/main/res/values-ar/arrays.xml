@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="style_names">
+        <item>نبض (حلقة + تموّج)</item>
+        <item>تنفّس</item>
+        <item>وميض (أقل طاقة)</item>
+        <item>نبضات القلب</item>
+        <item>دوّار</item>
+        <item>قوس قزح</item>
+        <item>حلقة ثابتة</item>
+        <item>إضاءة الحواف</item>
+        <item>نبض الحواف</item>
+        <item>مدار مزدوج</item>
+        <item>بريق</item>
+    </string-array>
+
+    <!-- Chip labels; the stored values are fixed in code. -->
+    <string-array name="multi_labels">
+        <item>تقسيم الحلقة حسب التطبيق</item>
+        <item>تبديل الألوان</item>
+        <item>الأحدث فقط</item>
+    </string-array>
+    <string-array name="method_labels">
+        <item>تلقائي</item>
+        <item>نافذة شاشة القفل</item>
+        <item>طبقة علوية</item>
+    </string-array>
+    <string-array name="timeout_labels">
+        <item>30 ث</item>
+        <item>1 د</item>
+        <item>2 د</item>
+        <item>5 د</item>
+        <item>15 د</item>
+        <item>1 ساعة</item>
+        <item>حتى المسح</item>
+    </string-array>
+    <string-array name="remind_labels">
+        <item>متوقف</item>
+        <item>كل 2 د</item>
+        <item>5 د</item>
+        <item>10 د</item>
+        <item>30 د</item>
+    </string-array>
+    <string-array name="appmode_labels">
+        <item>كل التطبيقات</item>
+        <item>التطبيقات التي أختارها فقط</item>
+    </string-array>
+    <string-array name="fps_labels">
+        <item>15 fps</item>
+        <item>24 fps</item>
+        <item>30 fps</item>
+        <item>60 fps</item>
+        <item>الأقصى</item>
+    </string-array>
+    <string-array name="off_delay_labels">
+        <item>0.8 ث</item>
+        <item>1.5 ث</item>
+        <item>3 ث</item>
+    </string-array>
+    <string-array name="theme_labels">
+        <item>داكن (أسود)</item>
+        <item>فاتح</item>
+        <item>النظام</item>
+    </string-array>
+</resources>

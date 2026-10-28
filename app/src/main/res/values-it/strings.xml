@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Indicatore Glow LED</string>
+    <string name="accessibility_desc">Disegna la luce di notifica intorno alla fotocamera sulla schermata di blocco e spegne di nuovo lo schermo quando la luce always-on scade. Glow LED non legge il contenuto dello schermo e non osserva le tue azioni.</string>
+    <string name="channel_launcher">Avvio always-on</string>
+    <string name="channel_test">Notifiche di prova</string>
+    <string name="title_apps">App e colori</string>
+
+    <!-- Header and status -->
+    <string name="master_on">Glow LED è attivo</string>
+    <string name="master_off">Glow LED è disattivato</string>
+    <string name="status_waiting">In attesa di notifiche</string>
+    <string name="status_active">Luce per %d notifica/e</string>
+    <string name="status_blocked">In pausa: %s</string>
+    <string name="status_need_listener">Concedi l\'accesso alle notifiche per iniziare</string>
+    <string name="block_quiet">ore di silenzio</string>
+    <string name="block_battery">batteria scarica</string>
+    <string name="block_call">in chiamata</string>
+    <string name="reach_hint">Scorri verso l\'alto o premi Indietro per tornare</string>
+    <string name="reach_tip">Suggerimento: trascina le impostazioni verso il basso per raggiungerle con il pollice (modalità a una mano).</string>
+
+    <!-- Setup -->
+    <string name="perm_listener_short">Accesso notifiche</string>
+    <string name="perm_overlay_short">Sopra altre app</string>
+    <string name="perm_a11y_short">Accessibilità</string>
+    <string name="perm_battery_short">Batteria senza limiti</string>
+    <string name="perm_miui_short">Blocco Xiaomi</string>
+    <string name="perm_oem_short">Avvio automatico</string>
+    <string name="perm_listener">Accesso alle notifiche</string>
+    <string name="perm_listener_desc">Obbligatorio. Permette a Glow LED di sapere quando arriva una notifica. Nulla lascia il tuo telefono.</string>
+    <string name="perm_a11y">Accessibilità (facoltativa, più affidabile)</string>
+    <string name="perm_a11y_desc">Non obbligatoria. Aggiunge: spegnimento immediato dello schermo quando la luce scade e una luce che nessun produttore può bloccare. Saltala se preferisci.</string>
+    <string name="perm_overlay">Mostra sopra altre app</string>
+    <string name="perm_overlay_desc">Permette alla luce di apparire a schermo spento. Basta da sola - l\'Accessibilità non serve.</string>
+    <string name="perm_post">Notifiche</string>
+    <string name="perm_post_desc">Necessarie per la notifica di prova e per l\'avvio di riserva.</string>
+    <string name="perm_battery">Batteria senza limitazioni</string>
+    <string name="perm_battery_desc">Impedisce al sistema di chiudere Glow LED. L\'app in background non consuma quasi nulla.</string>
+    <string name="perm_oem">Avvio automatico (%s)</string>
+    <string name="perm_oem_desc">Il produttore del tuo telefono ha un ulteriore sistema che chiude le app. Consenti a Glow LED l\'avvio automatico e l\'esecuzione in background.</string>
+    <string name="perm_miui">Permessi schermata di blocco Xiaomi</string>
+    <string name="perm_miui_desc">HyperOS/MIUI: attiva \"Mostra sulla schermata di blocco\" e \"Mostra finestre pop-up durante l\'esecuzione in background\".</string>
+    <string name="restricted_hint">Android 13+: le app installate da un file APK ricevono \"impostazioni con limitazioni\" per Accesso alle notifiche e Accessibilità. È una regola di Android, non un bug. Se un interruttore è disattivato: Info app → ⋮ (in alto a destra) → Consenti impostazioni con limitazioni, poi riprova.</string>
+    <string name="setup_intro">Concedili una volta. Senza di essi la luce non può apparire.</string>
+    <string name="setup_progress">%1$d di %2$d</string>
+    <string name="setup_all_done">Tutto pronto</string>
+
+    <!-- Tabs and dock -->
+    <string name="action_test_short">Prova</string>
+    <string name="tab_setup">Config.</string>
+    <string name="tab_style">Stile</string>
+    <string name="tab_off">Schermo off</string>
+    <string name="tab_on">Schermo on</string>
+    <string name="tab_alerts">Avvisi</string>
+    <string name="tab_battery">Batteria</string>
+    <string name="tab_log">Impostazioni</string>
+
+    <!-- Style -->
+    <string name="action_cutout">Posizione fotocamera</string>
+    <string name="tile_cutout_sub">Allinea l\'anello</string>
+    <string name="custom_colour">Colore personalizzato</string>
+    <string name="chips_multi">Più notifiche</string>
+    <string name="s_speed">Velocità</string>
+    <string name="s_intensity">Intensità</string>
+    <string name="s_thickness">Spessore</string>
+    <string name="s_gap">Distanza</string>
+    <string name="s_edge">Angoli bordo</string>
+    <string name="t_glow">Bagliore morbido</string>
+    <string name="t_rotate">Ruota anello</string>
+    <string name="t_notif_colour">Colore notifica</string>
+    <string name="t_haptics">Feedback aptico</string>
+    <string name="chips_app_theme">Tema dell\'app</string>
+    <string name="t_icon_colour">Colore icona app</string>
+
+    <!-- Screen off -->
+    <string name="t_aod">Luce a schermo spento</string>
+    <string name="t_on_screen_off">Allo spegnimento</string>
+    <string name="t_on_new">A nuovo avviso</string>
+    <string name="t_pocket">Rilevam. tasca</string>
+    <string name="t_double_tap">Doppio tocco riattiva</string>
+    <string name="t_burn_in">Anti burn-in</string>
+    <string name="t_app_icons">Icone app</string>
+    <string name="t_keep_icons">Icone sempre</string>
+    <string name="t_aod_icons">Icone stile AOD</string>
+    <string name="t_tap_read">Tocca per leggere</string>
+    <string name="t_peek_actions">Tasti risposta</string>
+    <string name="t_droplet">Goccia</string>
+    <string name="chips_method">Metodo a schermo spento</string>
+    <string name="chips_off_delay">Avvia la luce dopo lo spegnimento</string>
+    <string name="chips_timeout">Mantieni la luce accesa per</string>
+    <string name="chips_remind">Ricordamelo dopo</string>
+    <string name="s_brightness">Luminosità</string>
+    <string name="s_reminder">Promemoria</string>
+
+    <!-- Screen on -->
+    <string name="t_ring_on">Anello in uso</string>
+    <string name="t_lock_only">Solo blocco schermo</string>
+    <string name="t_charge">Anello ricarica</string>
+    <string name="t_progress">Anello download</string>
+    <string name="charge_colours">Colore anello di ricarica per livello batteria</string>
+    <string name="c_low" formatted="false">0–19%</string>
+    <string name="c_mid" formatted="false">20–79%</string>
+    <string name="c_high" formatted="false">80–100%</string>
+    <string name="progress_colour">Colore anello download</string>
+    <string name="c_progress">Colore download (Auto = colore app)</string>
+    <string name="screen_on_hint">Anello in uso: un piccolo anello intorno alla fotocamera mentre usi il telefono. Anello ricarica: si riempie con il livello della batteria durante la ricarica. Anello download: mostra a che punto è un download. Entrambi funzionano anche sulla schermata di blocco; nascosti in orizzontale (tranne l\'illuminazione dei bordi).</string>
+
+    <!-- Alerts -->
+    <string name="action_apps">App e colori</string>
+    <string name="apps_sub">Attiva/disattiva app, scegli i colori</string>
+    <string name="chips_which_apps">Quali app</string>
+    <string name="t_ignore_silent">Ignora silenziose</string>
+    <string name="t_dnd">Rispetta Non disturbare</string>
+    <string name="t_clear_unlock">Cancella a sblocco</string>
+
+    <!-- Battery -->
+    <string name="chips_fps">Frequenza fotogrammi animazione</string>
+    <string name="s_min_battery">Pausa sotto la batteria</string>
+    <string name="t_low_refresh">Refresh minimo</string>
+    <string name="t_eco">Ferma dopo 12 s</string>
+    <string name="t_age_fade">Attenua vecchie</string>
+    <string name="t_motion">Riattiva al movimento</string>
+    <string name="t_quiet">Ore di silenzio</string>
+    <string name="quiet_time">Orario ore di silenzio</string>
+    <string name="quiet_start">Inizio ore di silenzio</string>
+    <string name="quiet_end">Fine ore di silenzio</string>
+    <string name="battery_hint">Ferma dopo 12 s: la luce si anima quando appare, poi resta ferma, così non viene ridisegnato nulla. Attenua vecchie: una nuova notifica brilla al massimo e si attenua nel corso di un\'ora. Riattiva al movimento: quando la luce scade, riappare se muovi il telefono, usando il sensore di movimento (nessun consumo di schermo o CPU durante l\'attesa).</string>
+
+    <!-- Settings tab (was More) -->
+    <string name="g_language">Lingua</string>
+    <string name="g_backup">Backup</string>
+    <string name="g_backup_sub">Impostazioni su file</string>
+    <string name="g_restore">Ripristina</string>
+    <string name="g_restore_sub">Da un backup</string>
+    <string name="g_log">Registro eventi</string>
+    <string name="g_log_sub">Visualizza e copia</string>
+    <string name="log_share">Condividi</string>
+    <string name="log_copy">Copia</string>
+    <string name="log_copied">Copiato</string>
+    <string name="state_on">On</string>
+    <string name="state_off">Off</string>
+    <string name="close">Chiudi</string>
+    <string name="lang_system">Predefinita di sistema</string>
+    <string name="backup_done">Impostazioni salvate</string>
+    <string name="backup_failed">Impossibile salvare il backup</string>
+    <string name="restore_done">%d impostazioni ripristinate</string>
+    <string name="restore_failed">Questo file non è un backup di Glow LED</string>
+
+    <!-- Test -->
+    <string name="test_title">Prova Glow LED</string>
+    <string name="test_text">Spegni lo schermo per vedere la luce. Scorri questa notifica per cancellarla.</string>
+    <string name="test_sent">Prova inviata. Ora spegni lo schermo.</string>
+    <string name="need_listener_first">Concedi prima l\'accesso alle notifiche</string>
+
+    <!-- Always-on message peek and quick reply -->
+    <string name="peek_app_time">%1$s · %2$s</string>
+    <string name="peek_new">Nuova notifica</string>
+    <string name="peek_hidden">Contenuto nascosto</string>
+    <string name="peek_more">+%d altre</string>
+    <string name="peek_reply">Rispondi</string>
+    <string name="peek_mark_read">Segna come letto</string>
+    <string name="peek_dismiss">Ignora</string>
+    <string name="kind_photo">📷 Foto</string>
+    <string name="kind_video">🎥 Video</string>
+    <string name="kind_voice">🎤 Messaggio vocale</string>
+    <string name="kind_document">📄 Documento</string>
+    <string name="reply_to">Rispondi a %s</string>
+    <string name="reply_hint">Messaggio</string>
+    <string name="reply_send">Invia</string>
+    <string name="reply_sent">Inviato</string>
+    <string name="reply_failed">Impossibile inviare la risposta</string>
+    <string name="reply_unavailable">Non è più possibile rispondere a questa notifica da qui</string>
+
+    <!-- Camera position -->
+    <string name="cut_auto">Rilevamento auto</string>
+    <string name="cut_save">Salva</string>
+    <string name="cut_reset">Ripristina</string>
+    <string name="cut_hint">Trascina sullo schermo per spostare. Usa le frecce per spostarti di un pixel alla volta.</string>
+    <string name="cut_none">Questo telefono non segnala alcun foro per la fotocamera. Verrà usato un classico punto LED.</string>
+    <string name="cut_detected">Rilevato foro: %s</string>
+    <string name="cut_saved">Posizione fotocamera salvata</string>
+    <string name="cut_rotate">Tieni il telefono in verticale per rilevare il foro</string>
+    <string name="cd_left">Sposta a sinistra</string>
+    <string name="cd_up">Sposta su</string>
+    <string name="cd_down">Sposta giù</string>
+    <string name="cd_right">Sposta a destra</string>
+    <string name="shape_circle">Foro</string>
+    <string name="shape_pill">Pillola</string>
+    <string name="shape_notch">Notch</string>
+    <string name="shape_dot">Punto LED</string>
+    <string name="label_x">Orizzontale</string>
+    <string name="label_y">Verticale</string>
+    <string name="label_w">Larghezza</string>
+    <string name="label_h">Altezza</string>
+    <string name="label_gap">Distanza dalla fotocamera</string>
+    <string name="label_thickness">Spessore anello</string>
+    <string name="label_animate">Anima</string>
+
+    <!-- Apps -->
+    <string name="apps_search">Cerca app</string>
+    <string name="apps_auto">Auto</string>
+    <string name="apps_loading">Caricamento app…</string>
+
+    <!-- Colour picker -->
+    <string name="color_title">Scegli colore</string>
+    <string name="color_wheel">Ruota dei colori: gira per scegliere un colore</string>
+    <string name="color_saturation">Saturazione</string>
+    <string name="color_brightness">Luminosità</string>
+    <string name="color_auto">Automatico</string>
+    <string name="color_hex">Esadecimale (#RRGGBB)</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annulla</string>
+    <string name="setup_open">Apri impostazioni</string>
+    <string name="tutorial_title">Tutorial</string>
+    <string name="tutorial_sub">Gesti e funzioni</string>
+    <string name="tutorial_step">Guida rapida · %1$d / %2$d</string>
+    <string name="tutorial_next">Avanti</string>
+    <string name="tutorial_back">Indietro</string>
+    <string name="tutorial_done">Ho capito</string>
+    <string name="tutorial_later">Chiudi guida</string>
+    <string name="tutorial_swipe">Scorri verso il basso su una pagina delle impostazioni quando è all\'inizio per mostrare l\'anteprima LED dal vivo e portare i controlli a portata di mano. Scorri verso l\'alto o premi Indietro per chiuderla. Scorri a sinistra o a destra per cambiare scheda. Puoi riaprire questa guida da Impostazioni → Tutorial.</string>
+    <string name="tutorial_test">Tocca il pulsante mobile Prova, poi premi il tasto di accensione per bloccare il dispositivo. Con l\'accesso alle notifiche e la luce a schermo spento attivi, Glow LED attende un attimo, poi mostra la schermata nera delle notifiche. L\'anteprima con scorrimento verso il basso ti permette di provare gli stili senza bloccare il dispositivo.</string>
+    <string name="tutorial_setup">Apri le schede di Configurazione per attivare l\'accesso alle notifiche e Mostra sopra altre app oppure Accessibilità. L\'Accessibilità può anche spegnere subito lo schermo. Su Xiaomi e altri dispositivi restrittivi, controlla l\'avvio automatico e le limitazioni della batteria. La barra di avanzamento mostra quali permessi obbligatori mancano.</string>
+    <string name="tutorial_styles">Stile offre 11 animazioni, tra cui Orbita doppia e Scintille. Scegli colore, velocità, dimensione, bagliore e modalità multi-app. Posizione fotocamera regola l\'anello intorno alla fotocamera. Tema dell\'app e feedback aptico si trovano nella scheda Impostazioni; non cambiano mai lo sfondo nero delle notifiche.</string>
+    <string name="tutorial_transfers">Quando un\'app pubblica una notifica di avanzamento, l\'anello mostra a che punto è il trasferimento, con una piccola freccia in basso sull\'anello: ↑ upload, ↓ download, ↕ direzione sconosciuta. Un avanzamento senza percentuale usa un indicatore rotante. Usa i colori delle app oppure scegli i colori di upload/download in Schermo on. I trasferimenti senza notifica di avanzamento non possono essere rilevati.</string>
+    <string name="tutorial_battery" formatted="false">Durante la ricarica, l\'anello si riempie con il livello della batteria nei tuoi colori basso, medio e alto, con un piccolo fulmine in basso sull\'anello che si illumina ogni volta che la batteria guadagna un punto percentuale. Collegando il caricabatterie con il telefono bloccato, l\'anello appare per qualche secondo; i trasferimenti hanno la priorità. La % della batteria sotto l\'anello è facoltativa (Schermo on → Ricarica e batteria).</string>
+    <string name="tutorial_messages">Sulla schermata nera delle notifiche, tocca l\'icona di un\'app per leggerne la notifica, rispondere o segnarla come letta se l\'app supporta queste azioni. Per rispondere potrebbe essere necessario sbloccare. Tocca due volte per mostrare la schermata di blocco. Avvisi gestisce le app consentite, i colori per app, le notifiche silenziose e Non disturbare.</string>
+    <string name="tutorial_power">La vista a schermo spento riattiva il display e disegna il nero; non è l\'AOD hardware nativo del dispositivo. Sugli OLED i pixel neri si spengono, ma la retroilluminazione degli LCD può comunque brillare. Batteria offre ore di silenzio, protezione batteria scarica, limiti di frequenza fotogrammi e promemoria al movimento. Impostazioni contiene anche backup, ripristino, lingua e registro eventi.</string>
+    <string name="t_battery_indicator" formatted="false">% batteria</string>
+    <string name="t_charge_aod">Ricarica a schermo off</string>
+    <string name="t_progress_initials" formatted="false">Freccia direzione</string>
+    <string name="t_progress_app_color" formatted="false">Colore app trasfer.</string>
+    <string name="c_upload">Upload</string>
+    <string name="c_download">Download</string>
+    <string name="transfer_hint">I colori delle app identificano i trasferimenti (WhatsApp verde, Instagram rosa). Disattiva il colore app per usare i colori di upload/download; un colore di avanzamento personalizzato li sostituisce entrambi. Il rilevamento richiede una notifica di avanzamento. Imposta la freccia per ogni app, o cosa mostrare quando la direzione è sconosciuta, in Frecce.</string>
+    <!-- Section headings inside the tabs -->
+    <string name="sec_animation">Animazione</string>
+    <string name="sec_colour">Colore</string>
+    <string name="sec_shape">Forma e movimento</string>
+    <string name="sec_when">Quando accendersi</string>
+    <string name="sec_black">Sullo schermo nero</string>
+    <string name="sec_messages">Messaggi</string>
+    <string name="sec_gestures">Gesti e protezione</string>
+    <string name="sec_timing">Tempi e luminosità</string>
+    <string name="sec_ring_on">Mentre usi il telefono</string>
+    <string name="sec_charging">Ricarica e batteria</string>
+    <string name="sec_transfers">Download e upload</string>
+    <string name="sec_apps">App</string>
+    <string name="sec_filters">Filtri</string>
+    <string name="sec_power">Risparmio energetico</string>
+    <string name="sec_appearance">Aspetto</string>
+    <string name="sec_tools">Strumenti</string>
+    <!-- Transfer arrows (2.5.0) -->
+    <string name="arrows_title">Frecce per app</string>
+    <string name="arrows_sub_some">Impostate da te: %1$d · le altre automatiche</string>
+    <string name="arrows_sub_none">Tutte automatiche</string>
+    <string name="unknown_title">Se sconosciuta</string>
+    <string name="sec_arrows">Frecce</string>
+    <string name="sec_set_by_you">Impostate da te</string>
+    <string name="sec_auto_apps">Automatiche</string>
+    <string name="sec_search_results">Tutte le app</string>
+    <string name="arrow_sub_always">Sempre</string>
+    <string name="arrow_sub_known">App nota</string>
+    <string name="arrow_sub_text">Legge la notifica</string>
+    <string name="arrow_auto">Auto</string>
+    <string name="arrow_download">Download</string>
+    <string name="arrow_upload">Upload</string>
+    <string name="arrow_none">Nessuna</string>
+    <string name="arrows_footer">Le app compaiono qui dopo il loro primo download o upload, insieme alle app più note. Cerca per impostare qualsiasi altra app.</string>
+    <string name="arrows_empty">Nessuna app trovata</string>
+    <string name="arrow_status_active">Trasferimento in corso</string>
+    <string name="arrow_status_idle">Nessun trasferimento ora</string>
+    <string name="sec_arrow_on_ring">Freccia sull\'anello</string>
+    <string name="seg_none">Nessuna</string>
+    <string name="arrow_explain_known">Auto legge prima il testo della notifica, poi usa la direzione abituale di questa app (%1$s).</string>
+    <string name="arrow_explain_text">Auto legge il testo della notifica. Se non indica nulla, decide “Se sconosciuta” (%1$s).</string>
+    <string name="arrow_explain_down">Ogni trasferimento di %1$s mostra ↓, qualunque cosa dica la notifica.</string>
+    <string name="arrow_explain_up">Ogni trasferimento di %1$s mostra ↑, qualunque cosa dica la notifica.</string>
+    <string name="arrow_explain_none">%1$s mostra l\'anello senza freccia. Il colore segue comunque la direzione.</string>
+    <string name="sec_ring_colour">Colore anello</string>
+    <string name="ring_colour_app">Colore app</string>
+    <string name="ring_colour_upload">Colore upload</string>
+    <string name="ring_colour_download">Colore download</string>
+    <string name="reset_auto">Ripristina Auto</string>
+    <string name="unknown_intro">Quando la notifica non indica upload o download e l\'app non ha una freccia propria.</string>
+    <string name="unk_none">Nessuna icona</string>
+    <string name="unk_none_sub">Solo l\'anello</string>
+    <string name="unk_both">Mostra ↕</string>
+    <string name="unk_both_sub">In corso, direzione sconosciuta</string>
+    <string name="unk_down">Come download</string>
+    <string name="unk_down_sub">La maggior parte dei trasferimenti sono download</string>
+    <string name="unk_up">Come upload</string>
+    <string name="unk_up_sub">Per telefoni che fanno molti backup</string>
+    <string name="sec_order">Ordine seguito da Glow LED</string>
+    <string name="order_1">La tua scelta per l\'app</string>
+    <string name="order_2">Parole nella notifica</string>
+    <string name="order_3">App nota (Play Store ↓, Foto ↑…)</string>
+    <string name="order_4">Questa impostazione</string>
+    <string name="setup_optional">Facoltativo</string>
+    <string name="setup_allow">Consenti</string>
+    <string name="a11y_banking">Alcune app bancarie e di pagamento si rifiutano di aprirsi mentre è attivo un servizio di accessibilità non proveniente dal Play Store. Se succede con una delle tue, disattivalo: Glow LED continua a funzionare con la finestra sulla schermata di blocco (su Xiaomi potresti vedere un breve lampo prima della luce).</string>
+    <string name="a11y_turn_off">Disattiva</string>
+    <string name="upd_title">Aggiornamenti</string>
+    <string name="upd_sub_latest">Versione %1$s · aggiornata</string>
+    <string name="upd_sub_available">Versione %1$s disponibile</string>
+    <string name="upd_sub_unknown">Versione %1$s · tocca per verificare</string>
+    <string name="upd_installed">Installata: versione %1$s</string>
+    <string name="upd_checking">Ricerca aggiornamenti…</string>
+    <string name="upd_latest">Glow LED è aggiornato</string>
+    <string name="upd_latest_sub">Hai l\'ultima versione, %1$s.</string>
+    <string name="upd_available">Versione %1$s disponibile</string>
+    <string name="upd_size">Dimensione download %1$s · firmato con la chiave ufficiale</string>
+    <string name="upd_failed_title">Impossibile verificare gli aggiornamenti</string>
+    <string name="upd_failed">Controlla la connessione a Internet e riprova.</string>
+    <string name="upd_retry">Riprova</string>
+    <string name="upd_check_now">Verifica ora</string>
+    <string name="upd_whats_new">Novità della %1$s</string>
+    <string name="upd_install">Scarica e installa</string>
+    <string name="upd_downloading">Download in corso… %1$d%%</string>
+    <string name="upd_installing">Installazione…</string>
+    <string name="upd_installing_sub">Conferma nella schermata successiva. Glow LED si riavvia con le tue impostazioni.</string>
+    <string name="upd_verify_failed">Il file scaricato non è una versione più recente di Glow LED firmata con la chiave ufficiale, quindi non è stato installato.</string>
+    <string name="upd_download_failed">Download non riuscito. Riprova.</string>
+    <string name="upd_install_failed">Installazione non riuscita: %1$s</string>
+    <string name="upd_allow_title">Consenti installazione aggiornamenti</string>
+    <string name="upd_allow_msg">Per installare da sé gli aggiornamenti, Glow LED ha bisogno di “Installa app sconosciute”. Attivalo per Glow LED, poi torna qui: il download partirà da solo.</string>
+    <string name="upd_auto">Verifica aggiornamenti</string>
+    <string name="upd_all_releases">Tutte le versioni</string>
+    <string name="upd_auto_note">Glow LED interroga GitHub ogni poche ore e ti avvisa con l\'elenco delle modifiche quando esce una nuova versione. È l\'unico motivo per cui usa Internet.</string>
+    <string name="channel_updates">Aggiornamenti app</string>
+    <string name="upd_notif_title">Glow LED %1$s è disponibile</string>
+    <string name="upd_notif_action">Aggiorna</string>
+    <string name="selected">Selezionato</string>
+</resources>

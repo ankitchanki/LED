@@ -481,14 +481,16 @@ class SettingsUi(private val context: Context, private val sp: SharedPreferences
                     text = l
                     gravity = Gravity.CENTER
                     textSize = 13f
-                    maxLines = 1
+                    // Longer languages wrap to a second line instead of being cut off.
+                    maxLines = 2
                     ellipsize = TextUtils.TruncateAt.END
-                    setPadding(dp(4), 0, dp(4), 0)
+                    minHeight = dp(34)
+                    setPadding(dp(4), dp(4), dp(4), dp(4))
                     setTextColor(context.getColor(R.color.text_primary))
                     isClickable = true
                     isFocusable = true
                     setOnClickListener { choose(values[i], it) }
-                    seg.addView(this, LinearLayout.LayoutParams(0, dp(34), 1f))
+                    seg.addView(this, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
                 }
             }
             box.addView(seg, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(10) })
