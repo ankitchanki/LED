@@ -499,6 +499,7 @@ class MainActivity : AppCompatActivity() {
         section(col, R.string.sec_messages)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_tap_read), "show_content", true, iconsOn),
+            Toggle(getString(R.string.t_peek_expandable), "peek_expandable", true) { iconsOn() && prefs.showContent },
             Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { iconsOn() && prefs.showContent },
         ))
         section(col, R.string.sec_gestures)

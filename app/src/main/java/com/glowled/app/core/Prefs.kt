@@ -59,6 +59,8 @@ class Prefs(context: Context) {
     val droplet get() = bool("droplet", true)
     /** Reply / Mark as read buttons on the message peek. */
     val peekActions get() = bool("peek_actions", true)
+    /** Expandable notification messages with individual replies. */
+    val peekExpandable get() = bool("peek_expandable", true)
     /** Always-on icons as monochrome glyphs (One UI AOD style) instead of full-colour app icons. */
     val aodIcons get() = bool("aod_icons", true)
 

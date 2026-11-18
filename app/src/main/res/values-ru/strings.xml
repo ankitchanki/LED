@@ -153,10 +153,20 @@
     <string name="need_listener_first">Сначала дайте доступ к уведомлениям</string>
 
     <!-- Always-on message peek and quick reply -->
+    <string name="t_peek_expandable">Раскрывающиеся сообщения</string>
     <string name="peek_app_time">%1$s · %2$s</string>
     <string name="peek_new">Новое уведомление</string>
     <string name="peek_hidden">Содержимое скрыто</string>
     <string name="peek_more">Ещё: %d</string>
+    <string name="peek_expand">Развернуть (%d)</string>
+    <string name="peek_collapse">Свернуть</string>
+    <string name="peek_mark_all_read">Прочитать все</string>
+    <string name="peek_messages_count">%1$s · %2$d сообщений</string>
+    <string name="reply_recent_context">Предыдущие сообщения</string>
+    <string name="quick_reply_ok">ОК</string>
+    <string name="quick_reply_thanks">Спасибо!</string>
+    <string name="quick_reply_on_my_way">Скоро буду</string>
+    <string name="quick_reply_later">Отвечу позже</string>
     <string name="peek_reply">Ответить</string>
     <string name="peek_mark_read">Прочитано</string>
     <string name="peek_dismiss">Закрыть</string>

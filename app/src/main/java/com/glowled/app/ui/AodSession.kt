@@ -309,8 +309,13 @@ class AodSession(
         }
         peekPkg = pkg
         peek.actionsEnabled = prefs.peekActions
+        peek.expandableEnabled = prefs.peekExpandable
         peek.bind(entries)
         peek.show()
+        resetPeekTimeout()
+    }
+
+    private fun resetPeekTimeout() {
         handler.removeCallbacks(hidePeekRunnable)
         handler.postDelayed(hidePeekRunnable, PEEK_MS)
     }
@@ -371,6 +376,28 @@ class AodSession(
             com.glowled.app.service.NotifyListenerService.instance?.cancelNotification(e.key)
         }
         DebugLog.add("Marked as read from the always-on screen")
+    }
+
+    /** Marks all notifications in the list as read / dismissed. */
+    private fun markAllRead(list: List<NotificationStore.Entry>) {
+        root.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+        for (e in list) {
+            val action = e.readAction
+            if (action != null) {
+                try {
+                    action.actionIntent.send()
+                } catch (ex: Exception) {
+                    DebugLog.add("Mark as read failed: ${ex.javaClass.simpleName}")
+                }
+                NotificationStore.markSeen(e.key)
+            } else {
+                com.glowled.app.service.NotifyListenerService.instance?.cancelNotification(e.key)
+                NotificationStore.markSeen(e.key)
+            }
+        }
+        LedController.refreshAll()
+        hidePeek()
+        DebugLog.add("Marked all as read (${list.size} notifications)")
     }
 
     /** Call once the host window is visible. */
@@ -576,6 +603,12 @@ class AodSession(
         peek.onOpen = { e -> openNotification(e) }
         peek.onReply = { e -> replyTo(e) }
         peek.onMarkRead = { e -> markRead(e) }
+        peek.onMarkAllRead = { list -> markAllRead(list) }
+        peek.onInteraction = { resetPeekTimeout() }
+        peek.onExpandedChanged = {
+            resetPeekTimeout()
+            root.requestLayout()
+        }
         bindInfo()
         installGestures()
         if (durationSec > 0) handler.postDelayed(timeout, durationSec * 1000L)

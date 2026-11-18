@@ -1,3 +1,15 @@
+# Glow LED v2.11.0
+
+## Expandable messages with quick reply
+- **Expandable notifications:** on the always-on / lock screen peek card, tap "Expand" (or the card) to view all unread messages from that app with full text and timestamps.
+- **Individual replies:** reply to or mark as read any individual message in an expanded thread.
+- **Mark all as read:** one-tap button to clear all pending messages for an app.
+- **Enhanced quick reply sheet:** view conversation history and tap quick-response chips (👍, OK, Thanks, etc.) for instant replies.
+- **Interactive timeout reset:** reading or scrolling through notifications automatically extends the peek duration.
+- **New settings toggle:** easily enable or disable expandable messages in Screen Off → Messages.
+
+---
+
 # Glow LED v2.10.1
 
 ✅ **Signed build** (official Glow LED key, SHA-256 `5D:04:DE:1A…0C:50:23`). Installs over v1.3.0 and

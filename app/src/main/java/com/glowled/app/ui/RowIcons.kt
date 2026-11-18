@@ -34,6 +34,7 @@ object RowIcons {
         "app_info_always" to (R.drawable.ic_s_pin to CYAN),
         "droplet" to (R.drawable.ic_s_drop to TEAL),
         "show_content" to (R.drawable.ic_s_eye to ORANGE),
+        "peek_expandable" to (R.drawable.ic_s_badge to BLUE),
         "peek_actions" to (R.drawable.ic_s_reply to GREEN),
         "double_tap_wake" to (R.drawable.ic_s_tap to PURPLE),
         "proximity" to (R.drawable.ic_s_phone to BROWN),
