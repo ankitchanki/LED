@@ -193,10 +193,13 @@ class AodSession(
             }
             // No overlay available: keep the ring visible right under the window's top edge.
             val g = CutoutGeometry.resolve(context, prefs)
-            val ringTop = g.cy - led.ringBottom() + g.cy // mirror of the bottom around the centre
+            val ledLoc = IntArray(2); led.getLocationOnScreen(ledLoc)
+            val ringBottomScreen = ledLoc[1] + led.ringBottom()
+            val ringTop = g.cy - (ringBottomScreen - g.cy) // mirror of the bottom around the centre
             if (ringTop < loc[1]) {
                 yShift = loc[1] - ringTop + 6 * density
                 led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
             }
         }
         val g = geometry()
@@ -236,6 +239,7 @@ class AodSession(
     private fun bindInfo() {
         if (!prefs.showAppInfo) return
         info.monochrome = prefs.aodIcons
+        info.iconDp = prefs.appIconDp
         var apps = NotificationStore.apps()
         if (preview && apps.isEmpty()) apps = sampleApps
         info.bind(apps)
@@ -421,7 +425,8 @@ class AodSession(
     }
 
     fun restartAnimation() {
-        led.configure(prefs, geometry(), currentColors()) // undoes an eco still ring
+        led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat() // undoes an eco still ring
         updateMeters()
         updateAgeFade()
         led.restartAnimation()
@@ -522,6 +527,7 @@ class AodSession(
             return
         }
         led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         updateMeters()
         updateAgeFade()
         armSettle()
@@ -567,6 +573,7 @@ class AodSession(
     init {
         led.useScreenCoords = true
         led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         led.intro = 0f
         updateAgeFade()
         root.addView(info, FrameLayout.LayoutParams(-2, -2))

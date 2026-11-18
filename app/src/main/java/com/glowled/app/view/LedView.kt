@@ -183,7 +183,7 @@ class LedView @JvmOverloads constructor(
     fun indicatorBottom(): Float = ringBottom() + (if (batteryLabel != null) indicatorLineHeight else 0f)
 
     private fun drawLabels(c: Canvas) {
-        val y = ringBottom() - (geometry?.cy ?: cy) + cy + indicatorLineHeight - labelPaint.descent()
+        val y = ringBottom() + indicatorLineHeight - labelPaint.descent()
         batteryLabel?.let {
             labelPaint.color = Color.WHITE
             labelPaint.alpha = (220 * alphaMul * intro).toInt()
@@ -328,11 +328,11 @@ class LedView @JvmOverloads constructor(
 
     private fun glowRadius() = if (glow) thickness * 1.6f + 3 * density else 0f
 
-    /** Lowest point of the drawn ring, in the geometry's coordinates (to place content under it). */
+    /** Lowest point of the drawn ring, in view-local coordinates (to place content under it). */
     fun ringBottom(): Float {
         val g = geometry ?: return 0f
         val r = if (g.shape == CutoutShape.DOT) max(g.w, g.h) / 2f else g.h / 2f + gap + thickness
-        return g.cy + r + glowRadius()
+        return cy + r + glowRadius()
     }
 
     // ---- droplet: liquid drop that stretches out of the camera, detaches, falls and splashes ------
@@ -346,6 +346,8 @@ class LedView @JvmOverloads constructor(
     private var dropTargetY = 0f
     private var dropTargetX = Float.NaN // NaN = straight below the camera
     private var dropRetract = false
+    /** Droplet radius in dp. */
+    var dropletRadiusDp: Float = 10f
 
     /**
      * Plays the droplet in [color] from the bottom of the ring down to [targetY] (view coordinates).
@@ -411,8 +413,7 @@ class LedView @JvmOverloads constructor(
         val x = cx
         val top = cy + ringR // bottom edge of the ring: where the liquid comes out
         val dist = max(dropTargetY - top, ringR * 2f)
-        // Big enough to read as a drop on a real phone (~5-7 dp radius).
-        val rb = max(max(thickness * 2.2f, ringR * 0.45f), 5f * density)
+        val rb = max(dropletRadiusDp * density, thickness * 1.8f)
         dropPaint.color = dropColor
         if (glow) dropPaint.setShadowLayer(glowRadius(), 0f, 0f, dropColor) else dropPaint.clearShadowLayer()
 
