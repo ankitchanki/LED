@@ -343,4 +343,13 @@
     <string name="sc_download_sub">A download fills the ring, with a ↓ arrow.</string>
     <string name="sc_upload">Uploading</string>
     <string name="sc_upload_sub">An upload fills the ring, with a ↑ arrow.</string>
+    <string name="t_overlay_tap_messages">Tap ring to read messages</string>
+    <string name="s_droplet_size">Droplet size</string>
+    <string name="s_icon_size">App icon size</string>
+    <string name="sec_tap_zone">Tap response zone</string>
+    <string name="s_tap_zone_x">Tap zone offset X</string>
+    <string name="s_tap_zone_y">Tap zone offset Y</string>
+    <string name="s_tap_zone_w">Tap zone width (0 = auto)</string>
+    <string name="s_tap_zone_h">Tap zone height (0 = auto)</string>
+    <string name="tap_zone_hint">Adjust if taps don\'t reach the ring. A border shows the tap zone while you configure it here.</string>
 </resources>
