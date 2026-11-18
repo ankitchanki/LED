@@ -57,6 +57,10 @@ class Prefs(context: Context) {
     val showContent get() = bool("show_content", true)
     /** Liquid droplet from the camera when a notification arrives. */
     val droplet get() = bool("droplet", true)
+    /** Droplet size (radius) in dp for the camera droplet animation. */
+    val dropletSizeDp get() = int("droplet_size", 10).coerceIn(4, 28)
+    /** App icon size in dp in the notification icon row (screen-on / AOD). */
+    val appIconDp get() = int("app_icon_size", 36).coerceIn(24, 72)
     /** Reply / Mark as read buttons on the message peek. */
     val peekActions get() = bool("peek_actions", true)
     /** Expandable notification messages with individual replies. */
@@ -81,6 +85,13 @@ class Prefs(context: Context) {
     // Screen-on overlay
     val overlayEnabled get() = bool("overlay_enabled", true)
     val overlayLockOnly get() = bool("overlay_lock_only", false)
+    /** Tap the ring on the unlocked screen to expand app icons and read messages. */
+    val onTapMessages get() = bool("overlay_tap_messages", true)
+    // Screen-on tap response zone (collapsed ring). Offsets/sizes in dp; 0 width/height = automatic.
+    val tapZoneOffsetXDp get() = int("tap_zone_dx", 0).coerceIn(-300, 300)
+    val tapZoneOffsetYDp get() = int("tap_zone_dy", 0).coerceIn(-300, 500)
+    val tapZoneWidthDp get() = int("tap_zone_w", 0).coerceIn(0, 500)
+    val tapZoneHeightDp get() = int("tap_zone_h", 0).coerceIn(0, 800)
 
     // Charging and download rings (screen on, also over the lock screen)
     /**

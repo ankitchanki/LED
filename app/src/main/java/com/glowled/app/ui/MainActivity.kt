@@ -62,6 +62,7 @@ import com.glowled.app.core.PowerGuard
 import com.glowled.app.core.Prefs
 import com.glowled.app.service.LedAccessibilityService
 import com.glowled.app.service.NotifyListenerService
+import com.glowled.app.service.ScreenOnOverlay
 import com.glowled.app.ui.SettingsUi.Range
 import com.glowled.app.ui.SettingsUi.Toggle
 import com.glowled.app.ui.SettingsUi.ColorItem
@@ -90,6 +91,8 @@ class MainActivity : AppCompatActivity() {
     /** Full-screen, touch-through layer that draws the ring on the phone's real camera cutout. */
     private lateinit var cameraLed: LedView
     private var introAnim: ValueAnimator? = null
+    /** Outline of the screen-on tap/response zone, shown while configuring it. */
+    private var tapZoneOutline: TapZoneOutlineView? = null
     private lateinit var pager: ViewPager2
     private lateinit var tabs: TabLayout
     private lateinit var ui: SettingsUi
@@ -132,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         if (key in REPLAY_KEYS) playCameraIntro()
         if (key != null && (key.startsWith("charge_") || key.startsWith("progress_") || key == "upload_color" || key == "download_color")) previewMeter(key)
         if (key == "style" || key == Prefs.K_ENABLED) ui.refresh()
+        if (key != null && key.startsWith("tap_zone_")) updateTapZoneOutline()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,6 +160,13 @@ class MainActivity : AppCompatActivity() {
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }
         findViewById<FrameLayout>(android.R.id.content).addView(cameraLed, FrameLayout.LayoutParams(-1, -1))
+        tapZoneOutline = TapZoneOutlineView(this).apply {
+            isClickable = false
+            isFocusable = false
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            visibility = View.GONE
+        }
+        findViewById<FrameLayout>(android.R.id.content).addView(tapZoneOutline, FrameLayout.LayoutParams(-1, -1))
         cameraLed.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> configureCameraLed() }
 
         master = findViewById(R.id.master)
@@ -294,6 +305,7 @@ class MainActivity : AppCompatActivity() {
         cameraLed.visibility = if (show) View.VISIBLE else View.INVISIBLE
         if (!show) return
         cameraLed.configure(prefs, CutoutGeometry.resolve(this, prefs), cameraColors())
+        updateTapZoneOutline()
     }
 
     /** The ring grows out of the camera and fades in (same entrance as the always-on screen). */
@@ -369,7 +381,13 @@ class MainActivity : AppCompatActivity() {
         pager.adapter = PagesAdapter(pageViews)
         pager.offscreenPageLimit = pages.size
         TabLayoutMediator(tabs, pager) { tab, i -> tab.text = pages[i].first }.attach()
+        pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                updateTapZoneOutline()
+            }
+        })
         ui.refresh()
+        updateTapZoneOutline()
     }
 
     private class PagesAdapter(val pages: List<View>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -525,10 +543,39 @@ class MainActivity : AppCompatActivity() {
 
     private fun pageScreenOn(): View {
         val (page, col) = ui.page()
+        val ringOn = { prefs.overlayEnabled }
+        val tapOn = { prefs.overlayEnabled && prefs.onTapMessages && !prefs.overlayLockOnly }
         section(col, R.string.sec_ring_on, first = true)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_ring_on), "overlay_enabled", true),
-            Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false) { prefs.overlayEnabled },
+            Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false, ringOn),
+            Toggle(getString(R.string.t_overlay_tap_messages), "overlay_tap_messages", true) { prefs.overlayEnabled && !prefs.overlayLockOnly },
+            Toggle(getString(R.string.t_droplet), "droplet", true, ringOn),
+        ))
+        val ringCard = ui.card(col)
+        ui.sliders(ringCard,
+            Range(getString(R.string.s_droplet_size), "droplet_size", 4, 28, 10, "dp"),
+            Range(getString(R.string.s_icon_size), "app_icon_size", 24, 72, 36, "dp"),
+            dependsOn = ringOn)
+        section(col, R.string.sec_tap_zone)
+        val tz = ui.card(col)
+        ui.sliders(tz,
+            Range(getString(R.string.s_tap_zone_x), "tap_zone_dx", -300, 300, 0, "dp"),
+            Range(getString(R.string.s_tap_zone_y), "tap_zone_dy", -300, 500, 0, "dp"),
+            dependsOn = tapOn)
+        ui.sliders(tz,
+            Range(getString(R.string.s_tap_zone_w), "tap_zone_w", 0, 500, 0, "dp"),
+            Range(getString(R.string.s_tap_zone_h), "tap_zone_h", 0, 800, 0, "dp"),
+            dependsOn = tapOn)
+        val tzHint = hint(getString(R.string.tap_zone_hint))
+        col.addView(tzHint)
+        ui.dependOn(tzHint, tapOn)
+        ui.dependOn(tz.parent as View, tapOn)
+        section(col, R.string.sec_messages)
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_aod_icons), "aod_icons", true, tapOn),
+            Toggle(getString(R.string.t_tap_read), "show_content", true, tapOn),
+            Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { tapOn() && prefs.showContent },
         ))
         section(col, R.string.sec_charging)
         ui.toggles(col, listOf(
@@ -1024,6 +1071,39 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         buildSetup()
+    }
+
+    // ---- tap zone outline ---------------------------------------------------------------------
+
+    private fun updateTapZoneOutline() {
+        val v = tapZoneOutline ?: return
+        val onScreenOnTab = ::pager.isInitialized && pager.currentItem == 3
+        if (!onScreenOnTab) {
+            v.visibility = View.GONE
+            return
+        }
+        v.zoneRect = try { ScreenOnOverlay.tapZoneRect(this) } catch (_: Exception) { null }
+        v.visibility = if (v.zoneRect != null) View.VISIBLE else View.GONE
+    }
+
+    private inner class TapZoneOutlineView(context: android.content.Context) : View(context) {
+        private val strokePaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            style = android.graphics.Paint.Style.STROKE
+            strokeWidth = 3f * resources.displayMetrics.density
+            color = context.getColor(R.color.accent)
+        }
+        private val fillPaint = android.graphics.Paint().apply {
+            style = android.graphics.Paint.Style.FILL
+            color = (context.getColor(R.color.accent) and 0x00FFFFFF) or 0x2A000000
+        }
+        var zoneRect: android.graphics.Rect? = null
+            set(value) { field = value; invalidate() }
+
+        override fun onDraw(c: android.graphics.Canvas) {
+            val r = zoneRect ?: return
+            c.drawRect(r, fillPaint)
+            c.drawRect(r, strokePaint)
+        }
     }
 
     // ---- test notification ---------------------------------------------------------------------

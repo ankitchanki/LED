@@ -352,4 +352,13 @@
     <string name="sc_download_sub">Загрузка заполняет кольцо, со стрелкой ↓.</string>
     <string name="sc_upload">Отправка</string>
     <string name="sc_upload_sub">Отправка заполняет кольцо, со стрелкой ↑.</string>
+    <string name="t_overlay_tap_messages">Нажатие на кольцо — читать сообщения</string>
+    <string name="s_droplet_size">Размер капли</string>
+    <string name="s_icon_size">Размер иконок приложений</string>
+    <string name="sec_tap_zone">Зона нажатия на кольцо</string>
+    <string name="s_tap_zone_x">Смещение зоны по X</string>
+    <string name="s_tap_zone_y">Смещение зоны по Y</string>
+    <string name="s_tap_zone_w">Ширина зоны (0 = авто)</string>
+    <string name="s_tap_zone_h">Высота зоны (0 = авто)</string>
+    <string name="tap_zone_hint">Настройте, если нажатия не попадают по кольцу. Во время настройки показывается граница зоны.</string>
 </resources>

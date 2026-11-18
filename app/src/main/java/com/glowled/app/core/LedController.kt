@@ -143,6 +143,9 @@ object LedController {
         main.postDelayed({ if (NotificationStore.remove(key)) onNotificationsChanged(false) }, 60_000)
     }
 
+    private var pendingDropletColor: Int? = null
+    private var pendingDropletUntil = 0L
+
     fun onNotificationsChanged(newPost: Boolean) = main.post {
         if (newPost) {
             suppressed = false
@@ -152,12 +155,24 @@ object LedController {
         if (NotificationStore.isEmpty()) {
             cancelPulse()
             disarmMotion()
+            pendingDropletColor = null
         } else if (newPost && !isInteractive() && prefs.aodOnNew) {
             startAod(pulse = false)
         }
         updateOverlay()
         if (newPost && prefs.droplet && isInteractive() && !aodVisible) {
-            NotificationStore.apps().firstOrNull()?.let { OverlayHost.droplet(it.color) }
+            val app = NotificationStore.apps().firstOrNull()
+            if (app != null) {
+                DebugLog.add("Droplet triggered for ${app.pkg}")
+                OverlayHost.droplet(app.color)
+                // If overlay wasn't ready (e.g. app in foreground), retry shortly when it appears.
+                pendingDropletColor = app.color
+                pendingDropletUntil = SystemClock.uptimeMillis() + 6000
+            } else {
+                DebugLog.add("Droplet skipped: no app")
+            }
+        } else if (newPost) {
+            DebugLog.add("Droplet skipped: droplet=${prefs.droplet} interactive=${isInteractive()} aod=$aodVisible")
         }
     }
 
@@ -549,11 +564,26 @@ object LedController {
     fun updateOverlay() {
         if (!initialized) return
         val launching = SystemClock.uptimeMillis() < ourWakeUntil
-        val canShow = prefs.enabled && !aodVisible && !launching && !appInForeground && isInteractive() &&
-            (prefs.style.isEdge || CutoutGeometry.isPortrait(app))
+        val portrait = prefs.style.isEdge || CutoutGeometry.isPortrait(app)
+        val canShow = prefs.enabled && !aodVisible && !launching && !appInForeground && isInteractive() && portrait
         val notifRing = prefs.overlayEnabled && !NotificationStore.isEmpty() && (!prefs.overlayLockOnly || isLocked())
         overlayMeter = if (canShow) computeMeter(notifRing) else null
-        if (canShow && (notifRing || overlayMeter != null || prefs.batteryIndicator)) OverlayHost.show(app) else OverlayHost.hide()
+        val show = canShow && (notifRing || overlayMeter != null || prefs.batteryIndicator)
+        if (!show && isInteractive() && !isLocked() && !NotificationStore.isEmpty()) {
+            DebugLog.add("Overlay off: can=$canShow enabled=${prefs.enabled} aod=$aodVisible fg=$appInForeground portrait=$portrait oE=${prefs.overlayEnabled} lockOnly=${prefs.overlayLockOnly} meter=${overlayMeter != null} batt=${prefs.batteryIndicator}")
+        }
+        if (show) {
+            OverlayHost.show(app)
+            val pending = pendingDropletColor
+            if (pending != null && SystemClock.uptimeMillis() <= pendingDropletUntil) {
+                pendingDropletColor = null
+                main.postDelayed({ OverlayHost.droplet(pending) }, 150)
+            } else if (pending != null) {
+                pendingDropletColor = null
+            }
+        } else {
+            OverlayHost.hide()
+        }
     }
 
     // ---- charging ring and transfer ring (both views) ----------------------------------------------
