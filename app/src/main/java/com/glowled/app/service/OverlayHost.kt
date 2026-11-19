@@ -18,7 +18,7 @@ import com.glowled.app.view.LedView
  * Screen-on indicator window. Over apps it is a "display over other apps" window, which apps that
  * guard against overlays (banking, payments) can hide; the accessibility overlay is only used on
  * the lock screen, or when there is no overlay permission.
- * The window is sized tightly around the camera so the compositor has almost nothing to blend.
+ * The passive window is sized tightly around the camera; the interactive message view uses its own window.
  */
 object OverlayHost {
 
@@ -27,7 +27,18 @@ object OverlayHost {
     private var usingA11y = false
     private val listener: () -> Unit = { refresh() }
 
+    private fun shouldUseInteractive(): Boolean = ScreenOnOverlay.shouldBeInteractive()
+
     fun show(context: Context) {
+        if (shouldUseInteractive()) {
+            hidePassive()
+            if (ScreenOnOverlay.isShowing()) ScreenOnOverlay.refresh() else ScreenOnOverlay.show(context)
+            if (ScreenOnOverlay.isShowing()) return
+            com.glowled.app.core.DebugLog.add("Screen-on interactive unavailable, using passive")
+            // Interactive failed to show; fall back to passive so the ring still appears.
+        } else {
+            if (ScreenOnOverlay.isShowing()) ScreenOnOverlay.hide()
+        }
         val a11y = LedAccessibilityService.instance?.takeIf {
             !Settings.canDrawOverlays(context) || LedController.isLocked()
         }
@@ -35,7 +46,7 @@ object OverlayHost {
             refresh()
             return
         }
-        hide()
+        hidePassive()
         val ctx: Context
         val type: Int
         if (a11y != null) {
@@ -70,7 +81,8 @@ object OverlayHost {
             (!prefs.overlayLockOnly || LedController.isLocked())
         val m = LedController.overlayMeter
         v.setMeter(m?.fraction, m?.color ?: 0, m?.icon ?: MeterIcon.NONE, m?.indeterminate ?: false)
-        v.setBattery(LedController.batteryPercent())
+        v.setBatteryText(LedController.batteryStatusText())
+        v.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         val flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -109,7 +121,19 @@ object OverlayHost {
 
     /** Re-applies settings, colours and the gauge; repositions the window if geometry or style changed. */
     fun refresh() {
-        val v = view ?: return
+        if (shouldUseInteractive()) {
+            hidePassive()
+            if (ScreenOnOverlay.isShowing()) ScreenOnOverlay.refresh() else ScreenOnOverlay.show(LedController.app)
+            if (ScreenOnOverlay.isShowing()) return
+            // fell back to passive below if interactive couldn't be shown
+        } else if (ScreenOnOverlay.isShowing()) {
+            ScreenOnOverlay.hide()
+        }
+        val v = view ?: run {
+            // No passive view yet (e.g. after interactive fallback) - let show() create it.
+            runCatching { LedController.app }.getOrNull()?.let { show(it) }
+            return
+        }
         val manager = wm ?: return
         val type = (v.layoutParams as? WindowManager.LayoutParams)?.type ?: return
         val old = v.layoutParams as? WindowManager.LayoutParams ?: return
@@ -125,22 +149,37 @@ object OverlayHost {
 
     /** New notification while the screen is on: a drop stretches out of the camera and springs back. */
     fun droplet(color: Int) {
-        val v = view ?: return
+        if (ScreenOnOverlay.isShowing()) {
+            ScreenOnOverlay.droplet(color)
+            return
+        }
+        val v = view ?: run {
+            com.glowled.app.core.DebugLog.add("Droplet skipped: no overlay")
+            return
+        }
+        com.glowled.app.core.DebugLog.add("Droplet on passive ring")
         // Post: the window may have just been added and not laid out yet.
         v.post { v.playDropletBelow(color, DROP_DP * v.resources.displayMetrics.density, retract = true) }
     }
 
     private const val DROP_DP = 26f
 
-    fun hide() {
+    private fun hidePassive() {
         val v = view ?: return
-        LedController.removeListener(listener)
+        try { LedController.removeListener(listener) } catch (_: Exception) {}
         v.visibility = View.GONE
-        try {
-            wm?.removeViewImmediate(v)
-        } catch (_: Exception) {
-        }
+        try { wm?.removeViewImmediate(v) } catch (_: Exception) {}
         view = null
         wm = null
+    }
+
+    fun hide() {
+        hidePassive()
+        if (ScreenOnOverlay.isShowing()) ScreenOnOverlay.hide()
+    }
+
+    fun updateBatteryText() {
+        view?.setBatteryText(LedController.batteryStatusText())
+        ScreenOnOverlay.updateBatteryText()
     }
 }

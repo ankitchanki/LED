@@ -153,10 +153,21 @@
     <string name="need_listener_first">Сначала дайте доступ к уведомлениям</string>
 
     <!-- Always-on message peek and quick reply -->
+    <string name="t_peek_expandable">Раскрывающиеся сообщения</string>
     <string name="peek_app_time">%1$s · %2$s</string>
     <string name="peek_new">Новое уведомление</string>
     <string name="peek_hidden">Содержимое скрыто</string>
     <string name="peek_more">Ещё: %d</string>
+    <string name="peek_expand">Раскрыть (%d)</string>
+    <string name="peek_expand_single">Раскрыть</string>
+    <string name="peek_collapse">Свернуть</string>
+    <string name="peek_mark_all_read">Прочитать все</string>
+    <string name="peek_messages_count">%1$s · %2$d сообщений</string>
+    <string name="reply_recent_context">Предыдущие сообщения</string>
+    <string name="quick_reply_ok">ОК</string>
+    <string name="quick_reply_thanks">Спасибо!</string>
+    <string name="quick_reply_on_my_way">Скоро буду</string>
+    <string name="quick_reply_later">Отвечу позже</string>
     <string name="peek_reply">Ответить</string>
     <string name="peek_mark_read">Прочитано</string>
     <string name="peek_dismiss">Закрыть</string>
@@ -342,4 +353,25 @@
     <string name="sc_download_sub">Загрузка заполняет кольцо, со стрелкой ↓.</string>
     <string name="sc_upload">Отправка</string>
     <string name="sc_upload_sub">Отправка заполняет кольцо, со стрелкой ↑.</string>
+    <string name="t_overlay_tap_messages">Нажатие на кольцо — читать сообщения</string>
+    <string name="s_droplet_size">Размер капли</string>
+    <string name="s_icon_size">Размер иконок приложений</string>
+    <string name="sec_tap_zone">Зона нажатия на кольцо</string>
+    <string name="s_tap_zone_x">Смещение зоны по X</string>
+    <string name="s_tap_zone_y">Смещение зоны по Y</string>
+    <string name="s_tap_zone_w">Ширина зоны (0 = авто)</string>
+    <string name="s_tap_zone_h">Высота зоны (0 = авто)</string>
+    <string name="tap_zone_hint">Настройте, если нажатия не попадают по кольцу. Во время настройки показывается граница зоны.</string>
+    <string name="s_peek_width">Ширина плашки</string>
+    <string name="s_peek_height">Высота плашки</string>
+    <string name="s_peek_lines">Длина сообщения (строк)</string>
+    <string name="s_peek_font_size">Размер шрифта</string>
+    <string name="t_charge_screen_on">Кольцо при включённом экране</string>
+    <string name="chips_charge_timeout_aod">Таймер при выключенном экране</string>
+    <string name="chips_charge_timeout_on">Таймер при включённом экране</string>
+    <string name="sec_battery_metrics">Параметры батареи под кольцом</string>
+    <string name="t_charge_show_percent">Процент заряда (%)</string>
+    <string name="t_charge_show_voltage">Напряжение батареи (В)</string>
+    <string name="t_charge_show_current">Сила тока (мА)</string>
+    <string name="t_charge_show_power">Мощность (Вт)</string>
 </resources>

@@ -143,6 +143,9 @@ object LedController {
         main.postDelayed({ if (NotificationStore.remove(key)) onNotificationsChanged(false) }, 60_000)
     }
 
+    private var pendingDropletColor: Int? = null
+    private var pendingDropletUntil = 0L
+
     fun onNotificationsChanged(newPost: Boolean) = main.post {
         if (newPost) {
             suppressed = false
@@ -152,12 +155,24 @@ object LedController {
         if (NotificationStore.isEmpty()) {
             cancelPulse()
             disarmMotion()
+            pendingDropletColor = null
         } else if (newPost && !isInteractive() && prefs.aodOnNew) {
             startAod(pulse = false)
         }
         updateOverlay()
         if (newPost && prefs.droplet && isInteractive() && !aodVisible) {
-            NotificationStore.apps().firstOrNull()?.let { OverlayHost.droplet(it.color) }
+            val app = NotificationStore.apps().firstOrNull()
+            if (app != null) {
+                DebugLog.add("Droplet triggered for ${app.pkg}")
+                OverlayHost.droplet(app.color)
+                // If overlay wasn't ready (e.g. app in foreground), retry shortly when it appears.
+                pendingDropletColor = app.color
+                pendingDropletUntil = SystemClock.uptimeMillis() + 6000
+            } else {
+                DebugLog.add("Droplet skipped: no app")
+            }
+        } else if (newPost) {
+            DebugLog.add("Droplet skipped: droplet=${prefs.droplet} interactive=${isInteractive()} aod=$aodVisible")
         }
     }
 
@@ -201,9 +216,16 @@ object LedController {
                 }
                 Intent.ACTION_CONFIGURATION_CHANGED -> updateOverlay()
                 Intent.ACTION_POWER_CONNECTED -> {
-                    // Show the charging ring for a moment even over the notification light.
-                    chargeFlashUntil = SystemClock.uptimeMillis() + CHARGE_FLASH_MS
-                    main.postDelayed({ updateOverlay(); notifyListeners() }, CHARGE_FLASH_MS + 50)
+                    val now = SystemClock.uptimeMillis()
+                    chargeFlashUntil = now + CHARGE_FLASH_MS
+                    chargeScreenOnUntil = if (prefs.chargeTimeoutOnSec > 0) now + prefs.chargeTimeoutOnSec * 1000L else Long.MAX_VALUE
+                    chargeAodUntil = if (prefs.chargeTimeoutAodSec > 0) now + prefs.chargeTimeoutAodSec * 1000L else Long.MAX_VALUE
+                    if (prefs.chargeTimeoutOnSec > 0) {
+                        main.postDelayed({ updateOverlay(); notifyListeners() }, prefs.chargeTimeoutOnSec * 1000L + 50)
+                    }
+                    if (prefs.chargeTimeoutAodSec > 0) {
+                        main.postDelayed({ updateOverlay(); notifyListeners() }, prefs.chargeTimeoutAodSec * 1000L + 50)
+                    }
                     syncBatteryWatch(pluggedHint = true)
                     updateOverlay()
                     notifyListeners()
@@ -211,6 +233,9 @@ object LedController {
                 }
                 Intent.ACTION_POWER_DISCONNECTED -> {
                     DebugLog.add("Charger disconnected, ${state()}")
+                    chargeFlashUntil = 0L
+                    chargeScreenOnUntil = 0L
+                    chargeAodUntil = 0L
                     syncBatteryWatch(pluggedHint = false)
                     updateOverlay()
                     notifyListeners()
@@ -239,7 +264,7 @@ object LedController {
     fun canLaunchFromBackground(): Boolean =
         LedAccessibilityService.instance != null || Settings.canDrawOverlays(app)
 
-    fun startAod(pulse: Boolean, preview: Boolean = false, durationOverrideSec: Int = 0) {
+    fun startAod(pulse: Boolean, preview: Boolean = false, durationOverrideSec: Int = -1) {
         if (!preview) {
             if (!prefs.enabled) return DebugLog.add("Skipped: Glow LED is off")
             if (!prefs.aodEnabled) return DebugLog.add("Skipped: screen-off light is off")
@@ -248,7 +273,8 @@ object LedController {
             PowerGuard.blockReason(app, prefs)?.let { return DebugLog.add("Skipped: $it") }
         }
         val duration = when {
-            durationOverrideSec > 0 -> durationOverrideSec
+            durationOverrideSec >= 0 -> durationOverrideSec
+            NotificationStore.isEmpty() && prefs.chargeLed && plugged && prefs.chargeAod -> prefs.chargeTimeoutAodSec
             pulse -> prefs.pulseDurationSec
             else -> prefs.aodTimeoutSec
         }
@@ -549,11 +575,26 @@ object LedController {
     fun updateOverlay() {
         if (!initialized) return
         val launching = SystemClock.uptimeMillis() < ourWakeUntil
-        val canShow = prefs.enabled && !aodVisible && !launching && !appInForeground && isInteractive() &&
-            (prefs.style.isEdge || CutoutGeometry.isPortrait(app))
+        val portrait = prefs.style.isEdge || CutoutGeometry.isPortrait(app)
+        val canShow = prefs.enabled && !aodVisible && !launching && !appInForeground && isInteractive() && portrait
         val notifRing = prefs.overlayEnabled && !NotificationStore.isEmpty() && (!prefs.overlayLockOnly || isLocked())
         overlayMeter = if (canShow) computeMeter(notifRing) else null
-        if (canShow && (notifRing || overlayMeter != null || prefs.batteryIndicator)) OverlayHost.show(app) else OverlayHost.hide()
+        val show = canShow && (notifRing || overlayMeter != null || prefs.batteryIndicator)
+        if (!show && isInteractive() && !isLocked() && !NotificationStore.isEmpty()) {
+            DebugLog.add("Overlay off: can=$canShow enabled=${prefs.enabled} aod=$aodVisible fg=$appInForeground portrait=$portrait oE=${prefs.overlayEnabled} lockOnly=${prefs.overlayLockOnly} meter=${overlayMeter != null} batt=${prefs.batteryIndicator}")
+        }
+        if (show) {
+            OverlayHost.show(app)
+            val pending = pendingDropletColor
+            if (pending != null && SystemClock.uptimeMillis() <= pendingDropletUntil) {
+                pendingDropletColor = null
+                main.postDelayed({ OverlayHost.droplet(pending) }, 150)
+            } else if (pending != null) {
+                pendingDropletColor = null
+            }
+        } else {
+            OverlayHost.hide()
+        }
     }
 
     // ---- charging ring and transfer ring (both views) ----------------------------------------------
@@ -570,6 +611,8 @@ object LedController {
     private var plugged = false
     private var batteryPct = 0
     private var chargeFlashUntil = 0L
+    private var chargeAodUntil = 0L
+    private var chargeScreenOnUntil = 0L
     private var batteryWatching = false
 
     /**
@@ -577,11 +620,30 @@ object LedController {
      * screen for: unread notifications, a transfer with real progress (not just a spinner - many
      * background tasks show one), and charging only if the user asked for it.
      */
-    fun hasAodContent(): Boolean = !NotificationStore.isEmpty() ||
-        (prefs.progressLed && (ProgressStore.current()?.fraction ?: -1f) >= 0f) ||
-        (prefs.chargeLed && plugged && (prefs.chargeAod || SystemClock.uptimeMillis() < chargeFlashUntil))
+    fun hasAodContent(): Boolean {
+        if (!NotificationStore.isEmpty()) return true
+        if (prefs.progressLed && (ProgressStore.current()?.fraction ?: -1f) >= 0f) return true
+        if (prefs.chargeLed && plugged && prefs.chargeAod) {
+            if (prefs.chargeTimeoutAodSec == 0 || SystemClock.uptimeMillis() < chargeAodUntil) return true
+        }
+        if (prefs.chargeLed && plugged && SystemClock.uptimeMillis() < chargeFlashUntil) return true
+        return false
+    }
 
     fun batteryPercent(): Int? = if (prefs.batteryIndicator) batteryPct else null
+
+    fun batteryStatusText(): String? {
+        if (plugged && prefs.chargeLed) {
+            val statsText = BatteryStats.getInfo(app).formatString(
+                showPercent = prefs.chargeShowPercent,
+                showVoltage = prefs.chargeShowVoltage,
+                showCurrent = prefs.chargeShowCurrent,
+                showPower = prefs.chargeShowPower,
+            )
+            if (statsText != null) return statsText
+        }
+        return if (prefs.batteryIndicator) "$batteryPct%" else null
+    }
 
     fun computeMeter(notifRing: Boolean): Meter? {
         if (prefs.progressLed) ProgressStore.current()?.let {
@@ -599,8 +661,20 @@ object LedController {
             val icon = if (prefs.progressArrow) look.icon else MeterIcon.NONE
             return Meter(it.fraction.coerceAtLeast(0f), color, icon, it.fraction < 0f)
         }
-        if (prefs.chargeLed && plugged && (!notifRing || SystemClock.uptimeMillis() < chargeFlashUntil)) {
-            return Meter(batteryPct / 100f, prefs.chargeColor(batteryPct), MeterIcon.BOLT)
+        val on = isInteractive()
+        val now = SystemClock.uptimeMillis()
+        val chargingActive = if (on) {
+            prefs.chargeLed && plugged && prefs.chargeScreenOn &&
+                (prefs.chargeTimeoutOnSec == 0 || now < chargeScreenOnUntil)
+        } else {
+            prefs.chargeLed && plugged && prefs.chargeAod &&
+                (prefs.chargeTimeoutAodSec == 0 || now < chargeAodUntil)
+        }
+        val flashActive = prefs.chargeLed && plugged && now < chargeFlashUntil
+        if (chargingActive || flashActive) {
+            if (!notifRing || flashActive) {
+                return Meter(batteryPct / 100f, prefs.chargeColor(batteryPct), MeterIcon.BOLT)
+            }
         }
         return null
     }
@@ -626,6 +700,17 @@ object LedController {
         override fun onReceive(c: Context, i: Intent) = onBatteryChanged(i)
     }
 
+    private val batteryTicker = object : Runnable {
+        override fun run() {
+            if (!batteryWatching || !plugged) return
+            if (aodVisible || overlayMeter != null) {
+                notifyListeners()
+                OverlayHost.updateBatteryText()
+            }
+            main.postDelayed(this, 3000L)
+        }
+    }
+
     /**
      * Listens for battery changes while an enabled indicator needs them. These broadcasts update
      * existing views and never wake the display.
@@ -641,12 +726,24 @@ object LedController {
                 app, batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED,
             )?.let { onBatteryChanged(it) }
             batteryWatching = true
+            if (isPlugged && prefs.chargeLed) {
+                main.removeCallbacks(batteryTicker)
+                main.postDelayed(batteryTicker, 3000L)
+            }
         } else if (!want && batteryWatching) {
             try {
                 app.unregisterReceiver(batteryReceiver)
             } catch (_: Exception) {
             }
             batteryWatching = false
+            main.removeCallbacks(batteryTicker)
+        } else if (want && batteryWatching) {
+            if (isPlugged && prefs.chargeLed) {
+                main.removeCallbacks(batteryTicker)
+                main.postDelayed(batteryTicker, 3000L)
+            } else {
+                main.removeCallbacks(batteryTicker)
+            }
         }
     }
 
@@ -663,14 +760,14 @@ object LedController {
         val locked = isLocked()
         DebugLog.add("Charger connected, ${state()}")
         when {
-            !prefs.chargeLed -> DebugLog.add("Charging ring is off (Screen on → Charging ring)")
-            !prefs.aodEnabled -> DebugLog.add("Screen-off light is off, charging ring shown only while the screen is on")
-            aodVisible -> Unit // the light is up: it switches to the charging ring for a moment by itself
+            !prefs.chargeLed || !prefs.chargeAod -> DebugLog.add("Charging ring on lock screen is off")
+            !prefs.aodEnabled -> DebugLog.add("Screen-off light is off")
+            aodVisible -> Unit // the light is up: it updates itself
             on && !locked -> Unit // in use: the screen-on ring shows it
             on && LedAccessibilityService.instance != null -> Unit // the accessibility overlay shows above the lock screen
             else -> {
-                DebugLog.add("Showing the charging ring on the black screen")
-                startAod(pulse = true, durationOverrideSec = CHARGE_FLASH_AOD_SEC)
+                DebugLog.add("Showing the charging ring on the black screen (timeout: ${prefs.chargeTimeoutAodSec}s)")
+                startAod(pulse = false, durationOverrideSec = prefs.chargeTimeoutAodSec)
             }
         }
     }
@@ -684,9 +781,21 @@ object LedController {
     private fun onBatteryChanged(i: Intent) {
         val p = i.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0
         val pct = levelOf(i) ?: batteryPct
+        val gainedPercent = p && pct > batteryPct
         if (p == plugged && pct == batteryPct) return
         plugged = p
         batteryPct = pct
+        if (gainedPercent) {
+            val now = SystemClock.uptimeMillis()
+            if (prefs.chargeTimeoutOnSec > 0) {
+                chargeScreenOnUntil = now + prefs.chargeTimeoutOnSec * 1000L
+                main.postDelayed({ updateOverlay(); notifyListeners() }, prefs.chargeTimeoutOnSec * 1000L + 50)
+            }
+            if (prefs.chargeTimeoutAodSec > 0) {
+                chargeAodUntil = now + prefs.chargeTimeoutAodSec * 1000L
+                main.postDelayed({ updateOverlay(); notifyListeners() }, prefs.chargeTimeoutAodSec * 1000L + 50)
+            }
+        }
         if (!p) syncBatteryWatch(pluggedHint = false)
         updateOverlay()
         notifyListeners()

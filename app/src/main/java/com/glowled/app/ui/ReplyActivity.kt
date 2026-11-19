@@ -10,15 +10,18 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +35,7 @@ import com.glowled.app.core.NotificationStore
 import com.glowled.app.view.AppInfoView
 
 /**
- * Quick reply from the always-on screen: a small sheet with the last message and a text field.
+ * Quick reply from the always-on screen: a small sheet with message thread, quick responses, and a text field.
  * The text goes to the app through its own notification "Reply" action, exactly like replying
  * from the notification shade. On a locked phone Android asks to unlock first.
  */
@@ -97,15 +100,86 @@ class ReplyActivity : AppCompatActivity() {
             ellipsize = TextUtils.TruncateAt.END
         }, LinearLayout.LayoutParams(0, -2, 1f))
         sheet.addView(head)
-        if (!e.hidden && e.lines.isNotEmpty()) {
+
+        // Show recent context / conversation messages if available
+        val thread = NotificationStore.entriesFor(e.pkg).reversed()
+        if (thread.size > 1) {
+            val scrollBox = ScrollView(this).apply {
+                overScrollMode = View.OVER_SCROLL_IF_CONTENT_SCROLLS
+            }
+            val threadCol = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(dp(12), dp(8), dp(12), dp(8))
+                background = GradientDrawable().apply {
+                    cornerRadius = 16f * resources.displayMetrics.density
+                    setColor(getColor(R.color.surface_high))
+                }
+            }
+            for (item in thread) {
+                val itemText = item.lines.joinToString("\n")
+                if (itemText.isNotBlank()) {
+                    val lineView = TextView(this).apply {
+                        val sender = item.title?.let { "$it: " } ?: ""
+                        text = "$sender$itemText"
+                        setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
+                        setTextColor(if (item.key == e.key) getColor(R.color.text_primary) else getColor(R.color.text_secondary))
+                    }
+                    threadCol.addView(lineView, LinearLayout.LayoutParams(-1, -2).apply {
+                        topMargin = dp(4)
+                        bottomMargin = dp(4)
+                    })
+                }
+            }
+            scrollBox.addView(threadCol, LinearLayout.LayoutParams(-1, -2))
+            sheet.addView(scrollBox, LinearLayout.LayoutParams(-1, dp(120)).apply { topMargin = dp(10) })
+        } else if (!e.hidden && e.lines.isNotEmpty()) {
             sheet.addView(TextView(this).apply {
-                text = e.lines.takeLast(3).joinToString("\n")
+                text = e.lines.takeLast(5).joinToString("\n")
                 setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
                 setTextColor(getColor(R.color.text_secondary))
-                maxLines = 3
+                maxLines = 5
                 ellipsize = TextUtils.TruncateAt.END
             }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(10) })
         }
+
+        // Quick replies chips
+        val quickReplies = listOf(
+            "👍", "👌", "❤️",
+            getString(R.string.quick_reply_ok),
+            getString(R.string.quick_reply_thanks),
+            getString(R.string.quick_reply_on_my_way),
+            getString(R.string.quick_reply_later),
+        )
+        val chipsScroll = HorizontalScrollView(this).apply {
+            isHorizontalScrollBarEnabled = false
+            overScrollMode = View.OVER_SCROLL_NEVER
+        }
+        val chipsRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        for (replyStr in quickReplies) {
+            val chip = TextView(this).apply {
+                text = replyStr
+                textSize = 13f
+                setTextColor(getColor(R.color.text_primary))
+                setPadding(dp(12), dp(6), dp(12), dp(6))
+                background = GradientDrawable().apply {
+                    cornerRadius = 16f * resources.displayMetrics.density
+                    setColor(getColor(R.color.surface_high))
+                }
+                isClickable = true
+                setOnClickListener {
+                    input.setText(replyStr)
+                    input.setSelection(replyStr.length)
+                    focusInput()
+                }
+            }
+            chipsRow.addView(chip, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(6) })
+        }
+        chipsScroll.addView(chipsRow, LinearLayout.LayoutParams(-2, -2))
+        sheet.addView(chipsScroll, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(10) })
+
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -139,7 +213,7 @@ class ReplyActivity : AppCompatActivity() {
             }
             setOnClickListener { send() }
         }, LinearLayout.LayoutParams(dp(48), dp(48)).apply { marginStart = dp(10) })
-        sheet.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(14) })
+        sheet.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
 
         root.addView(sheet, FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM))
         // Edge-to-edge: keep the sheet above the keyboard and the navigation bar.
@@ -168,6 +242,7 @@ class ReplyActivity : AppCompatActivity() {
         val action = e.replyAction ?: return finish()
         val text = input.text.toString().trim()
         if (text.isEmpty()) return
+        window.decorView.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
         val inputs = action.remoteInputs ?: return finish()
         val results = Bundle()
         inputs.filter { it.allowFreeFormInput }.forEach { results.putCharSequence(it.resultKey, text) }

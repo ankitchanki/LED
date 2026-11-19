@@ -32,6 +32,10 @@ class AppInfoView(context: Context) : LinearLayout(context) {
     /** AOD-style monochrome glyphs instead of full-colour app icons (set before [bind]). */
     var monochrome = true
 
+    /** Icon diameter in dp. */
+    var iconDp: Int = 36
+        set(v) { field = v.coerceIn(24, 72) }
+
     private val d = resources.displayMetrics.density
     private fun dp(v: Float) = (v * d).toInt()
     private val icons = LinearLayout(context).apply {
@@ -54,7 +58,7 @@ class AppInfoView(context: Context) : LinearLayout(context) {
     }
 
     /** Vertical centre of the icon row, relative to this view (where the droplet should land). */
-    fun iconCenterY(): Float = icons.top + dp(ICON_DP / 2f).toFloat()
+    fun iconCenterY(): Float = icons.top + dp(iconDp / 2f).toFloat()
 
     /** Horizontal centre of the newest app's icon, relative to this view. */
     fun newestCenterX(): Float {
@@ -72,7 +76,7 @@ class AppInfoView(context: Context) : LinearLayout(context) {
         centreOut(shownApps).forEachIndexed { i, app ->
             val chip = iconChip(pm, app)
             chips[app.pkg] = chip
-            icons.addView(chip, LayoutParams(dp(ICON_DP), dp(ICON_DP)).apply { if (i > 0) marginStart = dp(16f) })
+            icons.addView(chip, LayoutParams(dp(iconDp.toFloat()), dp(iconDp.toFloat())).apply { if (i > 0) marginStart = dp(16f) })
         }
         if (selected != null && shownApps.none { it.pkg == selected }) selected = null
         applySelection()
@@ -216,7 +220,6 @@ class AppInfoView(context: Context) : LinearLayout(context) {
 
     companion object {
         private const val MAX_ICONS = 5
-        private const val ICON_DP = 36f
         private const val GLYPH_PAD_DP = 7f
         private const val MONO_GREY = 0xFFB4B4B4.toInt()
         private val GREYSCALE = ColorMatrixColorFilter(

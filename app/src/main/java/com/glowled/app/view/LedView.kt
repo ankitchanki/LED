@@ -170,24 +170,35 @@ class LedView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun setBattery(percent: Int?) {
-        val text = percent?.coerceIn(0, 100)?.let { "$it%" }
+    fun setBatteryText(text: String?) {
         if (batteryLabel == text) return
         batteryLabel = text
         invalidate()
     }
 
-    private val indicatorLineHeight get() = max(16 * density, labelPaint.fontSpacing + 2 * density)
+    fun setBattery(percent: Int?) {
+        setBatteryText(percent?.coerceIn(0, 100)?.let { "$it%" })
+    }
 
-    /** Leave space for the battery % without overlapping notification icons. */
-    fun indicatorBottom(): Float = ringBottom() + (if (batteryLabel != null) indicatorLineHeight else 0f)
+    private val lineSpacing get() = max(14 * density, labelPaint.fontSpacing + 2 * density)
+
+    /** Leave space for the battery stats without overlapping notification icons. */
+    fun indicatorBottom(): Float {
+        val label = batteryLabel ?: return ringBottom()
+        val count = label.count { it == '\n' } + 1
+        return ringBottom() + count * lineSpacing + 2 * density
+    }
 
     private fun drawLabels(c: Canvas) {
-        val y = ringBottom() - (geometry?.cy ?: cy) + cy + indicatorLineHeight - labelPaint.descent()
-        batteryLabel?.let {
-            labelPaint.color = Color.WHITE
-            labelPaint.alpha = (220 * alphaMul * intro).toInt()
-            c.drawText(it, cx, y, labelPaint)
+        val label = batteryLabel ?: return
+        val lines = label.split("\n")
+        labelPaint.color = Color.WHITE
+        labelPaint.alpha = (220 * alphaMul * intro).toInt()
+        val spacing = lineSpacing
+        var y = ringBottom() + spacing - labelPaint.descent()
+        for (line in lines) {
+            c.drawText(line, cx, y, labelPaint)
+            y += spacing
         }
     }
 
@@ -328,11 +339,11 @@ class LedView @JvmOverloads constructor(
 
     private fun glowRadius() = if (glow) thickness * 1.6f + 3 * density else 0f
 
-    /** Lowest point of the drawn ring, in the geometry's coordinates (to place content under it). */
+    /** Lowest point of the drawn ring, in view-local coordinates (to place content under it). */
     fun ringBottom(): Float {
         val g = geometry ?: return 0f
         val r = if (g.shape == CutoutShape.DOT) max(g.w, g.h) / 2f else g.h / 2f + gap + thickness
-        return g.cy + r + glowRadius()
+        return cy + r + glowRadius()
     }
 
     // ---- droplet: liquid drop that stretches out of the camera, detaches, falls and splashes ------
@@ -346,6 +357,8 @@ class LedView @JvmOverloads constructor(
     private var dropTargetY = 0f
     private var dropTargetX = Float.NaN // NaN = straight below the camera
     private var dropRetract = false
+    /** Droplet radius in dp. */
+    var dropletRadiusDp: Float = 10f
 
     /**
      * Plays the droplet in [color] from the bottom of the ring down to [targetY] (view coordinates).
@@ -411,8 +424,7 @@ class LedView @JvmOverloads constructor(
         val x = cx
         val top = cy + ringR // bottom edge of the ring: where the liquid comes out
         val dist = max(dropTargetY - top, ringR * 2f)
-        // Big enough to read as a drop on a real phone (~5-7 dp radius).
-        val rb = max(max(thickness * 2.2f, ringR * 0.45f), 5f * density)
+        val rb = max(dropletRadiusDp * density, thickness * 1.8f)
         dropPaint.color = dropColor
         if (glow) dropPaint.setShadowLayer(glowRadius(), 0f, 0f, dropColor) else dropPaint.clearShadowLayer()
 

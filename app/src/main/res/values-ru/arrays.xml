@@ -62,4 +62,18 @@
         <item>Светлая</item>
         <item>Системная</item>
     </string-array>
+    <string-array name="charge_timeout_aod_labels">
+        <item>Постоянно</item>
+        <item>5 с</item>
+        <item>15 с</item>
+        <item>30 с</item>
+        <item>1 мин</item>
+        <item>5 мин</item>
+    </string-array>
+    <string-array name="charge_timeout_on_labels">
+        <item>Постоянно</item>
+        <item>5 с</item>
+        <item>10 с</item>
+        <item>30 с</item>
+    </string-array>
 </resources>

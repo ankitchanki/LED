@@ -137,6 +137,9 @@ class AodSession(
                     panelOnAt = android.os.SystemClock.uptimeMillis()
                     playEntrance()
                 }
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    if (NotificationStore.isEmpty()) end(EndReason.TIMEOUT, lock = true)
+                }
             }
         }
     }
@@ -193,10 +196,13 @@ class AodSession(
             }
             // No overlay available: keep the ring visible right under the window's top edge.
             val g = CutoutGeometry.resolve(context, prefs)
-            val ringTop = g.cy - led.ringBottom() + g.cy // mirror of the bottom around the centre
+            val ledLoc = IntArray(2); led.getLocationOnScreen(ledLoc)
+            val ringBottomScreen = ledLoc[1] + led.ringBottom()
+            val ringTop = g.cy - (ringBottomScreen - g.cy) // mirror of the bottom around the centre
             if (ringTop < loc[1]) {
                 yShift = loc[1] - ringTop + 6 * density
                 led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
             }
         }
         val g = geometry()
@@ -236,6 +242,7 @@ class AodSession(
     private fun bindInfo() {
         if (!prefs.showAppInfo) return
         info.monochrome = prefs.aodIcons
+        info.iconDp = prefs.appIconDp
         var apps = NotificationStore.apps()
         if (preview && apps.isEmpty()) apps = sampleApps
         info.bind(apps)
@@ -308,9 +315,18 @@ class AodSession(
             return
         }
         peekPkg = pkg
+        val peekWidth = (prefs.peekWidthDp * density).toInt()
+            .coerceIn((180 * density).toInt(), (context.resources.displayMetrics.widthPixels - 24 * density).toInt())
+        peek.layoutParams.width = peekWidth
         peek.actionsEnabled = prefs.peekActions
+        peek.expandableEnabled = prefs.peekExpandable
+        peek.applyCustomization(prefs.peekFontSizeSp.toFloat(), prefs.peekLines, prefs.peekHeightDp)
         peek.bind(entries)
         peek.show()
+        resetPeekTimeout()
+    }
+
+    private fun resetPeekTimeout() {
         handler.removeCallbacks(hidePeekRunnable)
         handler.postDelayed(hidePeekRunnable, PEEK_MS)
     }
@@ -373,6 +389,28 @@ class AodSession(
         DebugLog.add("Marked as read from the always-on screen")
     }
 
+    /** Marks all notifications in the list as read / dismissed. */
+    private fun markAllRead(list: List<NotificationStore.Entry>) {
+        root.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+        for (e in list) {
+            val action = e.readAction
+            if (action != null) {
+                try {
+                    action.actionIntent.send()
+                } catch (ex: Exception) {
+                    DebugLog.add("Mark as read failed: ${ex.javaClass.simpleName}")
+                }
+                NotificationStore.markSeen(e.key)
+            } else {
+                com.glowled.app.service.NotifyListenerService.instance?.cancelNotification(e.key)
+                NotificationStore.markSeen(e.key)
+            }
+        }
+        LedController.refreshAll()
+        hidePeek()
+        DebugLog.add("Marked all as read (${list.size} notifications)")
+    }
+
     /** Call once the host window is visible. */
     fun start() {
         LedController.aodVisible = true
@@ -385,6 +423,7 @@ class AodSession(
                 addAction(Intent.ACTION_SCREEN_OFF)
                 addAction(Intent.ACTION_SCREEN_ON)
                 addAction(Intent.ACTION_USER_PRESENT)
+                addAction(Intent.ACTION_POWER_DISCONNECTED)
             },
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
@@ -421,7 +460,8 @@ class AodSession(
     }
 
     fun restartAnimation() {
-        led.configure(prefs, geometry(), currentColors()) // undoes an eco still ring
+        led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat() // undoes an eco still ring
         updateMeters()
         updateAgeFade()
         led.restartAnimation()
@@ -434,7 +474,7 @@ class AodSession(
         led.notificationRingVisible = preview || !NotificationStore.isEmpty()
         val meter = LedController.computeMeter(!NotificationStore.isEmpty())
         led.setMeter(meter?.fraction, meter?.color ?: 0, meter?.icon ?: com.glowled.app.core.MeterIcon.NONE, meter?.indeterminate ?: false)
-        led.setBattery(LedController.batteryPercent())
+        led.setBatteryText(LedController.batteryStatusText())
         root.requestLayout()
     }
 
@@ -522,6 +562,7 @@ class AodSession(
             return
         }
         led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         updateMeters()
         updateAgeFade()
         armSettle()
@@ -567,15 +608,24 @@ class AodSession(
     init {
         led.useScreenCoords = true
         led.configure(prefs, geometry(), currentColors())
+        led.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         led.intro = 0f
         updateAgeFade()
         root.addView(info, FrameLayout.LayoutParams(-2, -2))
-        val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
+        val peekWidth = (prefs.peekWidthDp * density).toInt()
+            .coerceIn((180 * density).toInt(), (context.resources.displayMetrics.widthPixels - 24 * density).toInt())
         root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
         info.onAppTap = { pkg -> onAppTapped(pkg) }
         peek.onOpen = { e -> openNotification(e) }
         peek.onReply = { e -> replyTo(e) }
         peek.onMarkRead = { e -> markRead(e) }
+        peek.onMarkAllRead = { list -> markAllRead(list) }
+        peek.onInteraction = { resetPeekTimeout() }
+        peek.onExpandedChanged = {
+            resetPeekTimeout()
+            root.requestLayout()
+            root.post { positionInfo() }
+        }
         bindInfo()
         installGestures()
         if (durationSec > 0) handler.postDelayed(timeout, durationSec * 1000L)

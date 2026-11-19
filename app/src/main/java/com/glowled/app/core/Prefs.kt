@@ -57,8 +57,22 @@ class Prefs(context: Context) {
     val showContent get() = bool("show_content", true)
     /** Liquid droplet from the camera when a notification arrives. */
     val droplet get() = bool("droplet", true)
+    /** Droplet size (radius) in dp for the camera droplet animation. */
+    val dropletSizeDp get() = int("droplet_size", 10).coerceIn(4, 28)
+    /** App icon size in dp in the notification icon row (screen-on / AOD). */
+    val appIconDp get() = int("app_icon_size", 36).coerceIn(24, 72)
     /** Reply / Mark as read buttons on the message peek. */
     val peekActions get() = bool("peek_actions", true)
+    /** Expandable notification messages with individual replies. */
+    val peekExpandable get() = bool("peek_expandable", true)
+    /** Message plate width in dp. */
+    val peekWidthDp get() = int("peek_width", 340).coerceIn(180, 480)
+    /** Message plate max height in dp. */
+    val peekHeightDp get() = int("peek_height", 380).coerceIn(150, 700)
+    /** Message body preview line count. */
+    val peekLines get() = int("peek_lines", 4).coerceIn(1, 20)
+    /** Message font size in sp. */
+    val peekFontSizeSp get() = int("peek_font_size", 14).coerceIn(10, 24)
     /** Always-on icons as monochrome glyphs (One UI AOD style) instead of full-colour app icons. */
     val aodIcons get() = bool("aod_icons", true)
 
@@ -79,6 +93,13 @@ class Prefs(context: Context) {
     // Screen-on overlay
     val overlayEnabled get() = bool("overlay_enabled", true)
     val overlayLockOnly get() = bool("overlay_lock_only", false)
+    /** Tap the ring on the unlocked screen to expand app icons and read messages. */
+    val onTapMessages get() = bool("overlay_tap_messages", true)
+    // Screen-on tap response zone (collapsed ring). Offsets/sizes in dp; 0 width/height = automatic.
+    val tapZoneOffsetXDp get() = int("tap_zone_dx", 0).coerceIn(-300, 300)
+    val tapZoneOffsetYDp get() = int("tap_zone_dy", 0).coerceIn(-300, 500)
+    val tapZoneWidthDp get() = int("tap_zone_w", 0).coerceIn(0, 500)
+    val tapZoneHeightDp get() = int("tap_zone_h", 0).coerceIn(0, 800)
 
     // Charging and download rings (screen on, also over the lock screen)
     /**
@@ -92,8 +113,21 @@ class Prefs(context: Context) {
     val uploadColor get() = int("upload_color", 0xFF00E676.toInt())
     val downloadColor get() = int("download_color", 0xFF2979FF.toInt())
     val chargeLed get() = bool("charge_led", true)
-    /** Light up the screen-off view for charging alone (otherwise it only shows with notifications). */
-    val chargeAod get() = bool("charge_aod", false)
+    /** Light up the screen-off view for charging alone. */
+    val chargeAod get() = bool("charge_aod", true)
+    /** Show charging ring on active screen. */
+    val chargeScreenOn get() = bool("charge_screen_on", true)
+    /** Separate timer for charging ring on screen-off / AOD (0 = continuous while charging). */
+    val chargeTimeoutAodSec get() = strInt("charge_timeout_aod", 0)
+    /** Separate timer for charging ring on active screen (0 = continuous while charging). */
+    val chargeTimeoutOnSec get() = strInt("charge_timeout_on", 0)
+
+    // Battery metrics under the charging ring (each individually toggleable)
+    val chargeShowPercent get() = bool("charge_show_percent", true)
+    val chargeShowVoltage get() = bool("charge_show_voltage", true)
+    val chargeShowCurrent get() = bool("charge_show_current", true)
+    val chargeShowPower get() = bool("charge_show_power", true)
+
     val chargeColorLow get() = int("charge_color_low", 0xFFFF1744.toInt())
     val chargeColorMid get() = int("charge_color_mid", 0xFFFFC400.toInt())
     val chargeColorHigh get() = int("charge_color_high", 0xFF00E676.toInt())

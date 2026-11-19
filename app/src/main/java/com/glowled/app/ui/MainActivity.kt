@@ -62,6 +62,7 @@ import com.glowled.app.core.PowerGuard
 import com.glowled.app.core.Prefs
 import com.glowled.app.service.LedAccessibilityService
 import com.glowled.app.service.NotifyListenerService
+import com.glowled.app.service.ScreenOnOverlay
 import com.glowled.app.ui.SettingsUi.Range
 import com.glowled.app.ui.SettingsUi.Toggle
 import com.glowled.app.ui.SettingsUi.ColorItem
@@ -90,6 +91,8 @@ class MainActivity : AppCompatActivity() {
     /** Full-screen, touch-through layer that draws the ring on the phone's real camera cutout. */
     private lateinit var cameraLed: LedView
     private var introAnim: ValueAnimator? = null
+    /** Outline of the screen-on tap/response zone, shown while configuring it. */
+    private var tapZoneOutline: TapZoneOutlineView? = null
     private lateinit var pager: ViewPager2
     private lateinit var tabs: TabLayout
     private lateinit var ui: SettingsUi
@@ -132,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         if (key in REPLAY_KEYS) playCameraIntro()
         if (key != null && (key.startsWith("charge_") || key.startsWith("progress_") || key == "upload_color" || key == "download_color")) previewMeter(key)
         if (key == "style" || key == Prefs.K_ENABLED) ui.refresh()
+        if (key != null && key.startsWith("tap_zone_")) updateTapZoneOutline()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,6 +160,13 @@ class MainActivity : AppCompatActivity() {
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }
         findViewById<FrameLayout>(android.R.id.content).addView(cameraLed, FrameLayout.LayoutParams(-1, -1))
+        tapZoneOutline = TapZoneOutlineView(this).apply {
+            isClickable = false
+            isFocusable = false
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            visibility = View.GONE
+        }
+        findViewById<FrameLayout>(android.R.id.content).addView(tapZoneOutline, FrameLayout.LayoutParams(-1, -1))
         cameraLed.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> configureCameraLed() }
 
         master = findViewById(R.id.master)
@@ -294,6 +305,7 @@ class MainActivity : AppCompatActivity() {
         cameraLed.visibility = if (show) View.VISIBLE else View.INVISIBLE
         if (!show) return
         cameraLed.configure(prefs, CutoutGeometry.resolve(this, prefs), cameraColors())
+        updateTapZoneOutline()
     }
 
     /** The ring grows out of the camera and fades in (same entrance as the always-on screen). */
@@ -369,7 +381,13 @@ class MainActivity : AppCompatActivity() {
         pager.adapter = PagesAdapter(pageViews)
         pager.offscreenPageLimit = pages.size
         TabLayoutMediator(tabs, pager) { tab, i -> tab.text = pages[i].first }.attach()
+        pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                updateTapZoneOutline()
+            }
+        })
         ui.refresh()
+        updateTapZoneOutline()
     }
 
     private class PagesAdapter(val pages: List<View>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -499,8 +517,19 @@ class MainActivity : AppCompatActivity() {
         section(col, R.string.sec_messages)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_tap_read), "show_content", true, iconsOn),
+            Toggle(getString(R.string.t_peek_expandable), "peek_expandable", true) { iconsOn() && prefs.showContent },
             Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { iconsOn() && prefs.showContent },
         ))
+        val peekCardOff = ui.card(col)
+        ui.sliders(peekCardOff,
+            Range(getString(R.string.s_peek_width), "peek_width", 180, 480, 340, "dp"),
+            Range(getString(R.string.s_peek_height), "peek_height", 150, 700, 380, "dp"),
+            dependsOn = { iconsOn() && prefs.showContent })
+        ui.sliders(peekCardOff,
+            Range(getString(R.string.s_peek_lines), "peek_lines", 1, 20, 4, ""),
+            Range(getString(R.string.s_peek_font_size), "peek_font_size", 10, 24, 14, "sp"),
+            dependsOn = { iconsOn() && prefs.showContent })
+        ui.dependOn(peekCardOff.parent as View) { iconsOn() && prefs.showContent }
         section(col, R.string.sec_gestures)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_double_tap), "double_tap_wake", true, aodOn),
@@ -517,6 +546,8 @@ class MainActivity : AppCompatActivity() {
             Range(getString(R.string.s_reminder), "pulse_duration", 3, 60, 10, "s"), dependsOn = aodOn)
         ui.chips(c, getString(R.string.chips_off_delay), "off_delay",
             labels(R.array.off_delay_labels), listOf("800", "1500", "3000"), "800", aodOn)
+        ui.chips(c, getString(R.string.chips_charge_timeout_aod), "charge_timeout_aod",
+            labels(R.array.charge_timeout_aod_labels), listOf("0", "5", "15", "30", "60", "300"), "0") { aodOn() && prefs.chargeLed && prefs.chargeAod }
         ui.chips(c, getString(R.string.chips_method), "aod_method",
             labels(R.array.method_labels), listOf("auto", "activity", "overlay"), "auto", aodOn)
         return page
@@ -524,22 +555,79 @@ class MainActivity : AppCompatActivity() {
 
     private fun pageScreenOn(): View {
         val (page, col) = ui.page()
+        val ringOn = { prefs.overlayEnabled }
+        val tapOn = { prefs.overlayEnabled && prefs.onTapMessages && !prefs.overlayLockOnly }
         section(col, R.string.sec_ring_on, first = true)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_ring_on), "overlay_enabled", true),
-            Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false) { prefs.overlayEnabled },
+            Toggle(getString(R.string.t_lock_only), "overlay_lock_only", false, ringOn),
+            Toggle(getString(R.string.t_overlay_tap_messages), "overlay_tap_messages", true) { prefs.overlayEnabled && !prefs.overlayLockOnly },
+            Toggle(getString(R.string.t_droplet), "droplet", true, ringOn),
         ))
+        val ringCard = ui.card(col)
+        ui.sliders(ringCard,
+            Range(getString(R.string.s_droplet_size), "droplet_size", 4, 28, 10, "dp"),
+            Range(getString(R.string.s_icon_size), "app_icon_size", 24, 72, 36, "dp"),
+            dependsOn = ringOn)
+        section(col, R.string.sec_tap_zone)
+        val tz = ui.card(col)
+        ui.sliders(tz,
+            Range(getString(R.string.s_tap_zone_x), "tap_zone_dx", -300, 300, 0, "dp"),
+            Range(getString(R.string.s_tap_zone_y), "tap_zone_dy", -300, 500, 0, "dp"),
+            dependsOn = tapOn)
+        ui.sliders(tz,
+            Range(getString(R.string.s_tap_zone_w), "tap_zone_w", 0, 500, 0, "dp"),
+            Range(getString(R.string.s_tap_zone_h), "tap_zone_h", 0, 800, 0, "dp"),
+            dependsOn = tapOn)
+        val tzHint = hint(getString(R.string.tap_zone_hint))
+        col.addView(tzHint)
+        ui.dependOn(tzHint, tapOn)
+        ui.dependOn(tz.parent as View, tapOn)
+        section(col, R.string.sec_messages)
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_aod_icons), "aod_icons", true, tapOn),
+            Toggle(getString(R.string.t_tap_read), "show_content", true, tapOn),
+            Toggle(getString(R.string.t_peek_expandable), "peek_expandable", true) { tapOn() && prefs.showContent },
+            Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { tapOn() && prefs.showContent },
+        ))
+        val peekCardOn = ui.card(col)
+        ui.sliders(peekCardOn,
+            Range(getString(R.string.s_peek_width), "peek_width", 180, 480, 340, "dp"),
+            Range(getString(R.string.s_peek_height), "peek_height", 150, 700, 380, "dp"),
+            dependsOn = { tapOn() && prefs.showContent })
+        ui.sliders(peekCardOn,
+            Range(getString(R.string.s_peek_lines), "peek_lines", 1, 20, 4, ""),
+            Range(getString(R.string.s_peek_font_size), "peek_font_size", 10, 24, 14, "sp"),
+            dependsOn = { tapOn() && prefs.showContent })
+        ui.dependOn(peekCardOn.parent as View) { tapOn() && prefs.showContent }
         section(col, R.string.sec_charging)
+        val chargeOn = { prefs.chargeLed }
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_charge), "charge_led", true),
+            Toggle(getString(R.string.t_charge_screen_on), "charge_screen_on", true, chargeOn),
+            Toggle(getString(R.string.t_charge_aod), "charge_aod", false, chargeOn),
             Toggle(getString(R.string.t_battery_indicator), "battery_indicator", false),
+        ))
+        val chargeTimers = ui.card(col)
+        ui.chips(chargeTimers, getString(R.string.chips_charge_timeout_on), "charge_timeout_on",
+            labels(R.array.charge_timeout_on_labels), listOf("0", "5", "10", "30"), "0") { prefs.chargeLed && prefs.chargeScreenOn }
+        ui.chips(chargeTimers, getString(R.string.chips_charge_timeout_aod), "charge_timeout_aod",
+            labels(R.array.charge_timeout_aod_labels), listOf("0", "5", "15", "30", "60", "300"), "0") { prefs.chargeLed && prefs.chargeAod }
+        ui.dependOn(chargeTimers.parent as View) { prefs.chargeLed && (prefs.chargeScreenOn || prefs.chargeAod) }
+
+        col.addView(label(getString(R.string.sec_battery_metrics)))
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_charge_show_percent), "charge_show_percent", true, chargeOn),
+            Toggle(getString(R.string.t_charge_show_voltage), "charge_show_voltage", true, chargeOn),
+            Toggle(getString(R.string.t_charge_show_current), "charge_show_current", true, chargeOn),
+            Toggle(getString(R.string.t_charge_show_power), "charge_show_power", true, chargeOn),
         ))
         col.addView(label(getString(R.string.charge_colours)))
         ui.colorTiles(col, listOf(
             ColorItem(getString(R.string.c_low), "charge_color_low", 0xFFFF1744.toInt()),
             ColorItem(getString(R.string.c_mid), "charge_color_mid", 0xFFFFC400.toInt()),
             ColorItem(getString(R.string.c_high), "charge_color_high", 0xFF00E676.toInt()),
-        ), dependsOn = { prefs.chargeLed })
+        ), dependsOn = chargeOn)
         section(col, R.string.sec_transfers)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_progress), "progress_led", true),
@@ -1023,6 +1111,39 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         buildSetup()
+    }
+
+    // ---- tap zone outline ---------------------------------------------------------------------
+
+    private fun updateTapZoneOutline() {
+        val v = tapZoneOutline ?: return
+        val onScreenOnTab = ::pager.isInitialized && pager.currentItem == 3
+        if (!onScreenOnTab) {
+            v.visibility = View.GONE
+            return
+        }
+        v.zoneRect = try { ScreenOnOverlay.tapZoneRect(this) } catch (_: Exception) { null }
+        v.visibility = if (v.zoneRect != null) View.VISIBLE else View.GONE
+    }
+
+    private inner class TapZoneOutlineView(context: android.content.Context) : View(context) {
+        private val strokePaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            style = android.graphics.Paint.Style.STROKE
+            strokeWidth = 3f * resources.displayMetrics.density
+            color = context.getColor(R.color.accent)
+        }
+        private val fillPaint = android.graphics.Paint().apply {
+            style = android.graphics.Paint.Style.FILL
+            color = (context.getColor(R.color.accent) and 0x00FFFFFF) or 0x2A000000
+        }
+        var zoneRect: android.graphics.Rect? = null
+            set(value) { field = value; invalidate() }
+
+        override fun onDraw(c: android.graphics.Canvas) {
+            val r = zoneRect ?: return
+            c.drawRect(r, fillPaint)
+            c.drawRect(r, strokePaint)
+        }
     }
 
     // ---- test notification ---------------------------------------------------------------------
