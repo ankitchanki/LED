@@ -149,11 +149,23 @@ object ScreenOnOverlay {
             onAppTap = { pkg -> onAppTapped(pkg) }
         }
         val d = ctx.resources.displayMetrics.density
-        val peekWidth = (ctx.resources.displayMetrics.widthPixels - (48 * d).toInt()).coerceAtMost((380 * d).toInt())
+        val peekWidth = (prefs.peekWidthDp * d).toInt().coerceIn((180 * d).toInt(), (ctx.resources.displayMetrics.widthPixels - (24 * d).toInt()))
         val peekView = NotificationPeekView(ctx).apply {
+            actionsEnabled = prefs.peekActions
+            expandableEnabled = prefs.peekExpandable
+            applyCustomization(prefs.peekFontSizeSp.toFloat(), prefs.peekLines, prefs.peekHeightDp)
             onOpen = { e -> openNotification(e) }
             onReply = { e -> replyTo(e) }
             onMarkRead = { e -> markRead(e) }
+            onMarkAllRead = { list -> markAllRead(list) }
+            onInteraction = { resetPeekTimeout() }
+            onExpandedChanged = {
+                resetPeekTimeout()
+                val type = windowType()
+                if (type != 0) applyWindow(type)
+                root?.requestLayout()
+                root?.post { positionChildren() }
+            }
         }
 
         r.addView(ledView, FrameLayout.LayoutParams(-1, -1))
@@ -250,7 +262,7 @@ object ScreenOnOverlay {
             p.gravity = Gravity.TOP or Gravity.START
         } else {
             val e = ledView.extentPx(g)
-            val peekW = (ctx.resources.displayMetrics.widthPixels - (48 * d).toInt()).coerceAtMost((380 * d).toInt())
+            val peekW = (prefs.peekWidthDp * d).toInt().coerceIn((180 * d).toInt(), (ctx.resources.displayMetrics.widthPixels - (24 * d).toInt()))
             val ringW = maxOf(e * 2, (120 * d).toInt())
             val expandedW = maxOf(ringW, peekW + (24 * d).toInt(), (220 * d).toInt())
             if (state == State.COLLAPSED) {
@@ -264,7 +276,7 @@ object ScreenOnOverlay {
                 val y = (g.cy - e).toInt()
                 val h = when (state) {
                     State.ICONS -> e + (300 * d).toInt()
-                    State.PEEK -> (ctx.resources.displayMetrics.heightPixels - y).coerceAtLeast(e + (520 * d).toInt())
+                    State.PEEK -> (ctx.resources.displayMetrics.heightPixels - y).coerceAtLeast(e + (prefs.peekHeightDp * d).toInt() + (80 * d).toInt())
                     else -> e * 2
                 }
                 p = WindowManager.LayoutParams(w, h, type, flags, PixelFormat.TRANSLUCENT)
@@ -296,6 +308,14 @@ object ScreenOnOverlay {
         ledView.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         info?.monochrome = prefs.aodIcons
         info?.iconDp = prefs.appIconDp
+
+        val d = ctx.resources.displayMetrics.density
+        val peekW = (prefs.peekWidthDp * d).toInt().coerceIn((180 * d).toInt(), (ctx.resources.displayMetrics.widthPixels - (24 * d).toInt()))
+        peek?.layoutParams?.width = peekW
+        peek?.actionsEnabled = prefs.peekActions
+        peek?.expandableEnabled = prefs.peekExpandable
+        peek?.applyCustomization(prefs.peekFontSizeSp.toFloat(), prefs.peekLines, prefs.peekHeightDp)
+
         val type = windowType()
         if (type != 0) applyWindow(type)
         r.requestLayout()
@@ -386,10 +406,17 @@ object ScreenOnOverlay {
         }
         peekPkg = pkg
         peek?.actionsEnabled = prefs.peekActions
+        peek?.expandableEnabled = prefs.peekExpandable
+        peek?.applyCustomization(prefs.peekFontSizeSp.toFloat(), prefs.peekLines, prefs.peekHeightDp)
         peek?.bind(entries)
         peek?.show()
         setState(State.PEEK)
         root?.post { positionChildren() }
+        resetPeekTimeout()
+    }
+
+    private fun resetPeekTimeout() {
+        main.removeCallbacks(hidePeekRunnable)
         main.postDelayed(hidePeekRunnable, PEEK_MS)
     }
 
@@ -453,6 +480,23 @@ object ScreenOnOverlay {
         if (NotificationStore.isEmpty()) collapseToRing() else {
             if (NotificationStore.entriesFor(peekPkg ?: "").isEmpty()) hidePeek(true)
         }
+    }
+
+    private fun markAllRead(list: List<NotificationStore.Entry>) {
+        root?.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+        for (e in list) {
+            val action = e.readAction
+            if (action != null) {
+                try { action.actionIntent.send() } catch (ex: Exception) {
+                    DebugLog.add("Mark as read failed: ${ex.javaClass.simpleName}")
+                }
+                NotificationStore.markSeen(e.key)
+            } else {
+                NotifyListenerService.instance?.cancelNotification(e.key)
+            }
+        }
+        LedController.refreshAll()
+        collapseToRing()
     }
 
     private fun onStoreChanged() {

@@ -52,6 +52,10 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
     private var shown = false
     private var isExpanded = false
 
+    private var baseFontSize = 14f
+    private var bodyMaxLines = 4
+    private var customMaxHeightDp = 380
+
     // Dim greys on black, like an always-on display: readable without lighting the panel up.
     private fun grey(alpha: Float) = Color.argb((255 * alpha).toInt(), 255, 255, 255)
 
@@ -81,8 +85,29 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
     private val title = line(15f, 0.75f, 1).apply { typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL) }
     private val body = line(14f, 0.55f, 4).apply { setLineSpacing(0f, 1.12f) }
     private val media = line(12f, 0.6f, 1).apply { setPadding(dp(10f), dp(3f), dp(10f), dp(3f)) }
-    private val expandButton = actionButton(R.drawable.ic_expand_more, R.string.peek_expand) {
+    private val expandButton = actionButton(R.drawable.ic_expand_more, R.string.peek_expand_single) {
         toggleExpanded()
+    }
+
+    fun applyCustomization(fontSizeSp: Float, maxLines: Int, maxHeightDp: Int) {
+        baseFontSize = fontSizeSp
+        bodyMaxLines = maxLines
+        customMaxHeightDp = maxHeightDp
+
+        appName.textSize = (baseFontSize - 2f).coerceAtLeast(10f)
+        title.textSize = baseFontSize + 1f
+        body.textSize = baseFontSize
+        body.maxLines = bodyMaxLines
+        media.textSize = (baseFontSize - 2.5f).coerceAtLeast(10f)
+        expandButton.textSize = (baseFontSize - 1f).coerceAtLeast(11f)
+        reply.textSize = (baseFontSize - 1f).coerceAtLeast(11f)
+        markRead.textSize = (baseFontSize - 1f).coerceAtLeast(11f)
+        collapseButton.textSize = (baseFontSize - 1f).coerceAtLeast(11f)
+        markAllButton.textSize = (baseFontSize - 1f).coerceAtLeast(11f)
+
+        if (isExpanded) {
+            rebuildExpandedCards()
+        }
     }
     private val reply = actionButton(R.drawable.ic_reply, R.string.peek_reply) {
         onInteraction?.invoke()
@@ -143,7 +168,7 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
             addView(headerChevron, LayoutParams(dp(20f), dp(20f)))
             isClickable = true
             setOnClickListener {
-                if (expandableEnabled && (entries.size > 1 || (current?.lines?.size ?: 0) > 3)) {
+                if (expandableEnabled && entries.isNotEmpty()) {
                     toggleExpanded()
                 } else {
                     current?.let { onOpen?.invoke(it) }
@@ -168,7 +193,7 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
         collapsedContent.isClickable = true
         collapsedContent.setOnClickListener {
             onInteraction?.invoke()
-            if (expandableEnabled && (entries.size > 1 || (current?.lines?.size ?: 0) > 3)) {
+            if (expandableEnabled && entries.isNotEmpty()) {
                 toggleExpanded()
             } else {
                 current?.let { onOpen?.invoke(it) }
@@ -220,8 +245,7 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
 
     private fun updateExpandedState() {
         val count = entries.size
-        val hasMulti = count > 1
-        headerChevron.visibility = if (expandableEnabled && hasMulti) VISIBLE else GONE
+        headerChevron.visibility = if (expandableEnabled && count > 0) VISIBLE else GONE
         headerChevron.setImageResource(if (isExpanded) R.drawable.ic_expand_less else R.drawable.ic_expand_more)
 
         if (isExpanded) {
@@ -267,12 +291,12 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
-        val cardTitle = line(14f, 0.85f, 1).apply {
+        val cardTitle = line(baseFontSize, 0.85f, 1).apply {
             typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
             text = e.title ?: AppInfoView.labelFor(context.packageManager, e.pkg)
         }
         val ago = DateUtils.getRelativeTimeSpanString(e.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-        val cardTime = line(11.5f, 0.45f, 1).apply {
+        val cardTime = line((baseFontSize - 2.5f).coerceAtLeast(10f), 0.45f, 1).apply {
             text = ago
             gravity = Gravity.END
         }
@@ -283,7 +307,7 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
         // Message text
         val text = e.lines.joinToString("\n")
         if (text.isNotBlank()) {
-            val cardBody = line(13.5f, 0.65f, 12).apply {
+            val cardBody = line((baseFontSize - 0.5f).coerceAtLeast(11f), 0.65f, 100).apply {
                 this.text = text
                 setLineSpacing(0f, 1.15f)
             }
@@ -293,7 +317,7 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
         // Media tag if any
         val label = NotificationContent.label(context, e.kind)
         if (label.isNotEmpty()) {
-            val cardMedia = line(11.5f, 0.7f, 1).apply {
+            val cardMedia = line((baseFontSize - 2.5f).coerceAtLeast(10f), 0.7f, 1).apply {
                 this.text = label
                 setPadding(dp(8f), dp(2f), dp(8f), dp(2f))
                 background = GradientDrawable().apply {
@@ -334,7 +358,8 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val screenH = resources.displayMetrics.heightPixels
-        val maxH = (screenH * 0.62f).toInt()
+        val maxH = (customMaxHeightDp * resources.displayMetrics.density).toInt()
+            .coerceIn((120 * resources.displayMetrics.density).toInt(), (screenH * 0.85f).toInt())
         val hSpec = if (MeasureSpec.getSize(heightMeasureSpec) > maxH || MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {
             MeasureSpec.makeMeasureSpec(maxH, MeasureSpec.AT_MOST)
         } else {
@@ -348,6 +373,10 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
         this.entries = entries
         val e = entries.firstOrNull() ?: return
         current = e
+
+        val p = com.glowled.app.core.LedController.prefs
+        applyCustomization(p.peekFontSizeSp.toFloat(), p.peekLines, p.peekHeightDp)
+
         val pm = context.packageManager
         val icon = AppInfoView.iconFor(pm, e.pkg)
         appIcon.setImageDrawable(icon)
@@ -382,14 +411,18 @@ class NotificationPeekView(context: Context) : LinearLayout(context) {
         }
 
         val extra = entries.size - 1
-        if (expandableEnabled && extra > 0) {
-            expandButton.text = String.format(context.getString(R.string.peek_expand), entries.size)
+        if (expandableEnabled && entries.isNotEmpty()) {
+            if (extra > 0) {
+                expandButton.text = String.format(context.getString(R.string.peek_expand), entries.size)
+            } else {
+                expandButton.setText(R.string.peek_expand_single)
+            }
             expandButton.visibility = VISIBLE
         } else {
             expandButton.visibility = GONE
         }
 
-        (media.parent as View).visibility = if (media.visibility == GONE && expandButton.visibility == GONE) GONE else VISIBLE
+        (media.parent as? View)?.visibility = if (media.visibility == GONE && expandButton.visibility == GONE) GONE else VISIBLE
 
         reply.visibility = if (actionsEnabled && e.replyAction != null) VISIBLE else GONE
         markRead.setText(if (e.readAction != null) R.string.peek_mark_read else R.string.peek_dismiss)

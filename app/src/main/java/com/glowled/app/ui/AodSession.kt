@@ -312,8 +312,12 @@ class AodSession(
             return
         }
         peekPkg = pkg
+        val peekWidth = (prefs.peekWidthDp * density).toInt()
+            .coerceIn((180 * density).toInt(), (context.resources.displayMetrics.widthPixels - 24 * density).toInt())
+        peek.layoutParams.width = peekWidth
         peek.actionsEnabled = prefs.peekActions
         peek.expandableEnabled = prefs.peekExpandable
+        peek.applyCustomization(prefs.peekFontSizeSp.toFloat(), prefs.peekLines, prefs.peekHeightDp)
         peek.bind(entries)
         peek.show()
         resetPeekTimeout()
@@ -604,7 +608,8 @@ class AodSession(
         led.intro = 0f
         updateAgeFade()
         root.addView(info, FrameLayout.LayoutParams(-2, -2))
-        val peekWidth = (context.resources.displayMetrics.widthPixels - 48 * density).toInt().coerceAtMost((380 * density).toInt())
+        val peekWidth = (prefs.peekWidthDp * density).toInt()
+            .coerceIn((180 * density).toInt(), (context.resources.displayMetrics.widthPixels - 24 * density).toInt())
         root.addView(peek, FrameLayout.LayoutParams(peekWidth, -2))
         info.onAppTap = { pkg -> onAppTapped(pkg) }
         peek.onOpen = { e -> openNotification(e) }
@@ -615,6 +620,7 @@ class AodSession(
         peek.onExpandedChanged = {
             resetPeekTimeout()
             root.requestLayout()
+            root.post { positionInfo() }
         }
         bindInfo()
         installGestures()

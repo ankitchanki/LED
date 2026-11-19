@@ -65,6 +65,14 @@ class Prefs(context: Context) {
     val peekActions get() = bool("peek_actions", true)
     /** Expandable notification messages with individual replies. */
     val peekExpandable get() = bool("peek_expandable", true)
+    /** Message plate width in dp. */
+    val peekWidthDp get() = int("peek_width", 340).coerceIn(180, 480)
+    /** Message plate max height in dp. */
+    val peekHeightDp get() = int("peek_height", 380).coerceIn(150, 700)
+    /** Message body preview line count. */
+    val peekLines get() = int("peek_lines", 4).coerceIn(1, 20)
+    /** Message font size in sp. */
+    val peekFontSizeSp get() = int("peek_font_size", 14).coerceIn(10, 24)
     /** Always-on icons as monochrome glyphs (One UI AOD style) instead of full-colour app icons. */
     val aodIcons get() = bool("aod_icons", true)
 

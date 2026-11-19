@@ -160,6 +160,7 @@
     <string name="peek_hidden">Content hidden</string>
     <string name="peek_more">+%d more</string>
     <string name="peek_expand">Expand (%d)</string>
+    <string name="peek_expand_single">Expand</string>
     <string name="peek_collapse">Collapse</string>
     <string name="peek_mark_all_read">Read all</string>
     <string name="peek_messages_count">%1$s · %2$d messages</string>
@@ -362,4 +363,8 @@
     <string name="s_tap_zone_w">Tap zone width (0 = auto)</string>
     <string name="s_tap_zone_h">Tap zone height (0 = auto)</string>
     <string name="tap_zone_hint">Adjust if taps don\'t reach the ring. A border shows the tap zone while you configure it here.</string>
+    <string name="s_peek_width">Message plate width</string>
+    <string name="s_peek_height">Message plate max height</string>
+    <string name="s_peek_lines">Message preview lines</string>
+    <string name="s_peek_font_size">Message font size</string>
 </resources>
