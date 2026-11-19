@@ -158,7 +158,8 @@
     <string name="peek_new">Новое уведомление</string>
     <string name="peek_hidden">Содержимое скрыто</string>
     <string name="peek_more">Ещё: %d</string>
-    <string name="peek_expand">Развернуть (%d)</string>
+    <string name="peek_expand">Раскрыть (%d)</string>
+    <string name="peek_expand_single">Раскрыть</string>
     <string name="peek_collapse">Свернуть</string>
     <string name="peek_mark_all_read">Прочитать все</string>
     <string name="peek_messages_count">%1$s · %2$d сообщений</string>
@@ -361,4 +362,8 @@
     <string name="s_tap_zone_w">Ширина зоны (0 = авто)</string>
     <string name="s_tap_zone_h">Высота зоны (0 = авто)</string>
     <string name="tap_zone_hint">Настройте, если нажатия не попадают по кольцу. Во время настройки показывается граница зоны.</string>
+    <string name="s_peek_width">Ширина плашки</string>
+    <string name="s_peek_height">Высота плашки</string>
+    <string name="s_peek_lines">Длина сообщения (строк)</string>
+    <string name="s_peek_font_size">Размер шрифта</string>
 </resources>

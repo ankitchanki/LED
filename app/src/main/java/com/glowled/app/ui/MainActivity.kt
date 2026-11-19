@@ -520,6 +520,16 @@ class MainActivity : AppCompatActivity() {
             Toggle(getString(R.string.t_peek_expandable), "peek_expandable", true) { iconsOn() && prefs.showContent },
             Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { iconsOn() && prefs.showContent },
         ))
+        val peekCardOff = ui.card(col)
+        ui.sliders(peekCardOff,
+            Range(getString(R.string.s_peek_width), "peek_width", 180, 480, 340, "dp"),
+            Range(getString(R.string.s_peek_height), "peek_height", 150, 700, 380, "dp"),
+            dependsOn = { iconsOn() && prefs.showContent })
+        ui.sliders(peekCardOff,
+            Range(getString(R.string.s_peek_lines), "peek_lines", 1, 20, 4, ""),
+            Range(getString(R.string.s_peek_font_size), "peek_font_size", 10, 24, 14, "sp"),
+            dependsOn = { iconsOn() && prefs.showContent })
+        ui.dependOn(peekCardOff.parent as View) { iconsOn() && prefs.showContent }
         section(col, R.string.sec_gestures)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_double_tap), "double_tap_wake", true, aodOn),
@@ -575,8 +585,19 @@ class MainActivity : AppCompatActivity() {
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_aod_icons), "aod_icons", true, tapOn),
             Toggle(getString(R.string.t_tap_read), "show_content", true, tapOn),
+            Toggle(getString(R.string.t_peek_expandable), "peek_expandable", true) { tapOn() && prefs.showContent },
             Toggle(getString(R.string.t_peek_actions), "peek_actions", true) { tapOn() && prefs.showContent },
         ))
+        val peekCardOn = ui.card(col)
+        ui.sliders(peekCardOn,
+            Range(getString(R.string.s_peek_width), "peek_width", 180, 480, 340, "dp"),
+            Range(getString(R.string.s_peek_height), "peek_height", 150, 700, 380, "dp"),
+            dependsOn = { tapOn() && prefs.showContent })
+        ui.sliders(peekCardOn,
+            Range(getString(R.string.s_peek_lines), "peek_lines", 1, 20, 4, ""),
+            Range(getString(R.string.s_peek_font_size), "peek_font_size", 10, 24, 14, "sp"),
+            dependsOn = { tapOn() && prefs.showContent })
+        ui.dependOn(peekCardOn.parent as View) { tapOn() && prefs.showContent }
         section(col, R.string.sec_charging)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_charge), "charge_led", true),

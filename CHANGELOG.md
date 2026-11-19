@@ -1,3 +1,12 @@
+# Glow LED v2.11.1
+
+## Expandable and customizable message cards
+- **Expandable message cards with "Expand" ("Раскрыть") button:** message preview cards now feature an explicit expand button to reveal full message text, full timestamp, and all conversation messages.
+- **Configurable dimensions & text size:** customize message plate width, max height, preview line length, and font size directly from Screen Off and Screen On settings.
+- **Screen-on overlay parity:** full expandable notification support, timeout reset on touch, and mark-all-read batch action on the unlocked screen.
+
+---
+
 # Glow LED v2.11.0
 
 ## Expandable messages with quick reply
