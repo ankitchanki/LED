@@ -75,4 +75,18 @@
         <item>Light</item>
         <item>System</item>
     </string-array>
+    <string-array name="charge_timeout_aod_labels">
+        <item>Always</item>
+        <item>5 s</item>
+        <item>15 s</item>
+        <item>30 s</item>
+        <item>1 min</item>
+        <item>5 min</item>
+    </string-array>
+    <string-array name="charge_timeout_on_labels">
+        <item>Always</item>
+        <item>5 s</item>
+        <item>10 s</item>
+        <item>30 s</item>
+    </string-array>
 </resources>

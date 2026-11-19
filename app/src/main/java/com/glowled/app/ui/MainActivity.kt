@@ -546,6 +546,8 @@ class MainActivity : AppCompatActivity() {
             Range(getString(R.string.s_reminder), "pulse_duration", 3, 60, 10, "s"), dependsOn = aodOn)
         ui.chips(c, getString(R.string.chips_off_delay), "off_delay",
             labels(R.array.off_delay_labels), listOf("800", "1500", "3000"), "800", aodOn)
+        ui.chips(c, getString(R.string.chips_charge_timeout_aod), "charge_timeout_aod",
+            labels(R.array.charge_timeout_aod_labels), listOf("0", "5", "15", "30", "60", "300"), "0") { aodOn() && prefs.chargeLed && prefs.chargeAod }
         ui.chips(c, getString(R.string.chips_method), "aod_method",
             labels(R.array.method_labels), listOf("auto", "activity", "overlay"), "auto", aodOn)
         return page
@@ -599,16 +601,33 @@ class MainActivity : AppCompatActivity() {
             dependsOn = { tapOn() && prefs.showContent })
         ui.dependOn(peekCardOn.parent as View) { tapOn() && prefs.showContent }
         section(col, R.string.sec_charging)
+        val chargeOn = { prefs.chargeLed }
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_charge), "charge_led", true),
+            Toggle(getString(R.string.t_charge_screen_on), "charge_screen_on", true, chargeOn),
+            Toggle(getString(R.string.t_charge_aod), "charge_aod", false, chargeOn),
             Toggle(getString(R.string.t_battery_indicator), "battery_indicator", false),
+        ))
+        val chargeTimers = ui.card(col)
+        ui.chips(chargeTimers, getString(R.string.chips_charge_timeout_on), "charge_timeout_on",
+            labels(R.array.charge_timeout_on_labels), listOf("0", "5", "10", "30"), "0") { prefs.chargeLed && prefs.chargeScreenOn }
+        ui.chips(chargeTimers, getString(R.string.chips_charge_timeout_aod), "charge_timeout_aod",
+            labels(R.array.charge_timeout_aod_labels), listOf("0", "5", "15", "30", "60", "300"), "0") { prefs.chargeLed && prefs.chargeAod }
+        ui.dependOn(chargeTimers.parent as View) { prefs.chargeLed && (prefs.chargeScreenOn || prefs.chargeAod) }
+
+        col.addView(label(getString(R.string.sec_battery_metrics)))
+        ui.toggles(col, listOf(
+            Toggle(getString(R.string.t_charge_show_percent), "charge_show_percent", true, chargeOn),
+            Toggle(getString(R.string.t_charge_show_voltage), "charge_show_voltage", true, chargeOn),
+            Toggle(getString(R.string.t_charge_show_current), "charge_show_current", true, chargeOn),
+            Toggle(getString(R.string.t_charge_show_power), "charge_show_power", true, chargeOn),
         ))
         col.addView(label(getString(R.string.charge_colours)))
         ui.colorTiles(col, listOf(
             ColorItem(getString(R.string.c_low), "charge_color_low", 0xFFFF1744.toInt()),
             ColorItem(getString(R.string.c_mid), "charge_color_mid", 0xFFFFC400.toInt()),
             ColorItem(getString(R.string.c_high), "charge_color_high", 0xFF00E676.toInt()),
-        ), dependsOn = { prefs.chargeLed })
+        ), dependsOn = chargeOn)
         section(col, R.string.sec_transfers)
         ui.toggles(col, listOf(
             Toggle(getString(R.string.t_progress), "progress_led", true),
