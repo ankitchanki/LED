@@ -113,8 +113,21 @@ class Prefs(context: Context) {
     val uploadColor get() = int("upload_color", 0xFF00E676.toInt())
     val downloadColor get() = int("download_color", 0xFF2979FF.toInt())
     val chargeLed get() = bool("charge_led", true)
-    /** Light up the screen-off view for charging alone (otherwise it only shows with notifications). */
-    val chargeAod get() = bool("charge_aod", false)
+    /** Light up the screen-off view for charging alone. */
+    val chargeAod get() = bool("charge_aod", true)
+    /** Show charging ring on active screen. */
+    val chargeScreenOn get() = bool("charge_screen_on", true)
+    /** Separate timer for charging ring on screen-off / AOD (0 = continuous while charging). */
+    val chargeTimeoutAodSec get() = strInt("charge_timeout_aod", 0)
+    /** Separate timer for charging ring on active screen (0 = continuous while charging). */
+    val chargeTimeoutOnSec get() = strInt("charge_timeout_on", 0)
+
+    // Battery metrics under the charging ring (each individually toggleable)
+    val chargeShowPercent get() = bool("charge_show_percent", true)
+    val chargeShowVoltage get() = bool("charge_show_voltage", true)
+    val chargeShowCurrent get() = bool("charge_show_current", true)
+    val chargeShowPower get() = bool("charge_show_power", true)
+
     val chargeColorLow get() = int("charge_color_low", 0xFFFF1744.toInt())
     val chargeColorMid get() = int("charge_color_mid", 0xFFFFC400.toInt())
     val chargeColorHigh get() = int("charge_color_high", 0xFF00E676.toInt())

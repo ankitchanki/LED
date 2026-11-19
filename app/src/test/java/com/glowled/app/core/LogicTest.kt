@@ -115,3 +115,31 @@ class QuietHoursTest {
     @Test
     fun emptyWindowNeverMatches() = assertFalse(PowerGuard.inWindow(0, 600, 600))
 }
+
+class BatteryStatsTest {
+    @Test
+    fun formatsSelectedMetricsProperly() {
+        val info = BatteryInfo(
+            level = 85,
+            voltageMv = 4250,
+            currentMa = 1500,
+            powerWatts = 6.375f,
+            isCharging = true,
+        )
+        // All metrics enabled: 2 lines
+        val all = info.formatString(showPercent = true, showVoltage = true, showCurrent = true, showPower = true)
+        org.junit.Assert.assertEquals("85% · 4.25V\n1500 mA · 6.4W", all)
+
+        // Only percent and voltage
+        val pv = info.formatString(showPercent = true, showVoltage = true, showCurrent = false, showPower = false)
+        org.junit.Assert.assertEquals("85% · 4.25V", pv)
+
+        // Only current and power
+        val cp = info.formatString(showPercent = false, showVoltage = false, showCurrent = true, showPower = true)
+        org.junit.Assert.assertEquals("1500 mA · 6.4W", cp)
+
+        // None enabled
+        val none = info.formatString(showPercent = false, showVoltage = false, showCurrent = false, showPower = false)
+        org.junit.Assert.assertNull(none)
+    }
+}

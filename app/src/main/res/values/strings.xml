@@ -367,4 +367,12 @@
     <string name="s_peek_height">Message plate max height</string>
     <string name="s_peek_lines">Message preview lines</string>
     <string name="s_peek_font_size">Message font size</string>
+    <string name="t_charge_screen_on">Charging ring while screen on</string>
+    <string name="chips_charge_timeout_aod">Screen-off charging timer</string>
+    <string name="chips_charge_timeout_on">Screen-on charging timer</string>
+    <string name="sec_battery_metrics">Battery stats under ring</string>
+    <string name="t_charge_show_percent">Battery percentage (%)</string>
+    <string name="t_charge_show_voltage">Battery voltage (V)</string>
+    <string name="t_charge_show_current">Current amperage (mA)</string>
+    <string name="t_charge_show_power">Power wattage (W)</string>
 </resources>

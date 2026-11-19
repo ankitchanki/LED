@@ -366,4 +366,12 @@
     <string name="s_peek_height">Высота плашки</string>
     <string name="s_peek_lines">Длина сообщения (строк)</string>
     <string name="s_peek_font_size">Размер шрифта</string>
+    <string name="t_charge_screen_on">Кольцо при включённом экране</string>
+    <string name="chips_charge_timeout_aod">Таймер при выключенном экране</string>
+    <string name="chips_charge_timeout_on">Таймер при включённом экране</string>
+    <string name="sec_battery_metrics">Параметры батареи под кольцом</string>
+    <string name="t_charge_show_percent">Процент заряда (%)</string>
+    <string name="t_charge_show_voltage">Напряжение батареи (В)</string>
+    <string name="t_charge_show_current">Сила тока (мА)</string>
+    <string name="t_charge_show_power">Мощность (Вт)</string>
 </resources>

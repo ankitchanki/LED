@@ -137,6 +137,9 @@ class AodSession(
                     panelOnAt = android.os.SystemClock.uptimeMillis()
                     playEntrance()
                 }
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    if (NotificationStore.isEmpty()) end(EndReason.TIMEOUT, lock = true)
+                }
             }
         }
     }
@@ -420,6 +423,7 @@ class AodSession(
                 addAction(Intent.ACTION_SCREEN_OFF)
                 addAction(Intent.ACTION_SCREEN_ON)
                 addAction(Intent.ACTION_USER_PRESENT)
+                addAction(Intent.ACTION_POWER_DISCONNECTED)
             },
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
@@ -470,7 +474,7 @@ class AodSession(
         led.notificationRingVisible = preview || !NotificationStore.isEmpty()
         val meter = LedController.computeMeter(!NotificationStore.isEmpty())
         led.setMeter(meter?.fraction, meter?.color ?: 0, meter?.icon ?: com.glowled.app.core.MeterIcon.NONE, meter?.indeterminate ?: false)
-        led.setBattery(LedController.batteryPercent())
+        led.setBatteryText(LedController.batteryStatusText())
         root.requestLayout()
     }
 

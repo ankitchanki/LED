@@ -170,24 +170,35 @@ class LedView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun setBattery(percent: Int?) {
-        val text = percent?.coerceIn(0, 100)?.let { "$it%" }
+    fun setBatteryText(text: String?) {
         if (batteryLabel == text) return
         batteryLabel = text
         invalidate()
     }
 
-    private val indicatorLineHeight get() = max(16 * density, labelPaint.fontSpacing + 2 * density)
+    fun setBattery(percent: Int?) {
+        setBatteryText(percent?.coerceIn(0, 100)?.let { "$it%" })
+    }
 
-    /** Leave space for the battery % without overlapping notification icons. */
-    fun indicatorBottom(): Float = ringBottom() + (if (batteryLabel != null) indicatorLineHeight else 0f)
+    private val lineSpacing get() = max(14 * density, labelPaint.fontSpacing + 2 * density)
+
+    /** Leave space for the battery stats without overlapping notification icons. */
+    fun indicatorBottom(): Float {
+        val label = batteryLabel ?: return ringBottom()
+        val count = label.count { it == '\n' } + 1
+        return ringBottom() + count * lineSpacing + 2 * density
+    }
 
     private fun drawLabels(c: Canvas) {
-        val y = ringBottom() + indicatorLineHeight - labelPaint.descent()
-        batteryLabel?.let {
-            labelPaint.color = Color.WHITE
-            labelPaint.alpha = (220 * alphaMul * intro).toInt()
-            c.drawText(it, cx, y, labelPaint)
+        val label = batteryLabel ?: return
+        val lines = label.split("\n")
+        labelPaint.color = Color.WHITE
+        labelPaint.alpha = (220 * alphaMul * intro).toInt()
+        val spacing = lineSpacing
+        var y = ringBottom() + spacing - labelPaint.descent()
+        for (line in lines) {
+            c.drawText(line, cx, y, labelPaint)
+            y += spacing
         }
     }
 

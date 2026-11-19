@@ -246,7 +246,7 @@ object ScreenOnOverlay {
             (!prefs.overlayLockOnly || LedController.isLocked())
         val m = LedController.overlayMeter
         ledView.setMeter(m?.fraction, m?.color ?: 0, m?.icon ?: MeterIcon.NONE, m?.indeterminate ?: false)
-        ledView.setBattery(LedController.batteryPercent())
+        ledView.setBatteryText(LedController.batteryStatusText())
 
         val flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
@@ -304,7 +304,7 @@ object ScreenOnOverlay {
             (!prefs.overlayLockOnly || LedController.isLocked())
         val m = LedController.overlayMeter
         ledView.setMeter(m?.fraction, m?.color ?: 0, m?.icon ?: MeterIcon.NONE, m?.indeterminate ?: false)
-        ledView.setBattery(LedController.batteryPercent())
+        ledView.setBatteryText(LedController.batteryStatusText())
         ledView.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         info?.monochrome = prefs.aodIcons
         info?.iconDp = prefs.appIconDp
@@ -568,4 +568,8 @@ object ScreenOnOverlay {
 
     private const val DROP_DP = 26f
     private const val PEEK_MS = 12_000L
+
+    fun updateBatteryText() {
+        led?.setBatteryText(LedController.batteryStatusText())
+    }
 }

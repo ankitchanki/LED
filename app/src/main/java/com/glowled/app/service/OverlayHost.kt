@@ -81,7 +81,7 @@ object OverlayHost {
             (!prefs.overlayLockOnly || LedController.isLocked())
         val m = LedController.overlayMeter
         v.setMeter(m?.fraction, m?.color ?: 0, m?.icon ?: MeterIcon.NONE, m?.indeterminate ?: false)
-        v.setBattery(LedController.batteryPercent())
+        v.setBatteryText(LedController.batteryStatusText())
         v.dropletRadiusDp = prefs.dropletSizeDp.toFloat()
         val flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
@@ -176,5 +176,10 @@ object OverlayHost {
     fun hide() {
         hidePassive()
         if (ScreenOnOverlay.isShowing()) ScreenOnOverlay.hide()
+    }
+
+    fun updateBatteryText() {
+        view?.setBatteryText(LedController.batteryStatusText())
+        ScreenOnOverlay.updateBatteryText()
     }
 }
